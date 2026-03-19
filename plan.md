@@ -4,6 +4,54 @@
 
 ---
 
+## 0. 진행 현황 업데이트 (2026-03-18)
+
+아래 내용은 초기 기획 대비 **현재 실제 구현/실행 완료 상태**를 반영한 현황입니다.
+
+### 0-1. 전처리/분할 파이프라인 구현 완료 항목
+
+| 구분 | 현재 상태 | 산출물 경로(예시) |
+|---|---|---|
+| STT 파싱 (`<HH:MM:SS>`) | 완료 | `outputs/common/parsed/*.jsonl` |
+| Timestamp wrap 보정 | 완료 (12h/24h wrap 처리) | `scripts/run_pipeline.py` |
+| Session Split | 완료 (시간 gap + 키워드) | `outputs/common/session_split/*.json` |
+| Discourse Marker 집계 | 완료 | `outputs/common/discourse_marker/*.json` |
+| Macro Segmentation | 완료 (유사도 + gap + 전이표현 + 기능신호) | `outputs/by_model/*/macro_segments/*.json` |
+| Semantic Chunking | 완료 | `outputs/by_model/*/semantic_chunks/*.json` |
+| Segment/Chunk 라벨링 | 완료 (`label`, `parent_label`, `sub_label`) | `outputs/by_model/*/.../*.json` |
+| 정량 Feature 추출 | 완료 (질문/예시/반복/전문용어/필러/실습지시 비율) | `outputs/by_model/*/features/*.json` |
+| 결과 검증 스크립트 | 완료 | `scripts/verify_outputs.py` |
+
+### 0-2. 모델 실험 및 현재 의사결정
+
+- 실험 모델: `multilingual-e5-large`, `BAAI/bge-m3`
+- 현재 의사결정: **macro segmentation 기준 e5 결과 채택**
+- 채택 근거(요약):
+  - `segment_count` 안정성: e5 평균 35.0, bge-m3 평균 123.3
+  - bge-m3는 과분할 경향이 강함
+  - 후속 분석 LLM 입력 단위로 e5가 문맥 보존에 유리
+
+### 0-3. 운영/실행 방식 (보안 반영)
+
+- 데이터 원본은 외부 업로드 없이 로컬/Google Drive 경로에서 처리
+- Colab 실행 시 기본 저장 경로:
+  - `/content/drive/MyDrive/preprocessing`
+- 코드 경로:
+  - `/content/drive/MyDrive/stt_log_code`
+- 진행률 추적:
+  - `progress.json` (`elapsed_sec`, `eta_sec`, `percent` 포함)
+
+### 0-4. 기획 대비 미구현 항목 (다음 단계)
+
+| 항목 | 상태 | 비고 |
+|---|---|---|
+| 카테고리별 분석 LLM 5병렬 호출 | 미구현 | 기획 존재, 코드 미연결 |
+| Step 1~9 evidence/rerank/compact packet | 미구현 | 전처리 이후 분석 엔진 단계 |
+| final_score / reason / improvement_tip 자동 생성 | 미구현 | 분석 LLM 단계에서 구현 예정 |
+| category 재집계 및 리포트 자동 작성 | 미구현 | 중간평가 이후 구현 예정 |
+
+---
+
 ## 1. TXT 파일 전처리 파이프라인
 
 ### 1-1. 원본 데이터 현황
@@ -36,12 +84,17 @@
 - 강사 발화만 추출하여 분석 대상으로 설정 (수강생 발화는 상호작용 분석에만 활용)
 
 #### Stage 3: 시간 구간 분할 (Session Segmentation)
-- 메타데이터 기반으로 **오전(09:00~12:00) / 오후(13:00~18:00)** 세션 분리
-- 강의 내 자연 단위 분할:
-  - **도입부** (첫 5~10분): 학습 목표 안내, 전날 복습 여부 분석
-  - **본론** (중간 구간): 개념 설명, 예시, 실습 연계 분석
-  - **마무리** (마지막 5~10분): 요약 정리 여부 분석
-- 타임스탬프 간 큰 갭(예: 10분 이상)이 있으면 쉬는 시간 / 실습 시간으로 추정하여 분리
+- 1차 세션 분할: 메타데이터 시간표 기반 **오전(09:00~12:00) / 오후(13:00~18:00)** 매핑
+- 2차 매크로 분할: **도입/전개/실습/정리** 4단계로 분할
+  - 도입: 시작 0~8분 + 목표/복습 신호어(`오늘`, `목표`, `어제`, `지난 시간`)
+  - 정리: 종료 전 8분 + 요약 신호어(`정리`, `요약`, `마무리`, `다음 시간`)
+  - 실습: 긴 무음/간격(예: 10분+) 이후 재개 구간, 코드 실행/오류 대응 신호어 기반 보조
+  - 전개: 나머지 구간
+- 3차 마이크로 분할: 2~3분 슬라이딩 윈도우로 정량 특징 계산
+  - 발화 속도(WPM), 필러 밀도, 질문문 비율, 화자 전환 횟수
+- 신뢰도 플래그:
+  - `segment_split_low_conf=true` if 도입/정리 근거 구간 미검출 또는 윈도우 특징 불안정
+  - 저신뢰 세션은 구조 카테고리 자동채점 제외 + human review 대상으로 라우팅
 
 #### Stage 4: 텍스트 정제 (Text Cleaning)
 
@@ -55,13 +108,14 @@
 
 > 15개 파일 전체에서 영한 혼합 패턴이 파일당 약 130~270건 발견됨
 
-##### 처리 전략: 직접 교정하지 않고 LLM에 위임
+##### 처리 전략: LLM 중심 + 최소 규칙 보조 (Hybrid)
 
-- **❌ 직접 교정**: 규칙 기반 매핑 사전은 끝이 없고, 새 오류에 대응 불가
-- **❌ 삭제**: 의미 불명 텍스트를 제거하면 강의 흐름이 끊겨 구조 분석이 어려움
-- **✅ LLM에 맥락 제공**: 프롬프트에 STT 특성을 명시하여 LLM이 문맥에서 추론하도록 유도
-  - GPT-4o는 `마이에큐L` → MySQL 같은 노이즈를 문맥에서 이미 잘 추론함
+- **❌ 전면 규칙 교정**: 규칙 기반 매핑 사전은 끝이 없고, 새 오류에 대응하기 어려움
+- **❌ 삭제 중심 정제**: 의미 불명 텍스트를 제거하면 강의 흐름이 끊겨 구조 분석이 어려움
+- **✅ 기본 전략은 LLM 해석 보조**: 전처리 단계에서 LLM을 전면 교정기로 쓰지 않고, 평가 단계에서 문맥 해석용으로 사용
   - "언어 표현 품질" 평가 시 STT 변환 오류와 강사의 실제 발화 습관을 구분하도록 지시
+- **✅ 정량 지표 계산 시에만 최소 정규화 적용**: 용어 빈도/필러 비율 계산 정확도가 필요한 지점에 한해 사전 기반 보정 사용
+- **✅ 제한적 LLM 교정(옵션)**: 폐쇄형 용어 후보 집합 내에서만 치환 허용 + confidence 로그 저장
 
 ##### 원본 보존 원칙
 
@@ -111,6 +165,87 @@ TERM_MAP = {
   - 각 평가 항목별로 관련 segment만 추출하여 추가 맥락 제공
     - 예: "학습 목표 안내" → 도입부 segment만 전달
     - 예: "마무리 요약" → 마무리 segment만 전달
+
+### 1-3. 팀안/개인안 비교 및 최종 전처리 결정
+
+| 접근안 | 논리적 타당성(정확도) | 물리적 효율(시간/비용) | 리스크 |
+|---|---|---|---|
+| A. 규칙 기반 대규모 교정 | 중간 (명시된 패턴만 정확) | 낮음 (사전 관리 비용 큼) | 신규 STT 오류 대응 지연 |
+| B. 전면 LLM 위임 (팀안) | 중간~높음 (문맥 추론 강함) | 중간 (사전 관리 없음) | 정량 카운팅 편차 가능 |
+| C. Hybrid: 원본 보존 + LLM 중심 + 최소 정규화 (개인안 확장) | **높음** (맥락 추론 + 지표 안정화) | **높음** (유지보수 최소화, 재분석 비용 절감) | 정규화 사전 스코프 관리 필요 |
+
+#### 최종 채택안: C (Hybrid)
+
+- 분석 본문은 원본 텍스트를 기준으로 LLM이 문맥 해석
+- 점수 산정에 직접 쓰이는 정량 지표(용어 빈도, 필러 비율)에만 최소 정규화 적용
+- 정규화 결과는 `normalized_text` 같은 별도 컬럼으로 저장하고 `raw_text`는 항상 보존
+- 분기 규칙:
+  - 품질 평가/근거 인용: `raw_text` 우선
+  - 통계 집계/카운팅: `normalized_text` 사용
+
+> 결론: 팀안(LLM 중심)의 운영 단순성을 유지하면서, 개인안의 정량 안정성을 결합한 Hybrid가 정확도와 비용 모두에서 가장 효율적임.
+
+### 1-4. v2 운영 확정안 (분석 입력 고정 규칙)
+
+#### 확정 규칙 1) 강사 추론
+- 기본 규칙: 세션 내 발화량 `top1` 화자를 강사로 사용
+- 저신뢰 조건: `top1_ratio < 0.75` 또는 `margin_ratio < 0.25`
+- 처리 방침: 자동 점수는 유지하되 `human_review_required=true` 플래그로 후검토 대상 지정
+
+#### 확정 규칙 2) 세션/구간 분할
+- 오후 상대시간(`01~05시`)은 오후 세션 fallback 매핑 허용
+- `segment_split_low_conf=true` 세션은 **구조 항목(강의 도입 및 구조)** 자동채점 제외
+  - `structure_scoring_enabled=false`로 분석 파이프라인에서 분기 처리
+
+#### 확정 규칙 3) 텍스트 소스 사용
+- 품질 평가/근거 인용: `raw_text` 사용
+- 정량 집계/카운팅(필러 비율, 용어 빈도): `normalized_text` 사용
+- 원칙: 정규화 텍스트는 보조 통계용이며, 의미 해석/인용에는 사용하지 않음
+
+### 1-5. 평가 항목별 Segmentation 매핑 (v3 강화)
+
+체크리스트 18개 항목을 동일 구간으로 평가하지 않고, 항목별 근거 구간을 고정한다.
+
+| 카테고리 | 평가 항목 | 근거 우선 구간 | 핵심 정량 특징 | N/A 또는 Review 조건 |
+|---|---|---|---|---|
+| 언어 표현 품질 | 불필요한 반복 표현, 발화 완결성, 언어 일관성 | 전체 + 2~3분 마이크로 윈도우 | 필러 비율, 미완결 비율, 종결 어미 일관성 | 발화량 부족 시 N/A |
+| 강의 도입 및 구조 | 학습 목표 안내, 전날 복습 연계 | 도입 0~8분 | 목표/복습 키워드 존재, 명시 시점 | 도입 구간 저신뢰 시 Review |
+| 강의 도입 및 구조 | 마무리 요약 | 종료 전 8분 | 요약 키워드 존재, 핵심 재언급 횟수 | 정리 구간 저신뢰 시 Review |
+| 강의 도입 및 구조 | 설명 순서, 핵심내용 강조 | 전개+실습 구간 | 개념→예시→실습 전이 패턴, 강조 문구 빈도 | 전이 패턴 미검출 시 Review |
+| 개념 설명 명확성 | 개념정의, 비유/예시, 선행개념, 발화속도 | 전개 구간 | 정의문 패턴, 예시 수, 전제 설명, WPM | 근거 인용 2건 미만 시 N/A |
+| 예시 및 실습 연계 | 예시 적절성, 실습 연계, 오류 대응 | 실습 구간 우선 | 실습 전환 문구, 오류 키워드 대응 턴 | 실습 구간 부재 시 N/A |
+| 수강생 상호작용 | 이해 확인 질문, 참여 유도, 질문 응답 충분성 | 전 구간(질의응답 집중) | 질문문 비율, 화자 왕복(turn pair), 답변 길이 | 다화자/상호작용 희소 시 Review |
+
+### 1-6. 자동 채점 Gate 기준 (품질 보장)
+
+- `segment_split_low_conf=true` 세션: "강의 도입 및 구조" 자동채점 제외 (`structure_scoring_enabled=false`)
+- 항목별 근거 인용이 2건 미만: 해당 항목 `N/A` 또는 `human_review_required=true`
+- 다화자 세션에서 `top1_ratio < 0.75` 또는 `margin_ratio < 0.25`: 상호작용/강사 관련 항목 Review
+- Review 플래그 세션은 최종 리포트에서 "자동평가 신뢰도 낮음" 배지 표시
+
+### 1-7. 단계별 전처리 산출물 폴더 구조
+
+전처리 결과는 단일 CSV가 아니라 검증 가능한 단계별 폴더로 저장한다.
+
+```text
+outputs/preprocessing_eda_v2/
+  stage_01_parsed/
+  stage_02_speaker/
+  stage_03_segmentation/
+  stage_04_text_cleaning/
+  stage_05_enriched/
+  stage_06_validation/
+  stage_07_eda/
+```
+
+- Stage별 주요 파일:
+  - `stage_01_parsed/parsed_utterances.csv`, `preprocessing_file_summary.csv`
+  - `stage_02_speaker/instructor_session_summary.csv`, `validation_instructor_confidence.csv`
+  - `stage_03_segmentation/session_segment_assignments.csv`, `validation_segment_confidence.csv`
+  - `stage_04_text_cleaning/text_cleaning_diff.csv`, 정규화 검증 파일
+  - `stage_05_enriched/preprocessed_utterances.csv` (분석 입력 기준본)
+  - `stage_06_validation/VALIDATION_REPORT.md`, `validation_summary.json`
+  - `stage_07_eda/EDA_REPORT.md`, 시각화 PNG
 
 ---
 
@@ -491,8 +626,12 @@ Few-shot 예시는 **평가 정확도 향상**보다 **출력 포맷 일관성**
 │                                                              │
 │  [TXT Files] ──┐                                             │
 │  [CSV Meta]  ──┼── DataLoader ── Parser ── Preprocessor      │
-│  [PDF Check] ──┘                                             │
+│  [Rubrics]   ──┘  (evaluation_rubrics.json)                  │
 └──────────────────────┬───────────────────────────────────────┘
+
+※ PDF 체크리스트는 설계 단계에서 Rubric/프롬프트를 정의하는 참고 자료이며,
+  런타임에는 그 기준이 evaluation_rubrics.json과 프롬프트 템플릿에 내재화됨.
+
                        ▼
 ┌──────────────────────────────────────────────────────────────┐
 │                   ANALYSIS ENGINE LAYER                       │
@@ -618,15 +757,3 @@ export_pdf(summary, filename="report_2026-02-02.pdf")
 | 화자 식별 오류 | 발화량 기반 + 발화 내용 키워드("여러분", "수업") 이중 검증 |
 | 비용 (API 호출) | 세션당 약 20회 (Step1 ×5 + Step2 ×5 ×3) × 30세션 = 600회 → 비용 절감 전략 병행 |
 | "상호작용" 항목 평가 한계 (수강생 발화 부족) | 강사 발화 내 질문 패턴("되셨어요?", "이해하셨나요?")으로 간접 평가 |
-
----
-
-## 5. 1주차 액션 플랜
-
-| Day | TODO | Output |
-|---|---|---|
-| Day 1 | 전처리 파이프라인 구축 (`data_loader.py`, `preprocessor.py`) + EDA | 전처리 코드, EDA 노트북 |
-| Day 2 | 평가 항목 18개 전체 Rubric 정의 (`evaluation_rubrics.json`) | 분석 기준 명세서 |
-| Day 3 | 프롬프트 템플릿 5개 카테고리 작성 (`prompts/`) + `prompt_engine.py` | 프롬프트 시트 |
-| Day 4 | `analyzer.py` 구현 + 단일 강의 프로토타입 분석 | 프로토타입 코드, 단일 결과 |
-| Day 5 | 프롬프트 튜닝 — Rubric 앵커 조정, 프롬프트 반복 개선 | 튜닝 결과 비교 리포트 |
