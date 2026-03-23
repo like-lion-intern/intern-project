@@ -1,28 +1,28 @@
 """
 분석 API 라우터.
 
-POST /analyze       - STT 파일 업로드 → job 생성 → Celery task 등록
+POST /analyze       - STT 파일 업로드 → job 생성 → 백그라운드 스레드 실행
 GET  /status/{id}  - job 상태 + progress 조회
 GET  /result/{id}  - 최종 분석 결과 반환
-GET  /health       - API/Worker/DB 상태 확인
+GET  /health       - API/DB 상태 확인
 """
 from __future__ import annotations
 
 import re
+import threading
 import uuid
 from datetime import datetime, timezone
 from pathlib import Path
 
-from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status
+from fastapi import APIRouter, BackgroundTasks, Depends, File, HTTPException, UploadFile, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.celery_app import celery_app
 from src.config import settings
 from src.database import get_db
 from src.models import Job, Result
+from src.runner import run_pipeline_thread
 from src.schemas import AnalyzeResponse, HealthResponse, ResultResponse, StatusResponse
-from src.tasks import run_pipeline_task
 
 router = APIRouter()
 
@@ -31,7 +31,6 @@ DATE_PATTERN = re.compile(r"(\d{4}-\d{2}-\d{2})")
 
 
 def _extract_date(filename: str) -> str:
-    """파일명에서 날짜 추출. 예: '2026-02-02_kdt-backendj-21th.txt' → '2026-02-02'"""
     m = DATE_PATTERN.search(filename)
     if not m:
         raise HTTPException(
@@ -42,7 +41,6 @@ def _extract_date(filename: str) -> str:
 
 
 async def _save_upload(file: UploadFile, date: str) -> str:
-    """업로드 파일을 tmp_uploads/<date>.txt 에 저장 후 경로 반환."""
     tmp_dir = Path(settings.project_root) / settings.upload_tmp_dir
     tmp_dir.mkdir(parents=True, exist_ok=True)
     dest = tmp_dir / f"{date}_{uuid.uuid4().hex[:8]}.txt"
@@ -57,26 +55,30 @@ async def analyze(
     file: UploadFile = File(..., description="화자 ID 제거된 STT .txt 파일"),
     db: AsyncSession = Depends(get_db),
 ) -> AnalyzeResponse:
-    """STT 파일을 받아 파이프라인 분석 작업을 비동기로 등록한다."""
+    """STT 파일을 받아 백그라운드 스레드에서 파이프라인을 실행한다."""
     date = _extract_date(file.filename or "")
     stt_path = await _save_upload(file, date)
 
-    # Job 레코드 생성
     job = Job(date=date, original_filename=file.filename or "", status="pending")
     db.add(job)
-    await db.flush()  # job_id 확정
-
-    # Celery task 등록
-    task = run_pipeline_task.delay(str(job.job_id), date, stt_path)
-    job.celery_id = task.id
+    await db.flush()
+    job_id = str(job.job_id)
     await db.commit()
+
+    # ── fork 없이 단순 스레드로 실행 (macOS SIGSEGV 회피) ──
+    t = threading.Thread(
+        target=run_pipeline_thread,
+        args=(job_id, date, stt_path),
+        daemon=True,
+        name=f"pipeline-{job_id[:8]}",
+    )
+    t.start()
 
     return AnalyzeResponse(job_id=job.job_id, date=date, status="pending")
 
 
 @router.get("/status/{job_id}", response_model=StatusResponse)
 async def get_status(job_id: str, db: AsyncSession = Depends(get_db)) -> StatusResponse:
-    """job의 현재 상태와 진행률을 반환한다."""
     try:
         uid = uuid.UUID(job_id)
     except ValueError:
@@ -99,7 +101,6 @@ async def get_status(job_id: str, db: AsyncSession = Depends(get_db)) -> StatusR
 
 @router.get("/result/{job_id}", response_model=ResultResponse)
 async def get_result(job_id: str, db: AsyncSession = Depends(get_db)) -> ResultResponse:
-    """분석이 완료된 job의 최종 리포트를 반환한다."""
     try:
         uid = uuid.UUID(job_id)
     except ValueError:
@@ -130,20 +131,10 @@ async def get_result(job_id: str, db: AsyncSession = Depends(get_db)) -> ResultR
 
 @router.get("/health", response_model=HealthResponse)
 async def health(db: AsyncSession = Depends(get_db)) -> HealthResponse:
-    """API 서버, Celery Worker, DB 상태를 확인한다."""
-    # DB 연결 확인
     try:
         await db.execute(select(1))
         db_status = "ok"
     except Exception:
         db_status = "error"
 
-    # Celery Worker 확인 (ping)
-    try:
-        inspect = celery_app.control.inspect(timeout=1.0)
-        active = inspect.active()
-        worker_status = "ok" if active else "no_workers"
-    except Exception:
-        worker_status = "no_workers"
-
-    return HealthResponse(api="ok", worker=worker_status, db=db_status)
+    return HealthResponse(api="ok", worker="thread", db=db_status)

@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>강의 분석 리포트 시스템</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f5f7fa;
+      --white: #ffffff;
+      --border: #e4e8ef;
+      --border-light: #f0f2f5;
+      --accent: #5b5ef6;
+      --accent-light: #eeecff;
+      --accent-dark: #4040d4;
+      --text: #111827;
+      --text-sub: #4b5563;
+      --text-muted: #9ca3af;
+      --green: #16a34a;
+      --green-bg: #f0fdf4;
+      --red: #dc2626;
+      --red-bg: #fef2f2;
+      --yellow: #d97706;
+      --yellow-bg: #fffbeb;
+      --blue: #2563eb;
+      --blue-bg: #eff6ff;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+      --shadow: 0 4px 16px rgba(0,0,0,0.07);
+      --shadow-lg: 0 8px 32px rgba(0,0,0,0.10);
+      --radius: 14px;
+      --radius-sm: 8px;
+    }
+
+    body {
+      font-family: 'Pretendard', -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* NAV */
+    nav {
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      padding: 0 32px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky; top: 0; z-index: 100;
+    }
+    .nav-logo {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .nav-badge {
+      font-size: 0.7rem;
+      background: var(--accent-light);
+      color: var(--accent);
+      padding: 2px 8px;
+      border-radius: 99px;
+      font-weight: 600;
+    }
+
+    /* LAYOUT */
+    .page { display: none; }
+    .page.active { display: block; }
+
+    /* ── UPLOAD PAGE ── */
+    #uploadPage {
+      max-width: 640px;
+      margin: 80px auto;
+      padding: 0 24px;
+    }
+    .upload-hero { text-align: center; margin-bottom: 40px; }
+    .upload-hero h1 { font-size: 2rem; font-weight: 800; margin-bottom: 10px; }
+    .upload-hero p { color: var(--text-sub); font-size: 1rem; }
+
+    .upload-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 32px;
+      box-shadow: var(--shadow);
+    }
+
+    .drop-zone {
+      border: 2px dashed #d1d5db;
+      border-radius: var(--radius-sm);
+      padding: 52px 24px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+      background: var(--bg);
+    }
+    .drop-zone:hover, .drop-zone.over {
+      border-color: var(--accent);
+      background: var(--accent-light);
+    }
+    .drop-zone input[type="file"] {
+      position: absolute; inset: 0; opacity: 0; cursor: pointer;
+    }
+    .drop-icon { font-size: 2.8rem; margin-bottom: 14px; }
+    .drop-label { font-size: 1rem; font-weight: 600; margin-bottom: 6px; }
+    .drop-sub { font-size: 0.83rem; color: var(--text-muted); }
+
+    .file-chip {
+      display: none;
+      margin-top: 14px;
+      align-items: center;
+      gap: 10px;
+      background: var(--accent-light);
+      border: 1px solid #c4c0fb;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 0.88rem;
+      font-weight: 500;
+      color: var(--accent);
+    }
+    .file-chip.show { display: flex; }
+
+    .btn {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.18s;
+      font-family: inherit;
+      margin-top: 16px;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+    }
+    .btn-primary:hover:not(:disabled) {
+      background: var(--accent-dark);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 14px rgba(91,94,246,0.35);
+    }
+    .btn-primary:disabled { background: #c7c9fb; cursor: not-allowed; color: #fff; }
+
+    /* ── ANALYSIS PAGE ── */
+    #analysisPage { max-width: 640px; margin: 60px auto; padding: 0 24px; }
+    .analysis-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 36px;
+      box-shadow: var(--shadow);
+      text-align: center;
+    }
+    .analysis-card h2 { font-size: 1.4rem; font-weight: 700; margin-bottom: 8px; }
+    .analysis-card p { color: var(--text-sub); font-size: 0.9rem; margin-bottom: 28px; }
+
+    .job-id-box {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-family: monospace;
+      font-size: 0.78rem;
+      color: var(--text-sub);
+      word-break: break-all;
+      margin-bottom: 28px;
+      text-align: left;
+    }
+
+    .progress-track {
+      background: #e5e7eb;
+      border-radius: 99px;
+      height: 10px;
+      overflow: hidden;
+      margin-bottom: 10px;
+    }
+    .progress-fill {
+      height: 100%;
+      border-radius: 99px;
+      background: linear-gradient(90deg, var(--accent), #818cf8);
+      width: 0%;
+      transition: width 0.6s ease;
+    }
+    .progress-meta {
+      display: flex; justify-content: space-between;
+      font-size: 0.8rem; color: var(--text-muted);
+      margin-bottom: 24px;
+    }
+
+    .status-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: 99px;
+      font-size: 0.82rem;
+      font-weight: 600;
+    }
+    .chip-pending  { background: var(--yellow-bg); color: var(--yellow); }
+    .chip-running  { background: var(--accent-light); color: var(--accent); }
+    .chip-done     { background: var(--green-bg); color: var(--green); }
+    .chip-failed   { background: var(--red-bg); color: var(--red); }
+
+    .dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+    .dot.pulse { animation: pulse 1s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+    .spinner {
+      width: 13px; height: 13px;
+      border: 2px solid currentColor;
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+      opacity: 0.7;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .stage-steps {
+      display: flex;
+      justify-content: center;
+      gap: 0;
+      margin-top: 28px;
+    }
+    .stage-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 1;
+      max-width: 120px;
+    }
+    .stage-dot {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      background: #e5e7eb;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.7rem; font-weight: 700;
+      color: #9ca3af;
+      position: relative; z-index: 1;
+    }
+    .stage-step.done .stage-dot { background: var(--green); color: #fff; }
+    .stage-step.active .stage-dot { background: var(--accent); color: #fff; }
+    .stage-line {
+      flex: 1;
+      height: 2px;
+      background: #e5e7eb;
+      margin-top: 13px;
+      align-self: flex-start;
+    }
+    .stage-line.done { background: var(--green); }
+    .stage-label { font-size: 0.7rem; color: var(--text-muted); margin-top: 6px; text-align: center; }
+    .stage-step.done .stage-label { color: var(--green); }
+    .stage-step.active .stage-label { color: var(--accent); font-weight: 600; }
+
+    /* ── REPORT PAGE ── */
+    #reportPage { max-width: 900px; margin: 0 auto; padding: 32px 24px 80px; }
+
+    .report-topbar {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 28px; flex-wrap: wrap; gap: 12px;
+    }
+    .report-topbar h2 { font-size: 1.5rem; font-weight: 800; }
+    .report-date { font-size: 0.85rem; color: var(--text-muted); }
+    .btn-new {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 8px 16px;
+      border: 1px solid var(--border);
+      background: var(--white);
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.15s;
+      color: var(--text-sub);
+    }
+    .btn-new:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* Overall summary */
+    .summary-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    @media(max-width:640px){ .summary-row { grid-template-columns: 1fr; } }
+
+    .summary-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px 22px;
+      box-shadow: var(--shadow-sm);
+    }
+    .summary-card-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 8px;
+    }
+    .summary-card-value {
+      font-size: 2rem;
+      font-weight: 800;
+    }
+    .summary-card-sub { font-size: 0.8rem; color: var(--text-muted); margin-top: 4px; }
+
+    .overall-text-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 24px;
+    }
+    .overall-text-card .section-title {
+      font-size: 0.8rem; font-weight: 700; color: var(--text-muted);
+      text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 12px;
+    }
+    .overall-text { font-size: 0.93rem; line-height: 1.7; color: var(--text-sub); }
+
+    .kv-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    @media(max-width:640px){ .kv-grid { grid-template-columns: 1fr; } }
+
+    .kv-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px 20px;
+      box-shadow: var(--shadow-sm);
+    }
+    .kv-card .section-title {
+      font-size: 0.75rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 10px;
+    }
+    .kv-card.strengths .section-title { color: var(--green); }
+    .kv-card.weaknesses .section-title { color: var(--red); }
+    .kv-card.improvements .section-title { color: var(--blue); }
+
+    .kv-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+    .kv-list li {
+      font-size: 0.84rem; color: var(--text-sub);
+      display: flex; gap: 8px; align-items: flex-start; line-height: 1.45;
+    }
+    .kv-list li::before {
+      content: attr(data-mark);
+      flex-shrink: 0;
+      font-weight: 700;
+      font-size: 0.78rem;
+      margin-top: 1px;
+    }
+    .kv-card.strengths li::before { color: var(--green); content: "✓"; }
+    .kv-card.weaknesses li::before { color: var(--red); content: "✗"; }
+    .kv-card.improvements li::before { color: var(--blue); content: "→"; }
+
+    /* Category section */
+    .section-heading {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text-sub);
+      margin-bottom: 14px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--border);
+    }
+
+    .cat-grid { display: flex; flex-direction: column; gap: 14px; margin-bottom: 32px; }
+
+    .cat-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+    }
+    .cat-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 18px 22px;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.15s;
+    }
+    .cat-header:hover { background: #fafafa; }
+    .cat-left { display: flex; align-items: center; gap: 14px; }
+    .cat-icon {
+      width: 38px; height: 38px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem;
+    }
+    .cat-name { font-weight: 700; font-size: 0.97rem; }
+    .cat-count { font-size: 0.78rem; color: var(--text-muted); }
+
+    .cat-right { display: flex; align-items: center; gap: 16px; }
+    .score-ring {
+      position: relative;
+      width: 48px; height: 48px;
+    }
+    .score-ring svg { transform: rotate(-90deg); }
+    .score-ring-num {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 0.88rem;
+    }
+    .chevron { font-size: 0.75rem; color: var(--text-muted); transition: transform 0.2s; }
+
+    .cat-body {
+      display: none;
+      border-top: 1px solid var(--border-light);
+      padding: 20px 22px 22px;
+    }
+    .cat-body.open { display: block; }
+    .cat-summary-text {
+      font-size: 0.87rem; color: var(--text-sub); line-height: 1.55;
+      margin-bottom: 18px;
+      padding: 12px 14px;
+      background: var(--bg);
+      border-radius: 8px;
+    }
+
+    /* Items table */
+    .items-wrap { overflow-x: auto; }
+    table.items {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.84rem;
+    }
+    table.items th {
+      text-align: left;
+      padding: 8px 12px;
+      color: var(--text-muted);
+      font-weight: 600;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border-bottom: 1px solid var(--border);
+      background: #fafafa;
+    }
+    table.items td {
+      padding: 12px 12px;
+      border-bottom: 1px solid var(--border-light);
+      vertical-align: top;
+    }
+    table.items tr:last-child td { border-bottom: none; }
+
+    .item-name-cell { font-weight: 600; white-space: nowrap; }
+    .score-badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      white-space: nowrap;
+    }
+    .score-mini-bar {
+      height: 4px; border-radius: 99px;
+      background: #e5e7eb; margin-top: 4px;
+      max-width: 80px;
+    }
+    .score-mini-bar-fill { height: 100%; border-radius: 99px; }
+
+    .reason-cell { color: var(--text-sub); line-height: 1.5; }
+    .tip-cell {
+      color: var(--blue);
+      font-size: 0.8rem;
+      line-height: 1.45;
+    }
+
+    .cat-tags {
+      display: flex; flex-wrap: wrap; gap: 6px;
+      margin-top: 16px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border-light);
+    }
+    .tag {
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.76rem;
+      font-weight: 500;
+    }
+    .tag-strength { background: var(--green-bg); color: var(--green); }
+    .tag-weakness { background: var(--red-bg); color: var(--red); }
+
+    /* Priority improvements */
+    .priority-card {
+      background: linear-gradient(135deg, #f0f4ff, #e8eaff);
+      border: 1px solid #c7cbfb;
+      border-radius: var(--radius);
+      padding: 22px 24px;
+      margin-bottom: 0;
+    }
+    .priority-card .section-title {
+      font-size: 0.8rem; font-weight: 700;
+      color: var(--accent);
+      text-transform: uppercase; letter-spacing: 0.07em;
+      margin-bottom: 12px;
+    }
+    .priority-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+    .priority-list li {
+      display: flex; gap: 10px; align-items: flex-start;
+      font-size: 0.88rem; color: var(--text-sub); line-height: 1.5;
+    }
+    .priority-num {
+      flex-shrink: 0;
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #fff;
+      font-size: 0.65rem; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      margin-top: 1px;
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed; bottom: 24px; right: 24px;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 18px;
+      font-size: 0.87rem;
+      box-shadow: var(--shadow-lg);
+      display: none; z-index: 999;
+      max-width: 320px;
+    }
+    .toast.error { border-color: var(--red); color: var(--red); }
+
+    /* Score colors */
+    .sc1 { color: var(--red); background: var(--red-bg); }
+    .sc2 { color: #ea580c; background: #fff7ed; }
+    .sc3 { color: var(--yellow); background: var(--yellow-bg); }
+    .sc4 { color: #16a34a; background: #dcfce7; }
+    .sc5 { color: var(--green); background: var(--green-bg); }
+    .sbar1 { background: var(--red); }
+    .sbar2 { background: #ea580c; }
+    .sbar3 { background: var(--yellow); }
+    .sbar4 { background: #16a34a; }
+    .sbar5 { background: var(--green); }
+    .sring1 { stroke: var(--red); }
+    .sring2 { stroke: #ea580c; }
+    .sring3 { stroke: var(--yellow); }
+    .sring4 { stroke: #16a34a; }
+    .sring5 { stroke: var(--green); }
+
+    /* Category icon colors */
+    .ci0 { background: #eef2ff; }
+    .ci1 { background: #fdf4ff; }
+    .ci2 { background: #fff7ed; }
+    .ci3 { background: #f0fdf4; }
+    .ci4 { background: #eff6ff; }
+  </style>
+</head>
+<body>
+<nav>
+  <div class="nav-logo">🎓 강의 분석 시스템 <span class="nav-badge">AI Report</span></div>
+</nav>
+
+<!-- ① 업로드 페이지 -->
+<div id="uploadPage" class="page active">
+  <div class="upload-hero">
+    <h1>강의 품질 분석</h1>
+    <p>STT 파일을 업로드하면 AI가 18개 항목을 자동 평가하고<br>상세 리포트를 생성합니다</p>
+  </div>
+  <div class="upload-card">
+    <div class="drop-zone" id="dropZone">
+      <input type="file" id="fileInput" accept=".txt" />
+      <div class="drop-icon">📄</div>
+      <div class="drop-label">파일을 드래그하거나 클릭하여 선택</div>
+      <div class="drop-sub">화자 ID 제거된 .txt 파일 (예: 2026-02-02_kdt.txt)</div>
+    </div>
+    <div class="file-chip" id="fileChip">📎 <span id="fileName"></span></div>
+    <button class="btn btn-primary" id="uploadBtn" disabled>분석 시작</button>
+  </div>
+</div>
+
+<!-- ② 분석 진행 페이지 -->
+<div id="analysisPage" class="page">
+  <div class="analysis-card">
+    <h2>🔍 분석 진행 중</h2>
+    <p>STT 파일을 처리하고 있습니다. 잠시 기다려주세요.</p>
+    <div class="job-id-box">Job ID: <strong id="jobIdDisplay">—</strong></div>
+
+    <div class="progress-track">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+    <div class="progress-meta">
+      <span id="stageLabel">대기 중...</span>
+      <span id="pctLabel">0%</span>
+    </div>
+
+    <div id="statusChip"></div>
+
+    <div class="stage-steps">
+      <div class="stage-step" id="ss0">
+        <div class="stage-dot">①</div>
+        <div class="stage-label">업로드</div>
+      </div>
+      <div class="stage-line" id="sl0"></div>
+      <div class="stage-step" id="ss1">
+        <div class="stage-dot">②</div>
+        <div class="stage-label">전처리</div>
+      </div>
+      <div class="stage-line" id="sl1"></div>
+      <div class="stage-step" id="ss2">
+        <div class="stage-dot">③</div>
+        <div class="stage-label">LLM 분석</div>
+      </div>
+      <div class="stage-line" id="sl2"></div>
+      <div class="stage-step" id="ss3">
+        <div class="stage-dot">✓</div>
+        <div class="stage-label">완료</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ③ 리포트 페이지 -->
+<div id="reportPage" class="page">
+  <div class="report-topbar">
+    <div>
+      <h2>📊 강의 분석 리포트</h2>
+      <div class="report-date" id="reportDate"></div>
+    </div>
+    <button class="btn-new" onclick="goToUpload()">＋ 새 강의 분석</button>
+  </div>
+
+  <!-- 요약 카드 -->
+  <div class="summary-row" id="summaryRow"></div>
+
+  <!-- 종합 평가 -->
+  <div class="overall-text-card">
+    <div class="section-title">종합 평가</div>
+    <div class="overall-text" id="overallText"></div>
+  </div>
+
+  <!-- 강점 / 약점 -->
+  <div class="kv-grid" id="kvGrid"></div>
+
+  <!-- 카테고리별 상세 -->
+  <div class="section-heading">📋 카테고리별 상세 분석</div>
+  <div class="cat-grid" id="catGrid"></div>
+
+  <!-- 우선 개선 과제 -->
+  <div class="section-heading">🎯 우선 개선 과제</div>
+  <div class="priority-card">
+    <div class="section-title">Priority Improvements</div>
+    <ul class="priority-list" id="priorityList"></ul>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  const API = 'http://localhost:8000/api/v1';
+  let pollTimer = null;
+  const CAT_ICONS = ['📝','🏗️','💡','🛠️','🤝'];
+  const CAT_CI = ['ci0','ci1','ci2','ci3','ci4'];
+
+  /* ─── pages ─── */
+  function showPage(id) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  function goToUpload() {
+    clearInterval(pollTimer);
+    document.getElementById('fileInput').value = '';
+    document.getElementById('fileChip').classList.remove('show');
+    document.getElementById('uploadBtn').disabled = true;
+    document.getElementById('uploadBtn').textContent = '분석 시작';
+    showPage('uploadPage');
+  }
+
+  /* ─── file ─── */
+  const fileInput = document.getElementById('fileInput');
+  const dropZone  = document.getElementById('dropZone');
+  const uploadBtn = document.getElementById('uploadBtn');
+
+  function onFileChosen(file) {
+    if (!file) return;
+    document.getElementById('fileName').textContent = file.name;
+    document.getElementById('fileChip').classList.add('show');
+    uploadBtn.disabled = false;
+  }
+  fileInput.addEventListener('change', () => onFileChosen(fileInput.files[0]));
+  dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('over'); });
+  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('over'));
+  dropZone.addEventListener('drop', e => {
+    e.preventDefault(); dropZone.classList.remove('over');
+    const f = e.dataTransfer.files[0];
+    if (f) { fileInput.files = e.dataTransfer.files; onFileChosen(f); }
+  });
+
+  /* ─── upload ─── */
+  uploadBtn.addEventListener('click', async () => {
+    const file = fileInput.files[0];
+    if (!file) return;
+    uploadBtn.disabled = true;
+    uploadBtn.innerHTML = '<span style="display:inline-flex;align-items:center;gap:8px"><span class="spinner" style="border-color:#fff;border-top-color:transparent;display:inline-block;width:14px;height:14px;border-radius:50%;border-width:2px;animation:spin .7s linear infinite"></span> 업로드 중...</span>';
+    const form = new FormData();
+    form.append('file', file);
+    try {
+      const res = await fetch(`${API}/analyze`, { method: 'POST', body: form });
+      if (!res.ok) throw new Error((await res.json()).detail || res.statusText);
+      const data = await res.json();
+      startPolling(data.job_id, file.name);
+    } catch(e) {
+      showToast('업로드 실패: ' + e.message, true);
+      uploadBtn.disabled = false;
+      uploadBtn.textContent = '분석 시작';
+    }
+  });
+
+  /* ─── polling ─── */
+  function startPolling(jobId, filename) {
+    document.getElementById('jobIdDisplay').textContent = jobId;
+    updateStages('pending');
+    showPage('analysisPage');
+    const poll = async () => {
+      try {
+        const res = await fetch(`${API}/status/${jobId}`);
+        const data = await res.json();
+        updateStatus(data);
+        if (data.status === 'done') { clearInterval(pollTimer); await fetchResult(jobId, filename); }
+        else if (data.status === 'failed') { clearInterval(pollTimer); showToast('분석 실패: ' + (data.error_msg || '알 수 없는 오류'), true); }
+      } catch(e) { console.error(e); }
+    };
+    poll();
+    pollTimer = setInterval(poll, 3000);
+  }
+
+  function updateStatus(data) {
+    const progress = data.progress || {};
+    const pct = progress.percent ?? (data.status === 'done' ? 100 : 0);
+    const stage = progress.stage ?? data.status;
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('pctLabel').textContent = pct + '%';
+    const stageMap = { pending:'대기 중', running:'파이프라인 실행 중', stage1_done:'STAGE 1 완료 → LLM 분석 중', stage2_done:'LLM 분석 완료', done:'분석 완료', failed:'실패' };
+    document.getElementById('stageLabel').textContent = stageMap[stage] ?? stage;
+    const chipMap = {
+      pending: `<span class="status-chip chip-pending"><span class="dot pulse"></span>대기 중</span>`,
+      running: `<span class="status-chip chip-running"><span class="spinner" style="display:inline-block;width:12px;height:12px;border:2px solid var(--accent);border-top-color:transparent;border-radius:50%;animation:spin .7s linear infinite"></span>분석 중</span>`,
+      done:    `<span class="status-chip chip-done"><span class="dot"></span>완료</span>`,
+      failed:  `<span class="status-chip chip-failed"><span class="dot"></span>실패</span>`,
+    };
+    document.getElementById('statusChip').innerHTML = chipMap[data.status] ?? data.status;
+    updateStages(stage);
+  }
+
+  function updateStages(stage) {
+    const stateMap = {
+      pending:     [1,0,0,0],
+      running:     [1,1,0,0],
+      stage1_done: [1,1,1,0],
+      stage2_done: [1,1,1,0],
+      done:        [1,1,1,1],
+    };
+    const states = stateMap[stage] ?? [1,0,0,0];
+    states.forEach((v,i) => {
+      const step = document.getElementById(`ss${i}`);
+      const line = document.getElementById(`sl${i}`);
+      if (!step) return;
+      step.className = 'stage-step' + (v ? (i < states.filter(Boolean).length - 1 || stage==='done' ? ' done' : ' active') : '');
+      if (stage === 'done') step.className = 'stage-step done';
+      if (line) line.className = 'stage-line' + (v ? ' done' : '');
+    });
+  }
+
+  /* ─── result ─── */
+  async function fetchResult(jobId, filename) {
+    try {
+      const res = await fetch(`${API}/result/${jobId}`);
+      const data = await res.json();
+      renderReport(data.final_report, filename);
+    } catch(e) { showToast('결과 로드 실패: ' + e.message, true); }
+  }
+
+  function scoreClass(s) {
+    if (s >= 4.5) return '5';
+    if (s >= 3.5) return '4';
+    if (s >= 2.5) return '3';
+    if (s >= 1.5) return '2';
+    return '1';
+  }
+
+  function renderReport(report, filename) {
+    if (!report) return;
+
+    /* date */
+    document.getElementById('reportDate').textContent = (report.lecture_id ?? filename ?? '') + ' · ' + new Date().toLocaleDateString('ko-KR', {year:'numeric',month:'long',day:'numeric'});
+
+    /* 요약 카드: 평균 점수 계산 */
+    const cats = report.category_results ?? [];
+    const scores = cats.map(c => +(c.final_score ?? c.heuristic_score ?? 0));
+    const avg = scores.length ? (scores.reduce((a,b)=>a+b,0)/scores.length).toFixed(2) : '-';
+    const best = cats.reduce((a,b) => (+a.final_score||+a.heuristic_score||0) > (+b.final_score||+b.heuristic_score||0) ? a : b, cats[0] ?? {});
+    const worst = cats.reduce((a,b) => (+a.final_score||+a.heuristic_score||0) < (+b.final_score||+b.heuristic_score||0) ? a : b, cats[0] ?? {});
+
+    const sc = scoreClass(+avg);
+    document.getElementById('summaryRow').innerHTML = `
+      <div class="summary-card">
+        <div class="summary-card-label">종합 점수</div>
+        <div class="summary-card-value sc${sc}" style="background:none">${avg}</div>
+        <div class="summary-card-sub">/ 5.0 점 (18개 항목)</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-card-label">최고 카테고리</div>
+        <div class="summary-card-value" style="font-size:1.1rem;color:var(--green)">${best.category_name ?? '—'}</div>
+        <div class="summary-card-sub">${(+(best.final_score??best.heuristic_score??0)).toFixed(2)}점</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-card-label">개선 필요</div>
+        <div class="summary-card-value" style="font-size:1.1rem;color:var(--red)">${worst.category_name ?? '—'}</div>
+        <div class="summary-card-sub">${(+(worst.final_score??worst.heuristic_score??0)).toFixed(2)}점</div>
+      </div>`;
+
+    /* Overall text */
+    document.getElementById('overallText').textContent = report.overall_summary ?? '요약 정보 없음';
+
+    /* Strengths & Weaknesses */
+    const strItems = (report.overall_strengths ?? []).map(s => `<li>${s}</li>`).join('');
+    const weakItems = (report.overall_weaknesses ?? []).map(w => `<li>${w}</li>`).join('');
+    document.getElementById('kvGrid').innerHTML = `
+      <div class="kv-card strengths">
+        <div class="section-title">강점</div>
+        <ul class="kv-list">${strItems || '<li>정보 없음</li>'}</ul>
+      </div>
+      <div class="kv-card weaknesses">
+        <div class="section-title">개선 필요</div>
+        <ul class="kv-list">${weakItems || '<li>정보 없음</li>'}</ul>
+      </div>`;
+
+    /* Categories */
+    const catGrid = document.getElementById('catGrid');
+    catGrid.innerHTML = '';
+    cats.forEach((cat, idx) => {
+      const sc2 = +(cat.final_score ?? cat.heuristic_score ?? 0).toFixed(2);
+      const cls = scoreClass(sc2);
+      const pct = ((sc2 - 1) / 4 * 100).toFixed(0);
+      const r = 18; const circ = 2 * Math.PI * r;
+      const dash = (circ * pct / 100).toFixed(1);
+
+      const items = (cat.items ?? []).map(item => {
+        const isc = +(item.final_score ?? item.heuristic_score ?? 0).toFixed(2);
+        const ic = scoreClass(isc);
+        const ipct = ((isc-1)/4*100).toFixed(0);
+        return `<tr>
+          <td class="item-name-cell">${item.item_name??''}</td>
+          <td>
+            <span class="score-badge sc${ic}">${isc}</span>
+            <div class="score-mini-bar"><div class="score-mini-bar-fill sbar${ic}" style="width:${ipct}%"></div></div>
+          </td>
+          <td class="reason-cell">${item.reason??''}</td>
+          <td class="tip-cell">${item.improvement_tip ? '💡 '+item.improvement_tip : ''}</td>
+        </tr>`;
+      }).join('');
+
+      const tags = [
+        ...(cat.strengths??[]).slice(0,3).map(s=>`<span class="tag tag-strength">✓ ${s}</span>`),
+        ...(cat.weaknesses??[]).slice(0,3).map(w=>`<span class="tag tag-weakness">✗ ${w}</span>`),
+      ].join('');
+
+      const el = document.createElement('div');
+      el.className = 'cat-card';
+      el.innerHTML = `
+        <div class="cat-header" onclick="toggleCat(this)">
+          <div class="cat-left">
+            <div class="cat-icon ${CAT_CI[idx] ?? 'ci0'}">${CAT_ICONS[idx]??'📌'}</div>
+            <div>
+              <div class="cat-name">${cat.category_name}</div>
+              <div class="cat-count">${(cat.items??[]).length}개 항목</div>
+            </div>
+          </div>
+          <div class="cat-right">
+            <div class="score-ring">
+              <svg width="48" height="48" viewBox="0 0 48 48">
+                <circle cx="24" cy="24" r="${r}" fill="none" stroke="#e5e7eb" stroke-width="4"/>
+                <circle cx="24" cy="24" r="${r}" fill="none" class="sring${cls}" stroke-width="4"
+                  stroke-dasharray="${dash} ${circ}" stroke-linecap="round"/>
+              </svg>
+              <div class="score-ring-num sc${cls}" style="background:none">${sc2}</div>
+            </div>
+            <span class="chevron">▶</span>
+          </div>
+        </div>
+        <div class="cat-body${idx===0?' open':''}">
+          ${cat.category_summary ? `<div class="cat-summary-text">${cat.category_summary}</div>` : ''}
+          <div class="items-wrap">
+            <table class="items">
+              <thead><tr><th>항목</th><th>점수</th><th>평가 이유</th><th>개선 팁</th></tr></thead>
+              <tbody>${items}</tbody>
+            </table>
+          </div>
+          ${tags ? `<div class="cat-tags">${tags}</div>` : ''}
+        </div>`;
+      catGrid.appendChild(el);
+    });
+
+    /* Priority */
+    const pList = (report.priority_improvements ?? []);
+    document.getElementById('priorityList').innerHTML = pList.length
+      ? pList.map((p,i)=>`<li><span class="priority-num">${i+1}</span>${p}</li>`).join('')
+      : '<li>정보 없음</li>';
+
+    showPage('reportPage');
+  }
+
+  function toggleCat(header) {
+    const body = header.nextElementSibling;
+    const ch = header.querySelector('.chevron');
+    const open = body.classList.toggle('open');
+    ch.style.transform = open ? 'rotate(90deg)' : '';
+  }
+
+  /* toast */
+  function showToast(msg, isError) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'toast' + (isError?' error':'');
+    t.style.display = 'block';
+    setTimeout(() => t.style.display='none', 4000);
+  }
+</script>
+</body>
+</html>
