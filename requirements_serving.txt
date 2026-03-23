@@ -1,0 +1,18 @@
+# 서빙 추가 의존성
+# 기존 requirements.txt 의존성 유지, 아래를 추가로 설치
+
+# API 서버
+fastapi>=0.115.0,<1.0.0
+uvicorn[standard]>=0.30.0,<1.0.0
+python-multipart>=0.0.9,<1.0.0
+
+# Celery + PostgreSQL 브로커/백엔드
+celery[sqlalchemy]>=5.4.0,<6.0.0
+
+# SQLAlchemy (async + sync 모두)
+sqlalchemy[asyncio]>=2.0.0,<3.0.0
+asyncpg>=0.29.0,<1.0.0        # FastAPI async 드라이버
+psycopg2-binary>=2.9.0,<3.0.0 # Celery sync 드라이버
+
+# 환경변수 관리
+pydantic-settings>=2.0.0,<3.0.0
