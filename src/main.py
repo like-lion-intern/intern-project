@@ -1,12 +1,11 @@
-"""
-FastAPI 애플리케이션 진입점.
-"""
 import logging
 import os
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import RedirectResponse
 
 from src.config import settings
 from src.database import create_tables
@@ -54,7 +53,12 @@ app.add_middleware(
 
 app.include_router(analyze_router, prefix="/api/v1", tags=["analyze"])
 
+# 정적 파일 마운트 (Cloud Run 배포용)
+# 루트 경로 접근 시 index.html 렌더링을 위해 기본 경로를 잡습니다.
+app.mount("/site", StaticFiles(directory="frontend", html=True), name="frontend")
+
 
 @app.get("/", include_in_schema=False)
 async def root():
-    return {"message": "강의 분석 API 서버가 실행 중입니다. /docs 에서 API 문서를 확인하세요."}
+    # 루트 접속 시 프론트엔드 경로로 리다이렉트
+    return RedirectResponse(url="/site/index.html")
