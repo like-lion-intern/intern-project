@@ -20,12 +20,13 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt
 
-# 소스코드 전체 복사
-COPY . .
-
 # [성능 최적화] Cloud Run Cold Start 방지를 위해 e5-small 모델 빌드 타임에 캐싱 다운로드
+# (소스 코드 변경 시에도 모델 레이어 캐시를 살리기 위해 소스 복사 이전에 위치)
 RUN python -c "from sentence_transformers import SentenceTransformer; SentenceTransformer('intfloat/multilingual-e5-small', device='cpu')"
 RUN python -c "from sentence_transformers import SentenceTransformer; SentenceTransformer('intfloat/multilingual-e5-large', device='cpu')"
+
+# 소스코드 전체 복사 (가장 많이 바뀌므로 맨 아래에 위치)
+COPY . .
 
 # 포트 개방
 EXPOSE 8080
