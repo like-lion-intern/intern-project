@@ -27,9 +27,15 @@ def _get_rerank_model():
     _rerank_loaded = True
     try:
         from sentence_transformers import SentenceTransformer
+        import torch
         _rerank_model = SentenceTransformer(
-            "intfloat/multilingual-e5-small",
-            device="cpu",
+            "intfloat/multilingual-e5-small", device="cpu", local_files_only=False
+        )
+        
+        # [최적화] CPU 환경을 위한 INT8 동적 양자화 적용
+        torch.backends.quantized.engine = 'qnnpack' if 'qnnpack' in torch.backends.quantized.supported_engines else 'fbgemm'
+        _rerank_model = torch.ao.quantization.quantize_dynamic(
+            _rerank_model, {torch.nn.Linear}, dtype=torch.qint8
         )
         logger.info("[rerank] e5-small 로드 완료")
     except Exception as exc:

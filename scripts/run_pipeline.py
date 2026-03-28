@@ -141,7 +141,7 @@ class Embedder:
 
     def __post_init__(self) -> None:
         from sentence_transformers import SentenceTransformer
-
+        import torch
         try:
             self.model = SentenceTransformer(
                 self.model_id,
@@ -149,6 +149,13 @@ class Embedder:
                 trust_remote_code=True,
                 local_files_only=self.local_files_only,
             )
+            
+            # [최적화] CPU 환경을 위한 INT8 동적 양자화 적용
+            if self.device == "cpu":
+                torch.backends.quantized.engine = 'qnnpack' if 'qnnpack' in torch.backends.quantized.supported_engines else 'fbgemm'
+                self.model = torch.ao.quantization.quantize_dynamic(
+                    self.model, {torch.nn.Linear}, dtype=torch.qint8
+                )
         except Exception:
             # Fallback for environments without CUDA/MPS support.
             self.device = "cpu"
@@ -157,6 +164,11 @@ class Embedder:
                 device=self.device,
                 trust_remote_code=True,
                 local_files_only=self.local_files_only,
+            )
+            # [최적화] CPU Fallback 환경에도 INT8 양자화 적용
+            torch.backends.quantized.engine = 'qnnpack' if 'qnnpack' in torch.backends.quantized.supported_engines else 'fbgemm'
+            self.model = torch.ao.quantization.quantize_dynamic(
+                self.model, {torch.nn.Linear}, dtype=torch.qint8
             )
 
     def encode(self, texts: list[str], batch_size: int = 64) -> list[list[float]]:
