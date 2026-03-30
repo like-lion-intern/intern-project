@@ -1,4 +1,3 @@
-# features.py
 from __future__ import annotations
 
 import re
@@ -341,6 +340,85 @@ def _relabel_style_entries(entries: List[Dict[str, Any]], evidence_type: str, po
     return relabeled
 
 
+def _parse_ts_to_seconds(ts_str: str) -> float:
+    try:
+        h, m, s = [int(part) for part in str(ts_str).strip().split(":")]
+        return h * 3600 + m * 60 + s
+    except Exception:
+        return 0.0
+
+
+def _segment_rate_metrics(chunk: Dict[str, Any], text_for_rate: str, sentence_spans: List[str]) -> Dict[str, float]:
+    start_sec = _parse_ts_to_seconds(chunk.get("start_ts", ""))
+    end_sec = _parse_ts_to_seconds(chunk.get("end_ts", ""))
+    duration_sec = max(end_sec - start_sec, 1.0)
+    token_count = len(_normalize_text(text_for_rate).split())
+    utterance_count = float(chunk.get("utterance_count", 0) or 0)
+
+    tokens_per_sec = _safe_div(token_count, duration_sec)
+    utterances_per_min = _safe_div(utterance_count * 60.0, duration_sec)
+    spans_per_min = _safe_div(len(sentence_spans) * 60.0, duration_sec)
+
+    token_ratio = min(1.0, max(0.0, (tokens_per_sec - 2.6) / 1.0))
+    utterance_ratio = min(1.0, max(0.0, (utterances_per_min - 8.0) / 3.0))
+    span_ratio = min(1.0, max(0.0, (spans_per_min - 2.0) / 1.5))
+    rapid_ratio = round(max(token_ratio, utterance_ratio, span_ratio), 4)
+
+    return {
+        "duration_sec": round(duration_sec, 4),
+        "tokens_per_sec": round(tokens_per_sec, 4),
+        "utterances_per_min": round(utterances_per_min, 4),
+        "spans_per_min": round(spans_per_min, 4),
+        "rapid_ratio": rapid_ratio,
+    }
+
+
+def _build_rapid_transition_entries(
+    span_texts: List[str],
+    segment_meta: Dict[str, Any],
+    rate_metrics: Dict[str, float],
+    max_entries: int = 2,
+) -> List[Dict[str, Any]]:
+    if rate_metrics.get("rapid_ratio", 0.0) <= 0.0:
+        return []
+
+    matched_keywords: List[str] = []
+    if rate_metrics.get("tokens_per_sec", 0.0) >= 2.6:
+        matched_keywords.append("high_tokens_per_sec")
+    if rate_metrics.get("utterances_per_min", 0.0) >= 8.0:
+        matched_keywords.append("high_utterances_per_min")
+    if rate_metrics.get("spans_per_min", 0.0) >= 2.0:
+        matched_keywords.append("high_span_density")
+
+    scored = []
+    for idx, span_text in enumerate(span_texts):
+        span_text = _normalize_text(span_text)
+        if not span_text:
+            continue
+        word_count = len(span_text.split())
+        if word_count < 6:
+            continue
+        score = rate_metrics["rapid_ratio"] * 3.0 + min(word_count / 14.0, 1.5)
+        scored.append((score, idx, span_text))
+
+    scored.sort(key=lambda item: (-item[0], item[1]))
+    entries: List[Dict[str, Any]] = []
+    for score, idx, span_text in scored[:max_entries]:
+        entries.append(
+            {
+                "span_text": span_text,
+                "evidence_type": "rapid_transition_spans",
+                "polarity": "contrary",
+                "matched_keywords": matched_keywords,
+                "sentence_index": idx,
+                "local_score": round(score, 4),
+                "context_before_hint": span_texts[idx - 1] if idx > 0 else "",
+                **segment_meta,
+            }
+        )
+    return entries
+
+
 def _make_entries(
     span_texts: List[str],
     evidence_type: str,
@@ -353,9 +431,29 @@ def _make_entries(
     allow_weak_fallback: bool = True,
     require_keyword: bool = True,
     max_entries: int = 2,
+    debug_tracker: Dict[str, Dict[str, Any]] | None = None,
+    debug_key: str | None = None,
 ) -> List[Dict[str, Any]]:
     scored = []
     fallback_scored = []
+    stats = None
+    if debug_tracker is not None and debug_key:
+        stats = debug_tracker.setdefault(
+            debug_key,
+            {
+                "calls": 0,
+                "spans_seen": 0,
+                "keyword_candidates": 0,
+                "validator_passed": 0,
+                "validator_rejected": 0,
+                "fallback_candidates": 0,
+                "fallback_used": 0,
+                "generated_entries": 0,
+                "sample_rejected_spans": [],
+            },
+        )
+        stats["calls"] += 1
+        stats["spans_seen"] += len(span_texts)
 
     for idx, span_text in enumerate(span_texts):
         span_text = _normalize_text(span_text)
@@ -380,9 +478,19 @@ def _make_entries(
             keyword_score = len(matched_keywords) * 2.0
             candidate_tier = "keyword" if matched_keywords else "none"
 
+        if stats is not None:
+            stats["keyword_candidates"] += 1
+
         validator_passed = True
         if validator and require_keyword:
             validator_passed = validator(span_text, matched_keywords)
+            if stats is not None:
+                if validator_passed:
+                    stats["validator_passed"] += 1
+                else:
+                    stats["validator_rejected"] += 1
+                    if len(stats["sample_rejected_spans"]) < 3:
+                        stats["sample_rejected_spans"].append(span_text)
 
         score = keyword_score + min(len(span_text.split()) / 16.0, 1.5)
         payload = (score, idx, span_text, matched_keywords)
@@ -390,6 +498,8 @@ def _make_entries(
             scored.append(payload)
         elif rule_name and allow_weak_fallback and candidate_tier == "weak":
             fallback_scored.append(payload)
+            if stats is not None:
+                stats["fallback_candidates"] += 1
 
     if not scored and not require_keyword:
         for idx, span_text in enumerate(span_texts):
@@ -402,6 +512,8 @@ def _make_entries(
     if not scored and fallback_scored:
         fallback_scored.sort(key=lambda item: (-item[0], item[1]))
         scored = fallback_scored[:1]
+        if stats is not None:
+            stats["fallback_used"] += len(scored)
 
     scored.sort(key=lambda item: (-item[0], item[1]))
 
@@ -419,6 +531,8 @@ def _make_entries(
                 **segment_meta,
             }
         )
+    if stats is not None:
+        stats["generated_entries"] += len(entries)
     return entries
 
 
@@ -637,9 +751,11 @@ def calculate_signals(features_data: Dict[str, Any], chunks_data: Dict[str, Any]
     segments = []
     segment_style_labels: List[str] = []
     segment_style_profiles: List[Dict[str, Any]] = []
+    validator_debug: Dict[str, Dict[str, Any]] = {}
 
     for i, chunk in enumerate(chunks):
         text = _normalize_text(chunk.get("text_preview", ""))
+        full_text_for_rate = _normalize_text(chunk.get("text", "") or text)
         sub_label = chunk.get("sub_label", "") or ""
         parent_label = chunk.get("parent_label", "") or ""
         seg_token_proxy = max(1, len(text.split()))
@@ -647,6 +763,7 @@ def calculate_signals(features_data: Dict[str, Any], chunks_data: Dict[str, Any]
         seg_formal_count, seg_informal_count = _style_counts(text, formal_markers, informal_markers)
         seg_style_label = _classify_style(seg_formal_count, seg_informal_count)
         seg_style_score = _style_score(seg_formal_count, seg_informal_count)
+        rate_metrics = _segment_rate_metrics(chunk, full_text_for_rate, sentence_spans)
 
         is_intro = i < max(1, min(3, len(chunks)))
         is_tail = i >= max(0, len(chunks) - max(1, min(3, len(chunks))))
@@ -716,10 +833,14 @@ def calculate_signals(features_data: Dict[str, Any], chunks_data: Dict[str, Any]
             "speech_style_consistency": seg_style_score if seg_style_label != "none" else 0.85,
             "truncated_utterance_ratio": _calc_truncated_ratio(text),
             "style_shift_ratio": 1.0 if seg_style_label == "mixed" else 0.0,
-            "rapid_transition_ratio": round(min(1.0, transition_count_seg / 5), 4),
+            "rapid_transition_ratio": rate_metrics["rapid_ratio"],
             "style_label": seg_style_label,
             "formal_count": seg_formal_count,
             "informal_count": seg_informal_count,
+            "duration_sec": rate_metrics["duration_sec"],
+            "tokens_per_sec": rate_metrics["tokens_per_sec"],
+            "utterances_per_min": rate_metrics["utterances_per_min"],
+            "spans_per_min": rate_metrics["spans_per_min"],
         }
 
         segment_meta = {
@@ -765,6 +886,8 @@ def calculate_signals(features_data: Dict[str, Any], chunks_data: Dict[str, Any]
             rule_groups=["strong", "weak"],
             validator=_is_step_sequence,
             allow_weak_fallback=True,
+            debug_tracker=validator_debug,
+            debug_key="설명 순서",
         )
         emphasis_entries = _make_entries(
             sentence_spans,
@@ -783,6 +906,8 @@ def calculate_signals(features_data: Dict[str, Any], chunks_data: Dict[str, Any]
             rule_groups=["strong", "weak"],
             validator=_is_summary_like,
             allow_weak_fallback=True,
+            debug_tracker=validator_debug,
+            debug_key="마무리 요약",
         )
         definition_entries = _make_entries(
             sentence_spans,
@@ -793,6 +918,8 @@ def calculate_signals(features_data: Dict[str, Any], chunks_data: Dict[str, Any]
             rule_groups=["strong", "weak"],
             validator=_is_definition_like,
             allow_weak_fallback=True,
+            debug_tracker=validator_debug,
+            debug_key="개념 정의",
         )
         example_entries = _make_entries(
             sentence_spans,
@@ -835,6 +962,8 @@ def calculate_signals(features_data: Dict[str, Any], chunks_data: Dict[str, Any]
             rule_groups=["strong", "weak"],
             validator=_is_participation_prompt,
             allow_weak_fallback=True,
+            debug_tracker=validator_debug,
+            debug_key="실습 연계",
         )
         error_entries = _make_entries(
             sentence_spans,
@@ -853,6 +982,8 @@ def calculate_signals(features_data: Dict[str, Any], chunks_data: Dict[str, Any]
             rule_groups=["strong", "weak"],
             validator=_is_question_like,
             allow_weak_fallback=False,
+            debug_tracker=validator_debug,
+            debug_key="이해 확인 질문",
         )
         question_entries = _make_entries(
             sentence_spans,
@@ -861,6 +992,8 @@ def calculate_signals(features_data: Dict[str, Any], chunks_data: Dict[str, Any]
             segment_meta,
             keywords=_dedupe_preserve(understanding_keywords + qa_keywords),
             validator=_is_question_like,
+            debug_tracker=validator_debug,
+            debug_key="이해 확인 질문",
         )
         engagement_entries = _make_entries(
             sentence_spans,
@@ -871,6 +1004,8 @@ def calculate_signals(features_data: Dict[str, Any], chunks_data: Dict[str, Any]
             rule_groups=["strong", "weak"],
             validator=_is_participation_prompt,
             allow_weak_fallback=False,
+            debug_tracker=validator_debug,
+            debug_key="참여 유도",
         )
         qa_entries = _make_entries(
             sentence_spans,
@@ -881,6 +1016,8 @@ def calculate_signals(features_data: Dict[str, Any], chunks_data: Dict[str, Any]
             rule_groups=["strong", "weak"],
             validator=_is_question_answer_like,
             allow_weak_fallback=False,
+            debug_tracker=validator_debug,
+            debug_key="질문 응답 충분성",
         )
         followup_entries = _make_entries(
             sentence_spans,
@@ -889,6 +1026,8 @@ def calculate_signals(features_data: Dict[str, Any], chunks_data: Dict[str, Any]
             segment_meta,
             keywords=followup_keywords,
             validator=_is_question_answer_like,
+            debug_tracker=validator_debug,
+            debug_key="질문 응답 충분성",
         )
         pace_entries = _make_entries(
             sentence_spans,
@@ -932,13 +1071,10 @@ def calculate_signals(features_data: Dict[str, Any], chunks_data: Dict[str, Any]
             rule_name="불필요한 반복 표현",
             rule_groups=["strong", "weak"],
         )
-        rapid_transition_entries = _make_entries(
+        rapid_transition_entries = _build_rapid_transition_entries(
             sentence_spans,
-            "rapid_transition_spans",
-            "contrary",
             segment_meta,
-            rule_name="발화 속도 적절성",
-            rule_groups=["negative_strong", "weak"],
+            rate_metrics,
         )
 
         if objective_intro_count <= 0:
@@ -1143,4 +1279,6 @@ def calculate_signals(features_data: Dict[str, Any], chunks_data: Dict[str, Any]
     return {
         "lecture_signals": lecture_signals,
         "segments": segments,
+        "validator_debug": validator_debug,
     }
+

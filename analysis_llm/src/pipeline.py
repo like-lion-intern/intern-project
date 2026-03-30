@@ -47,6 +47,11 @@ def main():
     # STEP 2: 시그널 계산
     print(f"[STEP 2] 시그널 계산")
     signals_output = calculate_signals(features_data, chunks_data)
+    validator_debug = signals_output.get("validator_debug", {})
+
+    validator_debug_file = os.path.join(args.output_path, f"{args.date}_validator_debug.json")
+    _save_json(validator_debug, validator_debug_file)
+    print(f"  → validator debug 저장: {validator_debug_file}")
 
     # STEP 3: Evidence 추출 → {date}_evidence.json 저장
     print(f"[STEP 3] Evidence 추출")
@@ -86,11 +91,13 @@ def main():
     _save_json(final_output, result_file)
     print(f"  → 저장: {result_file}")
 
-    print(f"\n[완료] 출력 파일 3개:")
-    print(f"  1. {evidence_file}  ← evidence 추출 결과")
-    print(f"  2. {analysis_file}  ← LLM 분석 결과")
-    print(f"  3. {result_file}    ← 최종 scoring 결과")
+    print(f"\n[완료] 출력 파일 4개:")
+    print(f"  1. {validator_debug_file}  ← validator 디버그 결과")
+    print(f"  2. {evidence_file}         ← evidence 추출 결과")
+    print(f"  3. {analysis_file}         ← LLM 분석 결과")
+    print(f"  4. {result_file}           ← 최종 scoring 결과")
 
 
 if __name__ == "__main__":
     main()
+
