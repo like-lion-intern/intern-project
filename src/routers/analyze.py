@@ -8,6 +8,7 @@ GET  /health       - API/DB 상태 확인
 """
 from __future__ import annotations
 
+import json
 import re
 import threading
 import uuid
@@ -163,3 +164,45 @@ async def health(db: AsyncSession = Depends(get_db)) -> HealthResponse:
         db_status = "error"
 
     return HealthResponse(api="ok", worker="thread", db=db_status)
+
+
+@router.post("/trajectory/rebuild")
+async def rebuild_trajectory() -> dict:
+    """
+    outputs 전체 날짜 결과를 집계해 trajectory 리포트를 다시 생성한다.
+    """
+    try:
+        from trajectory import build_trajectory_report  # analysis_llm/src/trajectory.py
+
+        output_root = str(Path(settings.project_root) / settings.output_dir)
+        project_root = str(Path(settings.project_root))
+        out_path = build_trajectory_report(output_root=output_root, project_root=project_root)
+        if not out_path:
+            raise HTTPException(status_code=404, detail="trajectory 생성 대상 결과 파일이 없습니다.")
+        payload = json.loads(Path(out_path).read_text(encoding="utf-8"))
+        return {"path": out_path, "trajectory": payload}
+    except HTTPException:
+        raise
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=f"trajectory 생성 실패: {exc}")
+
+
+@router.get("/trajectory/latest")
+async def get_latest_trajectory() -> dict:
+    """
+    가장 최근 trajectory 리포트를 반환한다.
+    """
+    trajectory_dir = Path(settings.project_root) / settings.output_dir / "trajectory"
+    if not trajectory_dir.exists():
+        raise HTTPException(status_code=404, detail="trajectory 디렉토리가 없습니다.")
+
+    files = sorted(trajectory_dir.glob("*_trajectory.json"))
+    if not files:
+        raise HTTPException(status_code=404, detail="trajectory 파일이 없습니다.")
+
+    latest = files[-1]
+    try:
+        payload = json.loads(latest.read_text(encoding="utf-8"))
+        return {"path": str(latest), "trajectory": payload}
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=f"trajectory 파일 파싱 실패: {exc}")

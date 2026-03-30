@@ -128,11 +128,33 @@ def localize_keys(obj):
 
 ALLOWED_ENGLISH_TOKENS = {"strong", "neutral", "weak"}
 
+def sanitize_reason(text: str) -> str:
+    if not text:
+        return ""
+
+    allowed_punct = set(" \t\n\r.,!?;:()[]{}-–—_/&%+*=~<>|@#`'\"·…")
+    cleaned = []
+    for ch in text:
+        code = ord(ch)
+        if 0xAC00 <= code <= 0xD7A3:  # Hangul
+            cleaned.append(ch)
+        elif 0x0041 <= code <= 0x005A or 0x0061 <= code <= 0x007A:  # English
+            cleaned.append(ch)
+        elif 0x0030 <= code <= 0x0039:  # number
+            cleaned.append(ch)
+        elif ch in allowed_punct:
+            cleaned.append(ch)
+        else:
+            cleaned.append(" ")
+
+    return " ".join("".join(cleaned).split())
+
+
 def is_korean_text(text: str) -> bool:
     if not text or not text.strip():
         return True
 
-    normalized = text.lower()
+    normalized = sanitize_reason(text).lower()
 
     # 허용된 영어 토큰만 제거
     for token in ALLOWED_ENGLISH_TOKENS:
@@ -150,6 +172,26 @@ def is_korean_text(text: str) -> bool:
     english_ratio = english / total
 
     return korean_ratio >= 0.8 and english_ratio <= 0.15
+
+
+def safe_parse_json_object(raw_text: str) -> dict:
+    raw_text = strip_markdown_codeblock(raw_text).strip()
+    try:
+        return json.loads(raw_text)
+    except Exception:
+        pass
+
+    start = raw_text.find("{")
+    end = raw_text.rfind("}")
+    if start != -1:
+        candidate = raw_text[start : end + 1] if (end != -1 and end > start) else (raw_text[start:] + "}")
+        try:
+            return json.loads(candidate)
+        except Exception:
+            if candidate.count('"') % 2 != 0:
+                candidate = raw_text[start:] + '"}'
+                return json.loads(candidate)
+    raise ValueError(f"JSON object not found or invalid in response: {raw_text}")
 
 
 def strip_markdown_codeblock(raw_text: str) -> str:
@@ -461,8 +503,7 @@ def analyze_items(
     for attempt in range(2):
         try:
             response = generate_analysis_response(working_prompt)
-            raw_text = strip_markdown_codeblock(response.text)
-            parsed = json.loads(raw_text)
+            parsed = safe_parse_json_object(response.text)
 
             if not isinstance(parsed, dict):
                 raise ValueError("LLM output is not a dict")
@@ -496,7 +537,7 @@ def analyze_items(
                     if "support_strength" in ev:
                         raise ValueError("support_strength is not allowed")
 
-                    reason = str(ev.get("reason", ""))
+                    reason = sanitize_reason(str(ev.get("reason", "")))
                     if not is_korean_text(reason):
                         raise ValueError(f"Non-Korean reason detected: {reason}")
 
