@@ -59,11 +59,18 @@ async def analyze(
     date = _extract_date(file.filename or "")
     stt_path = await _save_upload(file, date)
 
-    job = Job(date=date, original_filename=file.filename or "", status="pending")
-    db.add(job)
-    await db.flush()
-    job_id = str(job.job_id)
-    await db.commit()
+    try:
+        job = Job(date=date, original_filename=file.filename or "", status="pending")
+        db.add(job)
+        await db.flush()
+        job_id = str(job.job_id)
+        await db.commit()
+    except Exception as exc:
+        await db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail=f"DB 연결 실패 또는 저장 오류: {exc}",
+        )
 
     # ── fork 없이 단순 스레드로 실행 (macOS SIGSEGV 회피) ──
     t = threading.Thread(
@@ -84,7 +91,13 @@ async def get_status(job_id: str, db: AsyncSession = Depends(get_db)) -> StatusR
     except ValueError:
         raise HTTPException(status_code=400, detail="유효하지 않은 job_id 형식입니다.")
 
-    job = await db.get(Job, uid)
+    try:
+        job = await db.get(Job, uid)
+    except Exception as exc:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail=f"DB 조회 실패: {exc}",
+        )
     if job is None:
         raise HTTPException(status_code=404, detail="해당 job을 찾을 수 없습니다.")
 
@@ -106,7 +119,13 @@ async def get_result(job_id: str, db: AsyncSession = Depends(get_db)) -> ResultR
     except ValueError:
         raise HTTPException(status_code=400, detail="유효하지 않은 job_id 형식입니다.")
 
-    job = await db.get(Job, uid)
+    try:
+        job = await db.get(Job, uid)
+    except Exception as exc:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail=f"DB 조회 실패: {exc}",
+        )
     if job is None:
         raise HTTPException(status_code=404, detail="해당 job을 찾을 수 없습니다.")
     if job.status != "done":
@@ -115,8 +134,14 @@ async def get_result(job_id: str, db: AsyncSession = Depends(get_db)) -> ResultR
             detail=f"분석이 아직 완료되지 않았습니다 (현재 상태: {job.status}).",
         )
 
-    stmt = select(Result).where(Result.job_id == uid)
-    res = await db.scalar(stmt)
+    try:
+        stmt = select(Result).where(Result.job_id == uid)
+        res = await db.scalar(stmt)
+    except Exception as exc:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail=f"결과 조회 실패: {exc}",
+        )
     if res is None:
         raise HTTPException(status_code=404, detail="결과 데이터를 찾을 수 없습니다.")
 

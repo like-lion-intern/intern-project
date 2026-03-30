@@ -6,6 +6,8 @@
   <title>강의 분석 리포트 시스템</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -268,6 +270,12 @@
       display: flex; align-items: center; justify-content: space-between;
       margin-bottom: 28px; flex-wrap: wrap; gap: 12px;
     }
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
     .report-topbar h2 { font-size: 1.5rem; font-weight: 800; }
     .report-date { font-size: 0.85rem; color: var(--text-muted); }
     .btn-new {
@@ -284,6 +292,20 @@
       color: var(--text-sub);
     }
     .btn-new:hover { border-color: var(--accent); color: var(--accent); }
+    .btn-download {
+      border-color: #bfdbfe;
+      color: var(--blue);
+      background: #eff6ff;
+    }
+    .btn-download:hover {
+      border-color: #93c5fd;
+      color: #1d4ed8;
+      background: #dbeafe;
+    }
+    .btn-download:disabled {
+      opacity: 0.65;
+      cursor: not-allowed;
+    }
 
     /* Overall summary */
     .summary-row {
@@ -635,7 +657,10 @@
       <h2>📊 강의 분석 리포트</h2>
       <div class="report-date" id="reportDate"></div>
     </div>
-    <button class="btn-new" onclick="goToUpload()">＋ 새 강의 분석</button>
+    <div class="topbar-actions">
+      <button class="btn-new btn-download" id="pdfBtn" onclick="downloadReportPdf()">⬇ PDF 다운로드</button>
+      <button class="btn-new" onclick="goToUpload()">＋ 새 강의 분석</button>
+    </div>
   </div>
 
   <!-- 요약 카드 -->
@@ -667,8 +692,28 @@
 <script>
   const API = '/api/v1';
   let pollTimer = null;
+  let currentLectureId = '';
   const CAT_ICONS = ['📝','🏗️','💡','🛠️','🤝'];
   const CAT_CI = ['ci0','ci1','ci2','ci3','ci4'];
+
+  async function parseApiBody(res) {
+    const text = await res.text();
+    if (!text) return {};
+    try {
+      return JSON.parse(text);
+    } catch {
+      return { detail: text };
+    }
+  }
+
+  function extractErrorMessage(payload, res) {
+    if (payload && typeof payload === 'object') {
+      if (typeof payload.detail === 'string') return payload.detail;
+      if (typeof payload.message === 'string') return payload.message;
+      if (typeof payload.error === 'string') return payload.error;
+    }
+    return `HTTP ${res.status} ${res.statusText}`;
+  }
 
   /* ─── pages ─── */
   function showPage(id) {
@@ -715,8 +760,8 @@
     form.append('file', file);
     try {
       const res = await fetch(`${API}/analyze`, { method: 'POST', body: form });
-      if (!res.ok) throw new Error((await res.json()).detail || res.statusText);
-      const data = await res.json();
+      const data = await parseApiBody(res);
+      if (!res.ok) throw new Error(extractErrorMessage(data, res));
       startPolling(data.job_id, file.name);
     } catch(e) {
       showToast('업로드 실패: ' + e.message, true);
@@ -733,11 +778,15 @@
     const poll = async () => {
       try {
         const res = await fetch(`${API}/status/${jobId}`);
-        const data = await res.json();
+        const data = await parseApiBody(res);
+        if (!res.ok) throw new Error(extractErrorMessage(data, res));
         updateStatus(data);
         if (data.status === 'done') { clearInterval(pollTimer); await fetchResult(jobId, filename); }
         else if (data.status === 'failed') { clearInterval(pollTimer); showToast('분석 실패: ' + (data.error_msg || '알 수 없는 오류'), true); }
-      } catch(e) { console.error(e); }
+      } catch(e) {
+        clearInterval(pollTimer);
+        showToast('상태 조회 실패: ' + e.message, true);
+      }
     };
     poll();
     pollTimer = setInterval(poll, 3000);
@@ -784,7 +833,8 @@
   async function fetchResult(jobId, filename) {
     try {
       const res = await fetch(`${API}/result/${jobId}`);
-      const data = await res.json();
+      const data = await parseApiBody(res);
+      if (!res.ok) throw new Error(extractErrorMessage(data, res));
       renderReport(data.final_report, filename);
     } catch(e) { showToast('결과 로드 실패: ' + e.message, true); }
   }
@@ -799,9 +849,10 @@
 
   function renderReport(report, filename) {
     if (!report) return;
+    currentLectureId = report.lecture_id ?? filename ?? 'lecture_report';
 
     /* date */
-    document.getElementById('reportDate').textContent = (report.lecture_id ?? filename ?? '') + ' · ' + new Date().toLocaleDateString('ko-KR', {year:'numeric',month:'long',day:'numeric'});
+    document.getElementById('reportDate').textContent = currentLectureId + ' · ' + new Date().toLocaleDateString('ko-KR', {year:'numeric',month:'long',day:'numeric'});
 
     /* 요약 카드: 평균 점수 계산 */
     const cats = report.category_results ?? [];
@@ -917,6 +968,85 @@
       : '<li>정보 없음</li>';
 
     showPage('reportPage');
+  }
+
+  function normalizeFileName(name) {
+    return String(name || 'lecture_report')
+      .replace(/[\\/:*?"<>|]+/g, '_')
+      .replace(/\s+/g, '_')
+      .slice(0, 80);
+  }
+
+  function openAllCategoriesForCapture() {
+    const bodies = Array.from(document.querySelectorAll('.cat-body'));
+    const headers = Array.from(document.querySelectorAll('.cat-header'));
+    const prevStates = bodies.map(b => b.classList.contains('open'));
+    bodies.forEach(b => b.classList.add('open'));
+    headers.forEach(h => {
+      const ch = h.querySelector('.chevron');
+      if (ch) ch.style.transform = 'rotate(90deg)';
+    });
+    return () => {
+      bodies.forEach((b, i) => {
+        b.classList.toggle('open', prevStates[i]);
+      });
+      headers.forEach((h, i) => {
+        const ch = h.querySelector('.chevron');
+        if (!ch) return;
+        ch.style.transform = prevStates[i] ? 'rotate(90deg)' : '';
+      });
+    };
+  }
+
+  async function downloadReportPdf() {
+    const btn = document.getElementById('pdfBtn');
+    const reportEl = document.getElementById('reportPage');
+
+    if (!reportEl || !window.html2canvas || !window.jspdf) {
+      showToast('PDF 라이브러리를 불러오지 못했습니다.', true);
+      return;
+    }
+
+    const restore = openAllCategoriesForCapture();
+    const previousText = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = 'PDF 생성 중...';
+
+    try {
+      const canvas = await window.html2canvas(reportEl, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: '#f5f7fa',
+        windowWidth: Math.max(document.documentElement.clientWidth, reportEl.scrollWidth),
+      });
+
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+      const imgWidth = pageWidth;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      const imgData = canvas.toDataURL('image/png');
+
+      let y = 0;
+      pdf.addImage(imgData, 'PNG', 0, y, imgWidth, imgHeight, undefined, 'FAST');
+      while (y + imgHeight > pageHeight) {
+        y -= pageHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, 'PNG', 0, y, imgWidth, imgHeight, undefined, 'FAST');
+      }
+
+      const today = new Date().toISOString().slice(0, 10);
+      const fileName = `${normalizeFileName(currentLectureId)}_report_${today}.pdf`;
+      pdf.save(fileName);
+      showToast('PDF 다운로드를 시작했습니다.');
+    } catch (e) {
+      showToast('PDF 생성 실패: ' + (e?.message || e), true);
+    } finally {
+      restore();
+      btn.disabled = false;
+      btn.textContent = previousText;
+    }
   }
 
   function toggleCat(header) {
