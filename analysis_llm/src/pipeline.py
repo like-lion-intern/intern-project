@@ -1,181 +1,96 @@
-# pipeline.py
-from __future__ import annotations
-
 import argparse
 import json
 import os
 import sys
-from typing import Dict, Any
+from dotenv import load_dotenv
 
+load_dotenv()
 
-CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
-PROJECT_ROOT = os.path.dirname(CURRENT_DIR)
-if CURRENT_DIR not in sys.path:
-    sys.path.append(CURRENT_DIR)
-
-from loader import load_data
+from loader import load_data, load_curriculum
 from features import calculate_signals
-from scoring import build_prompt_packet, build_category_packets, normalize_feature_bundle
-from llm_analysis import analyze_with_llm
+from evidence_extractor import extract_evidence, ITEM_EVIDENCE_KEYS
+from llm_analysis import run_analysis, analyze_curriculum_match
+from scoring import run_scoring
 
 
-def ensure_dir(path: str) -> None:
-    os.makedirs(path, exist_ok=True)
-
-
-def build_heuristic_report(lecture_id: str, feature_bundle: Dict[str, Any], prompt_packet: Dict[str, Any]) -> Dict[str, Any]:
-    normalized = normalize_feature_bundle(feature_bundle)
-
-    categories_out = []
-    for cat in prompt_packet.get("categories", []):
-        category_items = []
-        for item in cat.get("items", []):
-            category_items.append({
-                "item_name": item.get("item_name"),
-                "heuristic_score": item.get("heuristic_score"),
-                "aggregated_signals": item.get("aggregated_signals", {}),
-                "signal_subscores": item.get("signal_subscores", {}),
-                "selected_evidence": item.get("top_evidence", []),
-                "item_context": item.get("item_context", ""),
-            })
-
-        categories_out.append({
-            "category_name": cat.get("category_name"),
-            "heuristic_score": cat.get("category_context", {}).get("category_heuristic_score", 0.0),
-            "items": category_items,
-        })
-
-    return {
-        "lecture_id": lecture_id,
-        "lecture_signals": feature_bundle.get("lecture_signals", {}),
-        "normalized_segments": normalized.get("segments", []),
-        "categories": categories_out,
-    }
-
-
-def build_final_report(lecture_id: str, heuristic_report: Dict[str, Any], llm_result: Dict[str, Any]) -> Dict[str, Any]:
-    heuristic_cat_map = {
-        c["category_name"]: c
-        for c in heuristic_report.get("categories", [])
-    }
-
-    category_results = []
-    for cat in llm_result.get("category_results", []):
-        h_cat = heuristic_cat_map.get(cat.get("category_name"), {})
-        h_item_map = {i["item_name"]: i for i in h_cat.get("items", [])}
-
-        fixed_items = []
-        for item in cat.get("items", []):
-            h_item = h_item_map.get(item.get("item_name"), {})
-            fixed_items.append({
-                "item_name": item.get("item_name"),
-                "heuristic_score": item.get("heuristic_score", h_item.get("heuristic_score", 0.0)),
-                "final_score": item.get("final_score", item.get("heuristic_score", h_item.get("heuristic_score", 0.0))),
-                "aggregated_signals": h_item.get("aggregated_signals", {}),
-                "signal_subscores": h_item.get("signal_subscores", {}),
-                "selected_evidence": item.get("selected_evidence", h_item.get("selected_evidence", [])),
-                "reason": item.get("reason", ""),
-                "adjustment_reason": item.get("adjustment_reason", ""),
-                "improvement_tip": item.get("improvement_tip", ""),
-            })
-
-        category_results.append({
-            "category_name": cat.get("category_name"),
-            "heuristic_score": cat.get("heuristic_score", h_cat.get("heuristic_score", 0.0)),
-            "final_score": cat.get("final_score", cat.get("heuristic_score", h_cat.get("heuristic_score", 0.0))),
-            "category_summary": cat.get("category_summary", ""),
-            "strengths": cat.get("strengths", []),
-            "weaknesses": cat.get("weaknesses", []),
-            "improvements": cat.get("improvements", []),
-            "items": fixed_items,
-        })
-
-    return {
-        "lecture_id": lecture_id,
-        "overall_summary": llm_result.get("overall_summary", ""),
-        "overall_strengths": llm_result.get("overall_strengths", []),
-        "overall_weaknesses": llm_result.get("overall_weaknesses", []),
-        "priority_improvements": llm_result.get("priority_improvements", []),
-        "category_results": category_results,
-    }
-
-
-def save_json(path: str, data: Dict[str, Any]) -> None:
+def _save_json(data: dict, path: str) -> None:
+    """JSON 파일 저장 유틸리티. ensure_ascii=False, indent=2 고정."""
     with open(path, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
 
 
-def run_pipeline(date: str, base_path: str = ".", output_dir: str | None = None, debug: bool = False) -> Dict[str, Any]:
-    base_path = os.path.abspath(base_path)
-    output_dir = os.path.abspath(output_dir or os.path.join(PROJECT_ROOT, "outputs", date))
-    ensure_dir(output_dir)
+def main():
+    parser = argparse.ArgumentParser(description="강의 품질 진단 파이프라인")
+    parser.add_argument("--date", required=True, help="처리할 강의 날짜 (YYYY-MM-DD)")
+    parser.add_argument("--base-path", default="..", help="features/, semantic_chunks/ 루트 경로")
+    parser.add_argument("--output-path", default="../output/", help="결과 JSON 저장 경로")
+    args = parser.parse_args()
 
-    print(f"--- Starting Pipeline for Date: {date} ---")
-    print(f"Base path: {base_path}")
-    print(f"Output dir: {output_dir}")
+    os.makedirs(args.output_path, exist_ok=True)
 
-    # Step 1
-    print("Step 1: Loading data...")
-    features_json, chunks_json = load_data(date, base_path)
+    # STEP 1: 데이터 로드
+    try:
+        print(f"[STEP 1] 데이터 로드: {args.date}")
+        features_data, chunks_data = load_data(args.date, args.base_path)
+        chunks = chunks_data.get("chunks", [])
+    except FileNotFoundError as e:
+        print(f"[오류] 데이터 파일을 찾을 수 없습니다: {e}")
+        sys.exit(1)
 
-    # Step 2~6
-    print("Step 2-6: Calculating lecture/segment signals...")
-    feature_bundle = calculate_signals(features_json, chunks_json)
+    # STEP 1-1: 커리큘럼 메타데이터 로드
+    curriculum = load_curriculum(args.date, args.base_path)
+    if curriculum:
+        print(f"  → 커리큘럼: {curriculum['subject']} / {', '.join(curriculum['contents'])}")
+    else:
+        print(f"  → 커리큘럼 정보 없음 (강의_메타데이터.csv에서 {args.date} 미발견)")
 
-    # Step 7
-    print("Step 7: Building prompt packet and heuristic report...")
-    prompt_packet = build_prompt_packet(date, feature_bundle)
-    heuristic_report = build_heuristic_report(date, feature_bundle, prompt_packet)
+    # STEP 2: 시그널 계산
+    print(f"[STEP 2] 시그널 계산")
+    signals_output = calculate_signals(features_data, chunks_data)
 
-    heuristic_path = os.path.join(output_dir, "heuristic_report.json")
-    save_json(heuristic_path, heuristic_report)
-    print(f"Saved: {heuristic_path}")
+    # STEP 3: Evidence 추출 → {date}_evidence.json 저장
+    print(f"[STEP 3] Evidence 추출")
+    evidence_by_item = {}
+    for item_name in ITEM_EVIDENCE_KEYS.keys():
+        evidence_by_item[item_name] = extract_evidence(item_name, chunks, signals_output)
 
-    if debug:
-        debug_payload = {
-            "lecture_id": date,
-            "feature_bundle": feature_bundle,
-            "prompt_packet": prompt_packet,
-        }
-        debug_path = os.path.join(output_dir, "debug_packet.json")
-        save_json(debug_path, debug_payload)
-        print(f"Saved: {debug_path}")
+    evidence_file = os.path.join(args.output_path, f"{args.date}_evidence.json")
+    _save_json(evidence_by_item, evidence_file)
+    print(f"  → 저장: {evidence_file}")
 
-    # Step 8
-    print("Step 8: Running LLM analysis...")
-    llm_result, llm_debug = analyze_with_llm(prompt_packet)
+    # STEP 4: LLM 분석 → {date}_analysis.json 저장
+    print(f"[STEP 4] LLM 분석")
+    analysis_result = run_analysis(features_data, signals_output, evidence_by_item)
 
-    if debug:
-        llm_debug_path = os.path.join(output_dir, "llm_debug.json")
-        save_json(llm_debug_path, llm_debug)
-        print(f"Saved: {llm_debug_path}")
+    analysis_file = os.path.join(args.output_path, f"{args.date}_analysis.json")
+    _save_json(analysis_result, analysis_file)
+    print(f"  → 저장: {analysis_file}")
 
-    # Step 9
-    print("Step 9: Building final report...")
-    final_report = build_final_report(date, heuristic_report, llm_result)
+    # STEP 5: 스코어링 → {date}_result.json 저장
+    print(f"[STEP 5] 스코어링")
+    final_output = run_scoring(features_data, signals_output, analysis_result, chunks)
 
-    final_path = os.path.join(output_dir, "final_report.json")
-    save_json(final_path, final_report)
-    print(f"Saved: {final_path}")
+    # STEP 6: 커리큘럼 일치도 분석 → lecture_summary에 추가
+    print(f"[STEP 6] 커리큘럼 일치도 분석")
+    curriculum_match = analyze_curriculum_match(curriculum, signals_output)
+    score_str = f"{curriculum_match['score']}점" if curriculum_match["score"] is not None else "분석불가"
+    print(f"  → 커리큘럼 일치도: {score_str}")
 
-    print("--- Pipeline Completed ---")
-    return {
-        "heuristic_report_path": heuristic_path,
-        "final_report_path": final_path,
+    final_output["lecture_summary"]["curriculum_match"] = {
+        "planned_contents": curriculum["contents"] if curriculum else [],
+        "score": curriculum_match["score"],
+        "reason": curriculum_match["reason"],
     }
+
+    result_file = os.path.join(args.output_path, f"{args.date}_result.json")
+    _save_json(final_output, result_file)
+    print(f"  → 저장: {result_file}")
+
+    print(f"\n[완료] 출력 파일 3개:")
+    print(f"  1. {evidence_file}  ← evidence 추출 결과")
+    print(f"  2. {analysis_file}  ← LLM 분석 결과")
+    print(f"  3. {result_file}    ← 최종 scoring 결과")
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--date", type=str, default="2026-02-02")
-    parser.add_argument("--base_path", type=str, default="data")
-    parser.add_argument("--output_dir", type=str, default=None)
-    parser.add_argument("--debug", action="store_true")
-    args = parser.parse_args()
-
-    run_pipeline(
-        date=args.date,
-        base_path=args.base_path,
-        output_dir=args.output_dir,
-        debug=args.debug,
-    )
+    main()

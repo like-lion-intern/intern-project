@@ -143,16 +143,20 @@ def calculate_signals(features_data: Dict[str, Any], chunks_data: Dict[str, Any]
     # 키워드 사전
     objective_keywords = ["오늘", "목표", "진행", "순서", "배워", "살펴보", "학습", "보겠습니다", "나눠서"]
     review_keywords = ["어제", "지난 시간", "이전", "복습", "앞서", "저번 시간"]
-    summary_keywords = ["정리", "요약", "마무리", "여기까지", "끝내", "정리하면"]
+    summary_keywords = ["정리", "요약", "마무리", "여기까지", "끝내", "정리하면", "수고하셨", "마치겠습니다", "쉬겠습니다", "끝입니다", "마칩니다", "이상입니다"]
     definition_keywords = ["의미", "정의", "란", "라고 하는", "개념", "무엇인가"]
     example_keywords = ["예를 들어", "예를 들면", "예시", "가령"]
     analogy_keywords = ["마치", "비슷하게", "처럼", "비유하자면"]
     prerequisite_keywords = ["먼저", "기본적으로", "앞서", "이전에", "기존", "먼저 알아야"]
     emphasis_keywords = ["중요", "핵심", "꼭", "반드시", "포인트"]
     practical_example_keywords = ["실무", "업무", "프로젝트", "현업", "실제"]
-    practice_keywords = ["실습", "해보", "따라", "눌러보", "직접", "구현", "해봅시다"]
+    practice_keywords = [
+        "실습", "해보", "따라", "눌러보", "직접", "구현", "해봅시다",
+        "실행", "작성", "풀어", "해보세요", "한번 해보", "작성해",
+        "코딩", "쿼리", "입력해", "써봐", "구현해",
+    ]
     error_keywords = ["오류", "에러", "안 되", "문제", "다시 확인", "막히", "실패", "예외"]
-    understanding_keywords = ["되셨어요", "이해", "괜찮죠", "아시겠죠", "맞죠", "보이시죠"]
+    understanding_keywords = ["됐어요", "이해", "괜찮죠", "아시겠죠", "맞죠", "보이시죠"]
     engagement_keywords = ["같이", "해보세요", "직접", "눌러보세요", "따라", "한번 해보", "여러분도"]
     qa_keywords = ["질문", "답변", "설명드리", "물어보", "문의", "질문 있", "질문하면"]
     transition_keywords = ["이제", "그다음", "다음으로", "그러면", "이어서", "넘어가서"]
@@ -183,67 +187,34 @@ def calculate_signals(features_data: Dict[str, Any], chunks_data: Dict[str, Any]
         "emphasis_count": _count_keywords(all_text, emphasis_keywords),
         "emphasis_density": _density_per_1k(_count_keywords(all_text, emphasis_keywords), token_count),
 
-        "closing_summary_count": _count_keywords(tail_text, summary_keywords),
         "closing_summary_presence": 1 if _contains_any(tail_text, summary_keywords) else 0,
+        "closing_summary_count": _count_keywords(tail_text, summary_keywords),
 
         "definition_density": _density_per_1k(_count_keywords(all_text, definition_keywords), token_count),
-        "definition_count": _count_keywords(all_text, definition_keywords),
 
-        "example_density": _density_per_1k(
-            _count_keywords(all_text, example_keywords), token_count
-        ),
-        "analogy_density": _density_per_1k(
-            _count_keywords(all_text, analogy_keywords), token_count
-        ),
+        "example_density": _density_per_1k(_count_keywords(all_text, example_keywords), token_count),
+        "analogy_density": _density_per_1k(_count_keywords(all_text, analogy_keywords), token_count),
 
-        "prerequisite_bridge_count": _count_keywords(all_text, prerequisite_keywords),
         "prerequisite_bridge_presence": 1 if _contains_any(all_text, prerequisite_keywords) else 0,
+        "prerequisite_bridge_count": _count_keywords(all_text, prerequisite_keywords),
 
-        "words_per_minute": round((token_count / (utterance_count * 0.1)), 4) if utterance_count else 0.0,
-        "rapid_transition_ratio": round(
-            min(1.0, _count_keywords(all_text, transition_keywords) / max(utterance_count, 1)),
-            4
-        ),
+        "practical_example_density": _density_per_1k(_count_keywords(all_text, practical_example_keywords), token_count),
 
-        "practical_example_density": _density_per_1k(
-            _count_keywords(all_text, practical_example_keywords), token_count
-        ),
-        "practice_transition_density": _density_per_1k(
-            _count_keywords(all_text, practice_keywords), token_count
-        ),
-        "practice_transition_count": _count_keywords(all_text, practice_keywords),
+        "practice_transition_density": _density_per_1k(_count_keywords(all_text, practice_keywords), token_count),
 
-        "error_response_density": _density_per_1k(
-            _count_keywords(all_text, error_keywords), token_count
-        ),
-        "error_response_count": _count_keywords(all_text, error_keywords),
+        "error_response_density": _density_per_1k(_count_keywords(all_text, error_keywords), token_count),
 
-        "understanding_check_density": _density_per_1k(
-            _count_keywords(all_text, understanding_keywords), token_count
-        ),
-        "engagement_density": _density_per_1k(
-            _count_keywords(all_text, engagement_keywords), token_count
-        ),
-        "qa_response_density": _density_per_1k(
-            _count_keywords(all_text, qa_keywords), token_count
-        ),
-
-        "question_quality_proxy": round(
-            min(1.0, _safe_div(question_count, max(utterance_count, 1)) * 8),
-            4
-        ),
-        "check_question_ratio": round(
-            min(1.0, _safe_div(_count_keywords(all_text, understanding_keywords), max(question_count, 1))),
-            4
-        ),
-        "interaction_prompt_count": _count_keywords(all_text, engagement_keywords),
-        "followup_presence": 1 if _contains_any(all_text, ["추가로", "다시", "조금 더", "보충해서", "다시 설명"]) else 0,
+        "understanding_check_density": _density_per_1k(_count_keywords(all_text, understanding_keywords), token_count),
+        "engagement_density": _density_per_1k(_count_keywords(all_text, engagement_keywords), token_count),
+        "qa_response_density": _density_per_1k(_count_keywords(all_text, qa_keywords), token_count),
     }
 
-    # 설명-예시-실습 순차성 대략 추정
-    intro_has_definition = _contains_any(all_text, definition_keywords)
-    mid_has_example = _contains_any(all_text, example_keywords)
-    has_practice = _contains_any(all_text, practice_keywords) or practice_directive_ratio > 0
+    # concept_example_practice_flow 보정
+    intro_has_definition = _contains_any(intro_text, definition_keywords)
+    mid_chunks = chunks[1:-1] if len(chunks) > 2 else chunks
+    mid_text = " ".join(_normalize_text(c.get("text_preview", "")) for c in mid_chunks)
+    mid_has_example = _contains_any(mid_text, example_keywords)
+    has_practice = _contains_any(all_text, practice_keywords)
 
     if intro_has_definition and mid_has_example and has_practice:
         lecture_signals["concept_example_practice_flow"] = 1.0
@@ -261,6 +232,7 @@ def calculate_signals(features_data: Dict[str, Any], chunks_data: Dict[str, Any]
     segments = []
 
     for i, chunk in enumerate(chunks):
+        # ★ 수정: normalize_text 적용해서 저장 — extract_evidence의 chunk_texts와 일치시킴
         text = _normalize_text(chunk.get("text_preview", ""))
         sub_label = chunk.get("sub_label", "") or ""
         parent_label = chunk.get("parent_label", "") or ""
@@ -284,6 +256,7 @@ def calculate_signals(features_data: Dict[str, Any], chunks_data: Dict[str, Any]
         engagement_count = _count_keywords(text, engagement_keywords)
         qa_count = _count_keywords(text, qa_keywords)
         transition_count_seg = _count_keywords(text, transition_keywords)
+        filler_count_seg = _count_keywords(text, filler_markers)
 
         # label 힌트도 반영
         if "example" in sub_label:
@@ -408,9 +381,11 @@ def calculate_signals(features_data: Dict[str, Any], chunks_data: Dict[str, Any]
             "style_shift_spans": [text] if seg_signals["style_shift_ratio"] > 0.2 else [],
             "speech_style_evidence": [text] if seg_signals["speech_style_consistency"] > 0.5 else [],
 
-            "filler_spans": [text] if _contains_any(text, filler_markers) else [],
-            "repetition_spans": [text] if repetition_count > 0 and _contains_any(text, ["다시", "또", "한번 더"]) else [],
-            "language_expression_evidence": [text] if _contains_any(text, filler_markers) else [],
+            # ★ 수정: filler 자체가 있으면 filler_spans에 포함 (lecture-level repetition_count 의존 제거)
+            "filler_spans": [text] if filler_count_seg > 0 else [],
+            # ★ 수정: repetition_spans — filler가 많은 청크를 반복 표현 후보로 봄 (이중 조건 제거)
+            "repetition_spans": [text] if filler_count_seg >= 3 else [],
+            "language_expression_evidence": [text] if filler_count_seg > 0 else [],
         }
 
         segments.append({
@@ -423,7 +398,7 @@ def calculate_signals(features_data: Dict[str, Any], chunks_data: Dict[str, Any]
             "end_ts": chunk.get("end_ts"),
             "parent_label": parent_label,
             "sub_label": sub_label,
-            "text_preview": text,
+            "text_preview": text,  # ★ normalize_text 적용된 text 저장
         })
 
     return {

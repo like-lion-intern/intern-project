@@ -1,449 +1,540 @@
-# llm_analysis.py
 from __future__ import annotations
 
 import json
 import os
-import time
-from typing import Dict, Any, Tuple, List
+import re
+import sys
 
-try:
-    import google.generativeai as genai
-except ImportError:
-    genai = None
+from google import genai
+from google.genai import types
+from dotenv import load_dotenv
 
-try:
-    from dotenv import load_dotenv
-    load_dotenv()
-except ImportError:
-    pass
+load_dotenv()
+
+_api_key = os.getenv("GOOGLE_API_KEY")
+if not _api_key:
+    raise ValueError("GOOGLE_API_KEY가 .env에 설정되어 있지 않습니다.")
+
+client = genai.Client(api_key=_api_key)
+MODEL_NAME = os.getenv("GEMINI_MODEL", "gemini-2.0-flash")
+
+VALID_LABELS = {"strong", "neutral", "weak"}
+
+SYSTEM_PROMPT = """당신은 강의 품질 진단 전문가입니다.
+
+반드시 한국어만 사용하십시오.
+응답의 모든 자연어 텍스트는 한국어여야 합니다.
+
+절대 금지:
+- 영어, 벵골어, 일본어, 중국어 등 외국어 문장
+- 로마자 기반 설명 (e.g., "this shows", "it indicates")
+- 번역투 어색한 문장
+
+허용되는 예외:
+1) JSON 키 이름
+2) label 값: strong, neutral, weak
+3) item_name (고정 항목명)
+4) span_text (입력 원문 인용)
+
+중요:
+- reason 필드는 반드시 자연스러운 한국어 문장으로 작성
+- 외국어가 한 글자라도 섞이면 실패한 응답
+
+출력 규칙:
+- 반드시 JSON 객체만 반환
+- 마크다운, 코드블록, 설명문 절대 금지"""
+
+ALL_ITEMS = [
+    "불필요한 반복 표현", "발화 완결성", "언어 일관성",
+    "학습 목표 안내", "전날 복습 연계", "설명 순서", "핵심 내용 강조", "마무리 요약",
+    "개념 정의", "비유 및 예시 활용", "선행 개념 확인", "발화 속도 적절성",
+    "예시 적절성", "실습 연계", "오류 대응",
+    "이해 확인 질문", "참여 유도", "질문 응답 충분성",
+]
+
+FALLBACK = {
+    "item_results": [
+        {"item_name": name, "label": "neutral", "confidence": 0.5, "evidence": []}
+        for name in ALL_ITEMS
+    ]
+}
 
 
-PROMPT_TEMPLATE = """
-You are an expert AI instructional analyst.
-Your task is to analyze lecture-level heuristic results and evidence, then refine them into a final instructional quality report.
+FEATURE_KEY_KO = {
+    "token_count": "전체 토큰 수",
+    "utterance_count": "전체 발화 수",
+    "question_count": "질문 수",
+    "example_count": "예시 수",
+    "practice_directive_ratio": "실습 지시 비율",
+    "repetition_count": "반복 구문 횟수",
+    "discourse_marker_per_1k_tokens": "담화표지어 밀도(1000토큰당)",
 
-[Lecture Context Data]
-{categories_json}
+    "filler_ratio": "군더더기 표현 밀도",
+    "repeated_phrase_ratio": "반복 표현 밀도",
+    "sentence_completion_ratio": "문장 완결성 비율",
+    "speech_style_consistency": "말투 일관성",
+    "truncated_utterance_ratio": "말 끊김 비율",
+    "style_shift_ratio": "말투 전환 비율",
 
-Your strict responsibility is to output ONLY a JSON document.
-Do not write markdown blocks. Output raw JSON only.
+    "objective_intro_count": "도입부 목표 안내 횟수",
+    "objective_intro_presence": "도입부 목표 안내 존재 여부",
+    "review_bridge_count": "복습 연계 횟수",
+    "review_bridge_presence": "복습 연계 존재 여부",
 
---------------------------------------------------
-### CORE EVALUATION PRINCIPLE (VERY IMPORTANT)
+    "concept_example_practice_flow": "개념-예시-실습 흐름 점수",
+    "structure_transition_clarity": "구조 전환 명확성",
 
-You are NOT evaluating surface signals.
-You are evaluating **instructional quality (교육적 질)**.
+    "emphasis_count": "강조 표현 횟수",
+    "emphasis_density": "강조 표현 밀도",
 
-For every item, judge:
-- Does this actually help learning?
-- Does it improve understanding, retention, or engagement?
-- Or is it just superficial / habitual / weak?
+    "closing_summary_presence": "마무리 요약 존재 여부",
+    "closing_summary_count": "마무리 요약 횟수",
 
---------------------------------------------------
-### MANDATORY INTERPRETATION RULES
+    "definition_density": "정의 표현 밀도",
+    "example_density": "예시 표현 밀도",
+    "analogy_density": "비유 표현 밀도",
 
-1. Heuristic score is the baseline, but not the verdict.
-- Each item's `heuristic_score` is the rule-based baseline.
-- Start from it, but DO NOT mechanically keep it.
-- If pedagogical quality is clearly stronger or weaker than the heuristic baseline, adjust the score actively.
-- Small but meaningful adjustment (±0.2 ~ ±0.7) is encouraged when evidence quality clearly supports it.
-- Keep the score unchanged only when the evidence is genuinely ambiguous or mixed.
-- Maximum adjustment per item: ±1.5
-- Final score must stay within [1.0, 5.0]
+    "prerequisite_bridge_presence": "선행 개념 연결 존재 여부",
+    "prerequisite_bridge_count": "선행 개념 연결 횟수",
 
-2. Evidence must be interpreted with pedagogical context.
-- Do NOT reward mere keyword presence.
-- Judge whether the evidence actually performs the intended educational function.
-- If evidence is vague, habitual, or filler-like → DO NOT over-score.
+    "practical_example_density": "실무 예시 밀도",
+    "practice_transition_density": "실습 전환 밀도",
 
-3. Labels are hints, text is truth.
-- Parent/sub labels are priors only.
-- If label and text conflict, prioritize text evidence.
+    "error_response_density": "오류 대응 밀도",
+    "understanding_check_density": "이해 확인 밀도",
+    "engagement_density": "참여 유도 밀도",
+    "qa_response_density": "질문 응답 밀도",
 
-4. Absence must be interpreted contextually.
-- Missing 목표 안내 at the opening is severe.
-- Missing 마무리 요약 at the ending is meaningful.
-- Missing 예시 in explanation-heavy instruction is meaningful.
-- Missing 실습 연결 in practice-oriented lecture is meaningful.
+    "question_quality_proxy": "질문 품질 추정치",
+    "check_question_ratio": "이해 확인 질문 비율",
+    "interaction_prompt_count": "상호작용 유도 횟수",
+    "followup_presence": "추가 설명 존재 여부",
+    "rapid_transition_ratio": "빠른 전환 비율",
+}
 
---------------------------------------------------
-### FUNCTIONAL QUALITY EVALUATION CRITERIA (핵심)
 
-You MUST evaluate quality, not existence.
+def localize_keys(obj):
+    if isinstance(obj, dict):
+        localized = {}
+        for k, v in obj.items():
+            ko_key = FEATURE_KEY_KO.get(k, k)
+            localized[ko_key] = localize_keys(v)
+        return localized
+    elif isinstance(obj, list):
+        return [localize_keys(x) for x in obj]
+    else:
+        return obj
 
-Examples:
 
-- 이해 확인 질문:
-  BAD → "맞죠?", "되셨죠?" (형식적 확인)
-  GOOD → 학습자가 실제로 생각/회상하도록 유도하는 질문
+ALLOWED_ENGLISH_TOKENS = {"strong", "neutral", "weak"}
 
-- 비유 및 예시:
-  BAD → 개념과 연결이 약한 예시
-  GOOD → 개념 이해를 명확하게 도와주는 예시
+def is_korean_text(text: str) -> bool:
+    if not text or not text.strip():
+        return True
 
-- 개념 정의:
-  BAD → 모호하거나 순환적인 설명
-  GOOD → 개념의 경계를 명확히 하는 구조적 정의
+    normalized = text.lower()
 
-- 실습 연계:
-  BAD → "해보세요"만 있고 구체성 없음
-  GOOD → 실제 행동으로 이어지는 명확한 지시
+    # 허용된 영어 토큰만 제거
+    for token in ALLOWED_ENGLISH_TOKENS:
+        normalized = normalized.replace(token, "")
 
-- 반복 표현:
-  BAD → 습관적 filler ("이제", "어", "그냥")
-  GOOD → 의도적 강조로 학습에 기여
+    cleaned = re.sub(r"[0-9\s\.,:;!\?\-\(\)\"'/%~·…]+", "", normalized)
 
---------------------------------------------------
-### ITEM INTERPRETATION RULE (중요)
+    if not cleaned:
+        return True
 
-Each item represents a **specific teaching function**.
+    total = len(cleaned)
+    korean = len(re.findall(r"[가-힣ㄱ-ㅎㅏ-ㅣ]", cleaned))
+    english = len(re.findall(r"[A-Za-z]", cleaned))
 
-You MUST:
-- Understand what the item is trying to achieve pedagogically
-- Evaluate whether the lecture actually achieves that function
+    return (korean / total) >= 0.85 and english == 0
 
-DO NOT:
-- Treat items as keyword detection
-- Treat signals as direct truth
 
-Signals = hints  
-Evidence = partial proof  
-Final judgement = YOUR responsibility
+def strip_markdown_codeblock(raw_text: str) -> str:
+    raw_text = raw_text.strip()
 
---------------------------------------------------
-### CONTEXT INTERPRETATION RULE
+    if raw_text.startswith("```"):
+        lines = raw_text.split("\n")
+        lines = lines[1:]
+        if lines and lines[-1].strip() == "```":
+            lines = lines[:-1]
+        raw_text = "\n".join(lines).strip()
 
-- Do NOT interpret a sentence in isolation.
-- Infer meaning using surrounding flow.
-- Interpret short expressions ("맞죠?", "자") in context.
+    return raw_text
 
---------------------------------------------------
-### OUTPUT LANGUAGE
 
-- ALL output must be in natural Korean
-- This includes:
-  - overall_summary
-  - category_summary
-  - reason
-  - adjustment_reason
-  - strengths / weaknesses / improvements
-  - improvement_tip
+def generate_analysis_response(prompt: str):
+    return client.models.generate_content(
+        model=MODEL_NAME,
+        contents=prompt,
+        config=types.GenerateContentConfig(
+            system_instruction=SYSTEM_PROMPT,
+            temperature=0.1,
+            max_output_tokens=16384,
+        ),
+    )
 
---------------------------------------------------
-### SCORE STRUCTURE
 
-- category:
-  - heuristic_score
-  - final_score
+def analyze_items(
+    features_data: dict,
+    signals_output: dict,
+    evidence_by_item: dict,
+) -> dict:
+    localized_features = localize_keys(features_data.get("features", {}))
+    localized_lecture_signals = localize_keys(signals_output.get("lecture_signals", {}))
 
-- item:
-  - heuristic_score
-  - final_score
+    features_json = json.dumps(
+        localized_features,
+        ensure_ascii=False,
+        indent=2,
+    )
 
---------------------------------------------------
-### EVIDENCE HANDLING
+    segments_json = json.dumps(
+        [
+            {
+                "segment_id": seg.get("segment_id"),
+                "parent_label": seg.get("parent_label"),
+                "sub_label": seg.get("sub_label"),
+                "utterance_count": seg.get("weight"),
+                "text_preview": (seg.get("text_preview") or "")[:150],
+            }
+            for seg in signals_output.get("segments", [])
+        ],
+        ensure_ascii=False,
+        indent=2,
+    )
 
-- Use reranked evidence as primary support
-- Select 2~3 key evidence lines
-- If evidence implies absence:
-  → explain naturally in Korean
+    # 프롬프트 크기 절감: context 각 1개로 트리밍, span_text 100자 제한
+    trimmed_evidence = {}
+    for item_name, evs in evidence_by_item.items():
+        trimmed_evidence[item_name] = [
+            {
+                "span_text": ev.get("span_text", "")[:100],
+                "context_before": ev.get("context_before", [])[-1:],
+            }
+            for ev in evs[:1]
+        ]
 
-### WEAK-EVIDENCE ITEM RULE
+    evidence_json = json.dumps(
+        trimmed_evidence,
+        ensure_ascii=False,
+        indent=2,
+    )
 
-For some items, reranked text evidence may be only partially representative.
-For those items, rely more on:
-- aggregated_signals
-- signal_subscores
-- item_context
-- overall pedagogical function
+    lecture_signals_json = json.dumps(
+        localized_lecture_signals,
+        ensure_ascii=False,
+        indent=2,
+    )
 
-Especially do NOT over-rely on single evidence excerpts for:
-- 발화 완결성
-- 언어 일관성
-- 발화 속도 적절성
-- 설명 순서
-- 이해 확인 질문
-- 참여 유도
-- 질문 응답 충분
+    prompt = f"""[블록 1 — 정량적 피쳐 원본]
+{features_json}
 
-For these items, use evidence as support, but let the final judgement depend more on functional quality and aggregate patterns.
+[블록 2 — 평가 항목 목록]
+평가 항목 목록 (가중치: 높음=3, 중간=2, 낮음=1, 해당없음=0.5):
+카테고리: 언어 표현 품질
+  - 불필요한 반복 표현 (가중치 3)
+  - 발화 완결성 (가중치 2)
+  - 언어 일관성 (가중치 2)
+카테고리: 강의 도입 및 구조
+  - 학습 목표 안내 (가중치 2)
+  - 전날 복습 연계 (가중치 2)
+  - 설명 순서 (가중치 1)
+  - 핵심 내용 강조 (가중치 2)
+  - 마무리 요약 (가중치 0.5)
+카테고리: 개념 설명 명확성
+  - 개념 정의 (가중치 2)
+  - 비유 및 예시 활용 (가중치 2)
+  - 선행 개념 확인 (가중치 1)
+  - 발화 속도 적절성 (가중치 3)
+카테고리: 예시 및 실습 연계
+  - 예시 적절성 (가중치 3)
+  - 실습 연계 (가중치 3)
+  - 오류 대응 (가중치 2)
+카테고리: 수강생 상호작용
+  - 이해 확인 질문 (가중치 3)
+  - 참여 유도 (가중치 3)
+  - 질문 응답 충분성 (가중치 2)
 
---------------------------------------------------
-### OUTPUT JSON SCHEMA
+[블록 3 — segments 전체]
+{segments_json}
 
+[블록 4 — item별 evidence]
+{evidence_json}
+
+[블록 5 — 시그널 힌트]
+이 값은 보조 힌트입니다.
+{lecture_signals_json}
+
+다음 지침에 따라 각 item을 분석하십시오:
+
+1. 분석의 주된 근거는 정량적 피쳐(features)와 실제 발화 텍스트(evidence의 span_text, context)입니다.
+   시그널(signals)은 수치 힌트로만 참고하고, 최종 판단은 실제 발화 내용과 정량 피쳐를 우선합니다.
+
+2. 정량적 피쳐에서 아래 수치를 반드시 확인하고 분석에 반영합니다:
+   - 담화표지어 밀도(1000토큰당): 높을수록 불필요한 반복 표현 취약
+   - 반복 구문 횟수: 높을수록 불필요한 반복 표현 취약
+   - 질문 수: 낮을수록 이해 확인 질문·참여 유도 취약
+   - 예시 수: 낮을수록 비유 및 예시 활용·예시 적절성 취약
+   - 실습 지시 비율: 낮을수록 실습 연계 취약
+
+3. sub_label에 따라 분석 비중을 다르게 적용합니다:
+
+   [practice_explanation — 설명하며 실습 유도하는 구간]
+   중점 item: 불필요한 반복 표현, 발화 완결성, 개념 정의, 비유 및 예시 활용, 핵심 내용 강조, 발화 속도 적절성
+
+   [practice_instruction — 수강생에게 직접 실습 지시하는 구간]
+   중점 item: 실습 연계, 참여 유도, 이해 확인 질문, 오류 대응, 질문 응답 충분성
+
+   [practice_example — 강사가 예시를 직접 시연하는 구간]
+   중점 item: 예시 적절성, 비유 및 예시 활용, 실습 연계
+
+   [도입부 — seg_01, seg_02]
+   추가 중점: 학습 목표 안내, 전날 복습 연계
+
+   [마무리부 — 마지막 segment]
+   추가 중점: 마무리 요약
+   단, 마지막 segment의 실제 발화가 DB 설치 안내로 전환된 경우 명시적 요약이 없을 수 있음.
+   억지로 요약 발화를 찾지 말고 실제 발화 내용 그대로 평가.
+
+   [평가 의미가 낮은 item]
+   - 설명 순서: 전체가 실습 유도 흐름이므로 개념→예시→실습 순서 분리가 불명확. 이 점을 반드시 고려.
+   - 선행 개념 확인: 실습 중심 강의에서 없다고 해서 무조건 weak로 판단하지 않음.
+   - 마무리 요약: 이 강의 구조에서 평가가 어려움.
+
+4. label 결정 기준:
+   - "weak":
+     다음 중 하나라도 해당하면 우선적으로 부여합니다.
+     1) 핵심 정량 지표가 명확히 취약함
+     2) evidence에서 실제 문제 발화, 부족한 설명, 상호작용 부족, 반복 표현 등이 확인됨
+     3) 해당 item이 이 강의 맥락에서 중요한 항목인데 긍정 근거가 거의 없음
+
+   - "neutral":
+     긍정과 부정이 혼재하거나, 근거가 부족하여 weak 또는 strong으로 단정하기 어려운 경우에만 부여합니다.
+     neutral은 소극적으로 사용하십시오.
+
+   - "strong":
+     긍정 신호가 분명하고 evidence에서도 실제로 잘 수행된 발화가 확인되는 경우에만 부여합니다.
+
+   - 가중치가 높은 항목(가중치 3)은 문제 신호가 확인되면 neutral보다 weak를 우선 검토하십시오.
+   - 특히 불필요한 반복 표현, 예시 적절성, 실습 연계, 이해 확인 질문, 참여 유도는
+     부정 신호가 확인될 경우 더 엄격하게 평가하십시오.
+
+5. confidence: 0.0 ~ 1.0, 해당 label 판단의 확신 정도
+
+6. language rules:
+   - reason은 반드시 한국어로만 작성합니다.
+   - label 값으로 사용하는 strong, neutral, weak 외의 영어, 벵골어, 일본어, 중국어 등 다른 언어를 절대 혼용하지 마십시오.
+   - 정량적 피쳐에 명시된 수치를 인용할 때는 반드시 features 블록에 있는 값 그대로만 사용하고 임의로 수치를 만들지 마십시오.
+   - reason에서는 영문 feature key를 그대로 쓰지 말고 반드시 한국어 표현으로 풀어 쓰십시오.
+   - 예:
+     "question_count가 낮다" 대신 "질문 수가 적다"
+     "example_count가 낮다" 대신 "예시 수가 적다"
+     "practice_directive_ratio가 낮다" 대신 "실습 지시 비율이 낮다"
+     "discourse_marker_per_1k_tokens가 높다" 대신 "담화표지어 밀도가 높다"
+   - span_text, context_before는 원문 인용이므로 비한국어가 포함될 수 있으나,
+     반드시 reason만큼은 100% 한국어 문장이어야 합니다.
+   - reason에 strong, neutral, weak를 제외한 영문 표현이 들어가면 실패입니다.
+   - reason은 어색한 번역투 문장보다 자연스러운 한국어 설명문으로 작성하십시오.
+
+7. 응답은 아래 JSON 구조만 반환합니다. support_strength 필드는 절대 포함하지 않습니다:
 {{
-  "overall_summary": "string",
-  "category_results": [
+  "item_results": [
     {{
-      "category_name": "string",
-      "heuristic_score": float,
-      "final_score": float,
-      "category_summary": "string",
-      "items": [
+      "item_name": "...",
+      "label": "weak",
+      "confidence": 0.78,
+      "evidence": [
         {{
-          "item_name": "string",
-          "heuristic_score": float,
-          "final_score": float,
-          "adjustment_reason": "string",
-          "reason": "string",
-          "selected_evidence": ["string"],
-          "improvement_tip": "string"
+          "span_text": "...",
+          "context_before": ["..."],
+          "reason": "..."
         }}
-      ],
-      "strengths": ["string"],
-      "weaknesses": ["string"],
-      "improvements": ["string"]
+      ]
     }}
-  ],
-  "overall_strengths": ["string"],
-  "overall_weaknesses": ["string"],
-  "priority_improvements": ["string"]
-}}
-"""
+  ]
+}}"""
 
+    last_error = None
+    working_prompt = prompt
 
-def clamp_score(score: float, min_val: float = 1.0, max_val: float = 5.0) -> float:
-    return max(min_val, min(max_val, score))
-
-
-def extract_json_from_text(text: str) -> str:
-    text = text.strip()
-    if text.startswith("```json"):
-        text = text[7:]
-    elif text.startswith("```"):
-        text = text[3:]
-    if text.endswith("```"):
-        text = text[:-3]
-    return text.strip()
-
-
-def setup_gemini() -> bool:
-    api_key = os.getenv("GOOGLE_API_KEY")
-    if not api_key or genai is None:
-        return False
-
-    genai.configure(api_key=api_key)
-    return True
-
-
-def _build_fallback_result(prompt_packet: Dict[str, Any]) -> Dict[str, Any]:
-    categories = prompt_packet.get("categories", [])
-    category_results = []
-
-    overall_strengths = []
-    overall_weaknesses = []
-    priority_improvements = []
-
-    for cat in categories:
-        category_name = cat.get("category_name", "")
-        heuristic_score = float(cat.get("category_context", {}).get("category_heuristic_score", 3.0))
-        items_out = []
-
-        strengths = []
-        weaknesses = []
-        improvements = []
-
-        item_scores = []
-
-        for item in cat.get("items", []):
-            h = float(item.get("heuristic_score", 3.0))
-            item_scores.append(h)
-
-            evidence = item.get("top_evidence", [])[:3]
-            if not evidence:
-                evidence = ["근거 문장이 충분히 추출되지 않음"]
-
-            if h >= 4.0:
-                adjustment_reason = "정량 신호와 추출 근거가 전반적으로 일치하여 휴리스틱 점수를 유지함"
-                reason = f"{item.get('item_name')} 항목은 관련 신호가 안정적으로 관찰되며, 추출된 근거도 기능 수행을 뒷받침함"
-                strengths.append(f"{item.get('item_name')} 수행이 비교적 안정적임")
-            elif h >= 3.0:
-                adjustment_reason = "정량 신호는 보통 수준이며, 근거도 대체로 이에 부합하여 휴리스틱 점수를 유지함"
-                reason = f"{item.get('item_name')} 항목은 기본 수준은 확보했지만 기능적 선명도는 더 보강될 여지가 있음"
-                weaknesses.append(f"{item.get('item_name')}의 기능적 선명도가 다소 약함")
-                improvements.append(f"{item.get('item_name')} 관련 표현을 더 명시적으로 제시하기")
-            else:
-                adjustment_reason = "정량 신호가 낮고 근거도 제한적이어서 낮은 점수를 유지함"
-                reason = f"{item.get('item_name')} 항목은 관련 표현 또는 기능적 수행 근거가 충분하지 않음"
-                weaknesses.append(f"{item.get('item_name')} 근거가 부족함")
-                improvements.append(f"{item.get('item_name')}를 드러내는 설명 구조를 보강하기")
-
-            items_out.append({
-                "item_name": item.get("item_name"),
-                "heuristic_score": round(h, 2),
-                "final_score": round(clamp_score(h), 2),
-                "adjustment_reason": adjustment_reason,
-                "reason": reason,
-                "selected_evidence": evidence,
-                "improvement_tip": f"{item.get('item_name')}의 기능이 더 분명하게 드러나도록 구체적 표현과 구조를 보강해줘.",
-            })
-
-        final_score = round(sum(item_scores) / len(item_scores), 2) if item_scores else round(heuristic_score, 2)
-
-        if not strengths:
-            strengths = [f"{category_name}에서 일부 기본 요소는 확인됨"]
-        if not weaknesses:
-            weaknesses = [f"{category_name}의 세부 항목 간 편차를 추가 점검할 필요가 있음"]
-        if not improvements:
-            improvements = [f"{category_name}의 핵심 기능이 더 명시적으로 드러나도록 구성 보강이 필요함"]
-
-        category_results.append({
-            "category_name": category_name,
-            "heuristic_score": round(heuristic_score, 2),
-            "final_score": round(final_score, 2),
-            "category_summary": f"{category_name}은 전반적으로 휴리스틱 기준과 유사한 수준으로 해석되며, 일부 항목은 표현의 명확성을 더 보강할 필요가 있음.",
-            "items": items_out,
-            "strengths": strengths[:3],
-            "weaknesses": weaknesses[:3],
-            "improvements": improvements[:3],
-        })
-
-        overall_strengths.extend(strengths[:1])
-        overall_weaknesses.extend(weaknesses[:1])
-        priority_improvements.extend(improvements[:1])
-
-    return {
-        "overall_summary": "강의 전반을 보면 일부 항목은 비교적 안정적으로 수행되지만, 구조적 안내와 기능적 명확성은 항목별 편차가 존재함.",
-        "category_results": category_results,
-        "overall_strengths": overall_strengths[:5] or ["일부 교수행동은 안정적으로 관찰됨"],
-        "overall_weaknesses": overall_weaknesses[:5] or ["항목별 수행 편차가 존재함"],
-        "priority_improvements": priority_improvements[:5] or ["핵심 구조와 설명 기능을 더 명시적으로 드러내기"],
-    }
-
-
-def _postprocess_result(prompt_packet: Dict[str, Any], result: Dict[str, Any]) -> Dict[str, Any]:
-    input_categories = prompt_packet.get("categories", [])
-    input_cat_map = {c.get("category_name"): c for c in input_categories}
-
-    fixed_category_results = []
-
-    for cat in result.get("category_results", []):
-        category_name = cat.get("category_name", "")
-        src_cat = input_cat_map.get(category_name, {})
-        heuristic_score = float(src_cat.get("category_context", {}).get("category_heuristic_score", 3.0))
-
-        src_items = {i.get("item_name"): i for i in src_cat.get("items", [])}
-        fixed_items = []
-        item_final_scores = []
-
-        for item in cat.get("items", []):
-            item_name = item.get("item_name", "")
-            src_item = src_items.get(item_name, {})
-            item_h = float(src_item.get("heuristic_score", item.get("heuristic_score", 3.0)))
-            item_f = float(item.get("final_score", item.get("item_score", item_h)))
-            item_f = clamp_score(item_f)
-
-            # heuristic과 완전히 같을 때도 LLM reason이 강하면 소폭 조정 허용
-            reason_text = str(item.get("reason", "")) + " " + str(item.get("adjustment_reason", ""))
-
-            negative_cues = ["부족", "미흡", "형식적", "약함", "제한적", "불충분", "모호", "방해"]
-            positive_cues = ["우수", "명확", "효과적", "안정적", "자연스럽", "충분", "도움"]
-
-            if abs(item_f - item_h) < 0.01:
-                neg_hit = sum(1 for cue in negative_cues if cue in reason_text)
-                pos_hit = sum(1 for cue in positive_cues if cue in reason_text)
-
-                if neg_hit >= 2 and item_h >= 2.0:
-                    item_f = clamp_score(item_h - 0.3)
-                elif pos_hit >= 2 and item_h <= 4.7:
-                    item_f = clamp_score(item_h + 0.3)
-
-            selected_evidence = item.get("selected_evidence") or src_item.get("top_evidence") or []
-            if not isinstance(selected_evidence, list):
-                selected_evidence = [str(selected_evidence)]
-
-            fixed_items.append({
-                "item_name": item_name,
-                "heuristic_score": round(item_h, 2),
-                "final_score": round(item_f, 2),
-                "adjustment_reason": item.get("adjustment_reason", "휴리스틱 점수를 기준으로 근거를 검토해 조정 여부를 판단함"),
-                "reason": item.get("reason", f"{item_name} 항목에 대한 기능적 수행을 근거 중심으로 평가함"),
-                "selected_evidence": selected_evidence[:3],
-                "improvement_tip": item.get("improvement_tip", f"{item_name} 관련 표현과 구조를 더 명확히 보강해줘."),
-            })
-            item_final_scores.append(item_f)
-
-        category_final = float(cat.get("final_score", cat.get("category_score", 0.0)))
-        if not category_final:
-            category_final = sum(item_final_scores) / len(item_final_scores) if item_final_scores else heuristic_score
-        category_final = clamp_score(category_final)
-
-        strengths = cat.get("strengths", [])
-        weaknesses = cat.get("weaknesses", [])
-        improvements = cat.get("improvements", [])
-
-        if isinstance(strengths, str):
-            strengths = [strengths]
-        if isinstance(weaknesses, str):
-            weaknesses = [weaknesses]
-        if isinstance(improvements, str):
-            improvements = [improvements]
-
-        fixed_category_results.append({
-            "category_name": category_name,
-            "heuristic_score": round(heuristic_score, 2),
-            "final_score": round(category_final, 2),
-            "category_summary": cat.get("category_summary", cat.get("summary", f"{category_name}에 대한 종합 평가")),
-            "items": fixed_items,
-            "strengths": strengths[:3],
-            "weaknesses": weaknesses[:3],
-            "improvements": improvements[:3],
-        })
-
-    return {
-        "overall_summary": result.get("overall_summary", "강의 전반에 대한 종합 평가"),
-        "category_results": fixed_category_results,
-        "overall_strengths": result.get("overall_strengths", [])[:5],
-        "overall_weaknesses": result.get("overall_weaknesses", [])[:5],
-        "priority_improvements": result.get("priority_improvements", [])[:5],
-    }
-
-
-def analyze_with_llm(prompt_packet: Dict[str, Any], max_retries: int = 2) -> Tuple[Dict[str, Any], Dict[str, Any]]:
-    debug_raw_responses: List[str] = []
-
-    if not setup_gemini():
-        fallback = _build_fallback_result(prompt_packet)
-        return fallback, {
-            "success": False,
-            "error": "LLM_NOT_CONFIGURED",
-            "raw_responses": debug_raw_responses,
-        }
-
-    model_name = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
-    model = genai.GenerativeModel(
-        model_name,
-        generation_config={"response_mime_type": "application/json"},
-    )
-
-    prompt = PROMPT_TEMPLATE.format(
-        categories_json=json.dumps(prompt_packet.get("categories", []), ensure_ascii=False, indent=2)
-    )
-
-    for attempt in range(max_retries + 1):
+    for attempt in range(2):
         try:
-            response = model.generate_content(prompt)
-            raw_text = response.text
-            debug_raw_responses.append(raw_text)
+            response = generate_analysis_response(working_prompt)
+            raw_text = strip_markdown_codeblock(response.text)
+            parsed = json.loads(raw_text)
 
-            clean_json = extract_json_from_text(raw_text)
-            parsed_data = json.loads(clean_json)
-            final_result = _postprocess_result(prompt_packet, parsed_data)
+            if not isinstance(parsed, dict):
+                raise ValueError("LLM output is not a dict")
+            if "item_results" not in parsed or not isinstance(parsed["item_results"], list):
+                raise ValueError("LLM output missing item_results")
 
-            return final_result, {
-                "success": True,
-                "raw_responses": debug_raw_responses,
-                "model_name": model_name,
+            result_map = {}
+
+            for item in parsed["item_results"]:
+                if not isinstance(item, dict):
+                    raise ValueError("LLM item is not a dict")
+
+                item_name = item.get("item_name")
+                label = item.get("label")
+                confidence = item.get("confidence")
+                evidence = item.get("evidence", [])
+
+                if item_name not in ALL_ITEMS:
+                    raise ValueError(f"Unknown item_name in LLM output: {item_name}")
+                if label not in VALID_LABELS:
+                    raise ValueError(f"Invalid label in LLM output: {label}")
+                if not isinstance(confidence, (int, float)):
+                    raise ValueError("Invalid confidence in LLM output")
+                if not isinstance(evidence, list):
+                    raise ValueError("Invalid evidence in LLM output")
+
+                cleaned_evidence = []
+                for ev in evidence[:3]:
+                    if not isinstance(ev, dict):
+                        raise ValueError("Evidence entry is not a dict")
+                    if "support_strength" in ev:
+                        raise ValueError("support_strength is not allowed")
+
+                    reason = str(ev.get("reason", ""))
+                    if not is_korean_text(reason):
+                        raise ValueError(f"Non-Korean reason detected: {reason}")
+
+                    cleaned_evidence.append({
+                        "span_text": ev.get("span_text", ""),
+                        "context_before": ev.get("context_before", []),
+                        "reason": reason,
+                    })
+
+                result_map[item_name] = {
+                    "item_name": item_name,
+                    "label": label,
+                    "confidence": float(confidence),
+                    "evidence": cleaned_evidence,
+                }
+
+            if len(result_map) != len(ALL_ITEMS):
+                raise ValueError(
+                    f"Missing items in LLM output: got {len(result_map)}, expected {len(ALL_ITEMS)}"
+                )
+
+            return {
+                "item_results": [result_map[item_name] for item_name in ALL_ITEMS]
             }
 
         except Exception as e:
-            debug_raw_responses.append(f"[attempt {attempt+1} error] {str(e)}")
-            if attempt < max_retries:
-                time.sleep(2)
+            last_error = e
+            working_prompt += """
 
-    fallback = _build_fallback_result(prompt_packet)
-    return fallback, {
-        "success": False,
-        "error": "LLM_MAX_RETRIES_EXCEEDED",
-        "raw_responses": debug_raw_responses,
-    }
+[재강조]
+이전 응답은 언어 규칙 또는 출력 형식을 위반했습니다.
+모든 reason은 반드시 한국어 완전한 문장으로 작성하십시오.
+영어, 벵골어, 일본어, 중국어 등 한국어 이외의 문자가 포함되면 실패입니다.
+영문 feature key를 그대로 쓰지 말고 반드시 한국어 표현으로 바꿔 설명하십시오.
+JSON 객체만 반환하십시오.
+"""
+
+    raise last_error
+
+
+def analyze_curriculum_match(
+    curriculum: dict,
+    signals_output: dict,
+) -> dict:
+    """
+    커리큘럼 content와 실제 강의 segment 내용의 일치도를 LLM으로 분석.
+    반환: {"score": int(0~100), "reason": str}
+    curriculum이 None이면 {"score": None, "reason": "커리큘럼 정보 없음"} 반환.
+    """
+    if not curriculum:
+        return {"score": None, "reason": "커리큘럼 정보 없음"}
+
+    contents_str = ", ".join(curriculum.get("contents", []))
+    subject = curriculum.get("subject", "")
+    course_name = curriculum.get("course_name", "")
+
+    segments_json = json.dumps(
+        [
+            {
+                "segment_id": seg.get("segment_id"),
+                "sub_label": seg.get("sub_label"),
+                "text_preview": (seg.get("text_preview") or "")[:150],
+            }
+            for seg in signals_output.get("segments", [])
+        ],
+        ensure_ascii=False,
+        indent=2,
+    )
+
+    prompt = f"""당신은 강의 품질 진단 전문가입니다.
+
+아래는 이 강의의 커리큘럼 계획입니다:
+- 과정명: {course_name}
+- 과목: {subject}
+- 계획된 학습 내용: {contents_str}
+
+아래는 실제 강의에서 발화된 내용 (segment별 텍스트 미리보기)입니다:
+{segments_json}
+
+위 실제 강의 내용이 커리큘럼에서 계획한 학습 내용과 얼마나 일치하는지 평가하십시오.
+
+평가 기준:
+- 90~100점: 계획된 내용이 강의에서 충실히 다뤄짐
+- 70~89점: 대부분 일치하나 일부 내용 누락 또는 약간 벗어남
+- 50~69점: 절반 정도 일치, 관련 있으나 다른 내용도 상당히 포함
+- 30~49점: 커리큘럼과 부분적으로만 연관, 다른 내용이 많음
+- 0~29점: 커리큘럼과 거의 관련 없는 내용이 강의됨
+
+반드시 아래 JSON 형식으로만 응답하십시오. 마크다운 코드블록 없이:
+{{"score": 85, "reason": "한국어로 작성된 이유. 어떤 내용이 일치하고 어떤 내용이 다른지 구체적으로 서술."}}"""
+
+    try:
+        response = client.models.generate_content(
+            model=MODEL_NAME,
+            contents=prompt,
+            config=types.GenerateContentConfig(
+                temperature=0.1,
+                max_output_tokens=512,
+            ),
+        )
+        raw = strip_markdown_codeblock(response.text)
+        parsed = json.loads(raw)
+
+        score = int(parsed.get("score", 0))
+        reason = str(parsed.get("reason", ""))
+
+        return {
+            "score": max(0, min(100, score)),
+            "reason": reason,
+        }
+    except Exception as e:
+        print(
+            f"[llm_analysis] 커리큘럼 일치도 분석 실패: {type(e).__name__}: {e}",
+            file=sys.stderr,
+        )
+        return {"score": None, "reason": "분석 실패"}
+
+
+def run_analysis(
+    features_data: dict,
+    signals_output: dict,
+    evidence_by_item: dict,
+) -> dict:
+    try:
+        return analyze_items(features_data, signals_output, evidence_by_item)
+    except Exception as e:
+        print(
+            f"[llm_analysis] LLM 분석 실패, fallback 사용: {type(e).__name__}: {e}",
+            file=sys.stderr,
+        )
+        return {
+            "item_results": [
+                {
+                    "item_name": item["item_name"],
+                    "label": item["label"],
+                    "confidence": item["confidence"],
+                    "evidence": item["evidence"],
+                }
+                for item in FALLBACK["item_results"]
+            ]
+        }
