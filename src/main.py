@@ -21,12 +21,26 @@ logger = logging.getLogger(__name__)
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     logger.info("서버 시작: DB 테이블 생성 중...")
-    await create_tables()
-    logger.info("DB 테이블 준비 완료.")
+    try:
+        await create_tables()
+        logger.info("DB 테이블 준비 완료.")
+    except Exception as e:
+        logger.error(
+            "DB 연결 실패 — DATABASE_URL 환경변수를 확인하세요. "
+            "서버는 계속 시작됩니다. 에러: %s", e
+        )
 
     if settings.google_api_key:
         os.environ["GOOGLE_API_KEY"] = settings.google_api_key
         os.environ["GEMINI_MODEL"] = settings.gemini_model
+
+    # OpenAI 키 주입 (rerank.py에서 OPENAI_API_KEY 환경변수로 읽음)
+    openai_key = settings.resolved_openai_api_key
+    if openai_key:
+        os.environ["OPENAI_API_KEY"] = openai_key
+        logger.info("OpenAI API 키 설정 완료.")
+    else:
+        logger.warning("OPENAI_API_KEY / CHAT_GPT_API 미설정 — rerank는 keyword fallback 사용.")
 
     yield
     logger.info("서버 종료.")

@@ -26,20 +26,16 @@ def _get_rerank_model():
         return _rerank_model
     _rerank_loaded = True
     try:
-        from sentence_transformers import SentenceTransformer
-        import torch
-        _rerank_model = SentenceTransformer(
-            "intfloat/multilingual-e5-small", device="cpu", local_files_only=False
-        )
-        
-        # [최적화] CPU 환경을 위한 INT8 동적 양자화 적용
-        torch.backends.quantized.engine = 'qnnpack' if 'qnnpack' in torch.backends.quantized.supported_engines else 'fbgemm'
-        _rerank_model = torch.ao.quantization.quantize_dynamic(
-            _rerank_model, {torch.nn.Linear}, dtype=torch.qint8
-        )
-        logger.info("[rerank] e5-small 로드 완료")
+        import os
+        import openai
+        api_key = os.getenv("OPENAI_API_KEY") or os.getenv("CHAT_GPT_API")
+        if api_key:
+            _rerank_model = openai.OpenAI(api_key=api_key)
+            logger.info("[rerank] OpenAI 클라이언트 로드 완료")
+        else:
+            raise ValueError("OPENAI_API_KEY 없음")
     except Exception as exc:
-        logger.warning("[rerank] 모델 로드 실패, keyword fallback 사용: %s", exc)
+        logger.warning("[rerank] OpenAI 클라이언트 연결 실패, keyword fallback 사용: %s", exc)
         _rerank_model = None
     return _rerank_model
 
@@ -89,19 +85,23 @@ def rerank_evidence(
 
     if model is not None:
         try:
-            query = f"query: {item_context}"
-            docs = [f"passage: {c}" for c in candidates]
-            all_texts = [query] + docs
-            vecs = model.encode(all_texts, batch_size=32, normalize_embeddings=True)
-            q_vec = vecs[0].tolist()
+            # item_context가 긴 설명이라 하더라도 동일하게 임베딩 공간에 매핑.
+            # E5 모델과 달리 query:, passage: prefix가 필요없음.
+            all_texts = [item_context] + candidates
+            response = model.embeddings.create(
+                input=all_texts,
+                model="text-embedding-ada-002"
+            )
+            vecs = [data.embedding for data in response.data]
+            q_vec = vecs[0]
             scored = [
-                (_cosine(q_vec, vecs[i + 1].tolist()), candidates[i])
+                (_cosine(q_vec, vecs[i + 1]), candidates[i])
                 for i in range(len(candidates))
             ]
             scored.sort(key=lambda x: x[0], reverse=True)
             return [text for _, text in scored[:top_k]]
         except Exception as exc:
-            logger.warning("[rerank] 임베딩 실패, keyword fallback: %s", exc)
+            logger.warning("[rerank] OpenAI API 호출 실패, keyword fallback: %s", exc)
 
     # fallback: keyword overlap
     scored = [(_keyword_score(item_context, c), c) for c in candidates]

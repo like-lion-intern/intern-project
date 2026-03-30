@@ -159,10 +159,14 @@ def run_pipeline(date: str, base_path: str = ".", output_dir: str | None = None,
     print(f"Saved: {final_path}")
 
     print("--- Pipeline Completed ---")
-    return {
+    result = {
         "heuristic_report_path": heuristic_path,
         "final_report_path": final_path,
+        "llm_debug_path": "",
     }
+    if debug:
+        result["llm_debug_path"] = llm_debug_path
+    return result
 
 
 if __name__ == "__main__":

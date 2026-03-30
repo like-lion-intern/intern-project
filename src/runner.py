@@ -42,11 +42,11 @@ _model_lock = threading.Lock()
 
 
 def _ensure_models_loaded() -> None:
+    """Embedder를 singleton으로 로드한다. 실패 시 None으로 유지."""
     global _embedder_large, _embedder_small, _models_loaded
     with _model_lock:
         if _models_loaded:
             return
-        _models_loaded = True
 
     if settings.offline_mode:
         os.environ["HF_HUB_OFFLINE"] = "1"
@@ -60,16 +60,19 @@ def _ensure_models_loaded() -> None:
             device=settings.embedding_device,
             local_files_only=settings.local_files_only,
         )
-        logger.info("[Runner] e5-large loaded: %s", model_id)
+        logger.info("[Runner] Embedder(large) 로드 완료: %s", model_id)
 
         _embedder_small = Embedder(
             model_id="intfloat/multilingual-e5-small",
             device=settings.embedding_device,
             local_files_only=settings.local_files_only,
         )
-        logger.info("[Runner] e5-small loaded")
+        logger.info("[Runner] Embedder(small) 로드 완료")
     except Exception as exc:
-        logger.warning("[Runner] 모델 로드 실패 (fallback): %s", exc)
+        logger.warning("[Runner] Embedder 로드 실패 — 임베딩 없이 rule-only 모드로 실행: %s", exc)
+
+    with _model_lock:
+        _models_loaded = True
 
 
 # ─── DB 세션 ──────────────────────────────────────────────────────────────────
@@ -107,7 +110,7 @@ def _run_stage1(date: str, stt_file_path: str, output_dir: str) -> Path:
         parse_stt_file, discourse_metrics, split_session,
         macro_segment, detect_topic_shifts, semantic_chunking,
         extract_features, load_terms, write_json, write_jsonl,
-        build_label_profiles, safe_mkdir,
+        build_label_profiles, safe_mkdir, Embedder, MODEL_MAP,
     )
 
     _ensure_models_loaded()
@@ -125,18 +128,34 @@ def _run_stage1(date: str, stt_file_path: str, output_dir: str) -> Path:
     write_json(out / "discourse_marker" / f"{date}.json", disc)
     write_json(out / "session_split" / f"{date}.json", split)
 
+    # singleton embedder가 없으면 스레드에서 직접 재시도
+    # (lifespan에서 OPENAI_API_KEY를 주입한 이후이므로 여기서는 키가 있어야 함)
     embedder = _embedder_large
+    if embedder is None:
+        try:
+            model_id = MODEL_MAP.get(settings.embedding_model, MODEL_MAP["multilingual-e5-large"])
+            embedder = Embedder(
+                model_id=model_id,
+                device=settings.embedding_device,
+                local_files_only=settings.local_files_only,
+            )
+            logger.info("[Stage1] Embedder 스레드 내 재생성 성공: %s", model_id)
+        except Exception as exc:
+            raise RuntimeError(
+                f"[Stage1] Embedder 생성 실패. OPENAI_API_KEY 환경변수를 확인하세요: {exc}"
+            ) from exc
+
     texts = [u["text"] for u in utt]
-    if embedder and "e5" in settings.embedding_model:
-        texts = [f"passage: {t}" for t in texts]
-    embeds = embedder.encode(texts, batch_size=64) if embedder else []
+    # OpenAI 임베딩 모델은 e5 prefix 불필요
+    embeds = embedder.encode(texts, batch_size=512)
+    logger.info("[Stage1] 임베딩 완료: %d벡터", len(embeds))
 
     macro = macro_segment(
         utt, embeds,
         threshold=settings.macro_threshold,
         label_mode=settings.labeling_mode,
         label_profiles=build_label_profiles(embedder, settings.embedding_model)
-        if (embedder and settings.labeling_mode == "e5_proto") else None,
+        if settings.labeling_mode == "e5_proto" else None,
     )
     shifts = detect_topic_shifts(utt, embeds, drop_threshold=settings.shift_drop_threshold)
     chunks = semantic_chunking(macro, utt, embeds, sim_threshold=settings.chunk_sim_threshold)

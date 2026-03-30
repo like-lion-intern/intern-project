@@ -13,6 +13,16 @@ class Settings(BaseSettings):
     google_api_key: str = ""
     gemini_model: str = "gemini-2.5-flash"
 
+    # OpenAI (rerank용 임베딩)
+    # .env에서 OPENAI_API_KEY 또는 CHAT_GPT_API 둘 다 지원
+    openai_api_key: str = ""   # OPENAI_API_KEY env var
+    chat_gpt_api: str = ""     # CHAT_GPT_API env var (레거시 지원)
+
+    @property
+    def resolved_openai_api_key(self) -> str:
+        """OPENAI_API_KEY 우선, 없으면 CHAT_GPT_API 사용."""
+        return self.openai_api_key or self.chat_gpt_api
+
     # Embedding model
     embedding_model: str = "multilingual-e5-large"  # or "BAAI/bge-m3"
     embedding_device: str = "cpu"                   # "cpu" | "cuda" | "mps"

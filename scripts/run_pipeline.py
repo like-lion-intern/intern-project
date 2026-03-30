@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import logging
 import math
 import os
 import re
@@ -14,6 +15,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
+logger = logging.getLogger(__name__)
 
 LINE_RE = re.compile(r"^<(?P<h>\d{2}):(?P<m>\d{2}):(?P<s>\d{2})>\s*(?P<text>.*)$")
 TRANSITION_TERMS = ["자 이제", "그러면 이제", "다음으로", "이번에는", "그 다음", "정리하면", "여기까지", "마무리"]
@@ -140,46 +142,29 @@ class Embedder:
     local_files_only: bool = False
 
     def __post_init__(self) -> None:
-        from sentence_transformers import SentenceTransformer
-        import torch
-        try:
-            self.model = SentenceTransformer(
-                self.model_id,
-                device=self.device,
-                trust_remote_code=True,
-                local_files_only=self.local_files_only,
-            )
-            
-            # [최적화] CPU 환경을 위한 INT8 동적 양자화 적용
-            if self.device == "cpu":
-                torch.backends.quantized.engine = 'qnnpack' if 'qnnpack' in torch.backends.quantized.supported_engines else 'fbgemm'
-                self.model = torch.ao.quantization.quantize_dynamic(
-                    self.model, {torch.nn.Linear}, dtype=torch.qint8
-                )
-        except Exception:
-            # Fallback for environments without CUDA/MPS support.
-            self.device = "cpu"
-            self.model = SentenceTransformer(
-                self.model_id,
-                device=self.device,
-                trust_remote_code=True,
-                local_files_only=self.local_files_only,
-            )
-            # [최적화] CPU Fallback 환경에도 INT8 양자화 적용
-            torch.backends.quantized.engine = 'qnnpack' if 'qnnpack' in torch.backends.quantized.supported_engines else 'fbgemm'
-            self.model = torch.ao.quantization.quantize_dynamic(
-                self.model, {torch.nn.Linear}, dtype=torch.qint8
-            )
+        import os
+        import openai
+        
+        api_key = os.getenv("OPENAI_API_KEY") or os.getenv("CHAT_GPT_API")
+        if not api_key:
+            raise ValueError("[Embedder] OPENAI_API_KEY 환경변수가 설정되지 않았습니다.")
+        self.client = openai.OpenAI(api_key=api_key)
+        self.model_name = "text-embedding-ada-002"
+        logger.info("[Embedder] OpenAI text-embedding-ada-002 클라이언트 로드 완료")
 
-    def encode(self, texts: list[str], batch_size: int = 64) -> list[list[float]]:
-        vectors = self.model.encode(
-            texts,
-            batch_size=batch_size,
-            convert_to_numpy=True,
-            normalize_embeddings=True,
-            show_progress_bar=False,
-        )
-        return [v.tolist() for v in vectors]
+    def encode(self, texts: list[str], batch_size: int = 2048) -> list[list[float]]:
+        if not texts:
+            return []
+            
+        all_embeddings = []
+        for i in range(0, len(texts), batch_size):
+            batch = texts[i : i + batch_size]
+            response = self.client.embeddings.create(
+                input=batch,
+                model=self.model_name
+            )
+            all_embeddings.extend([data.embedding for data in response.data])
+        return all_embeddings
 
 
 def parse_stt_file(path: Path) -> list[dict[str, Any]]:
@@ -202,12 +187,15 @@ def parse_stt_file(path: Path) -> list[dict[str, Any]]:
             else:
                 offset += 24 * 3600
         prev_raw = raw
+        text = m.group("text").strip()
+        if not text:
+            continue
         rows.append(
             {
                 "line_idx": i,
                 "timestamp": f"{h:02d}:{mm:02d}:{s:02d}",
                 "elapsed_seconds": raw + offset,
-                "text": m.group("text").strip(),
+                "text": text,
             }
         )
     return rows
@@ -409,6 +397,13 @@ def detect_topic_shifts(utterances: list[dict[str, Any]], embeddings: list[list[
 
 
 def semantic_chunking(segment_rows: list[dict[str, Any]], utterances: list[dict[str, Any]], embeddings: list[list[float]], sim_threshold: float = 0.74) -> list[dict[str, Any]]:
+    # [동적 임계값 조율] 모델마다 스펙트럼이 다르므로, 전체 평균에서 0.05를 뺀 유동적인 값을 사용
+    if len(embeddings) > 1:
+        sims = [cosine(embeddings[i-1], embeddings[i]) for i in range(1, len(embeddings))]
+        dynamic_threshold = round(sum(sims) / len(sims) - 0.05, 4)
+    else:
+        dynamic_threshold = sim_threshold
+        
     chunks: list[dict[str, Any]] = []
     for seg in segment_rows:
         s, e = seg["start_idx"], seg["end_idx"] + 1
@@ -418,7 +413,7 @@ def semantic_chunking(segment_rows: list[dict[str, Any]], utterances: list[dict[
         chunk_id = 1
         for i in range(s + 1, e):
             sim = cosine(embeddings[i - 1], embeddings[i])
-            if sim < sim_threshold and (i - start) >= 5:
+            if sim < dynamic_threshold and (i - start) >= 5:
                 part = utterances[start:i]
                 part_text = " ".join(x["text"] for x in part)
                 chunks.append(

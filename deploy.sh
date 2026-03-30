@@ -56,23 +56,28 @@ fi
 
 source .env
 
-if [ -z "$DATABASE_URL" ] || [ -z "$DATABASE_URL_SYNC" ] || [ -z "$GOOGLE_API_KEY" ]; then
-    echo "❌ .env 파일 내에 필수 변수(DATABASE_URL, DATABASE_URL_SYNC, GOOGLE_API_KEY)가 누락되었습니다."
+# OPENAI_API_KEY / CHAT_GPT_API 둘 다 지원 (레거시 변수명 호환)
+if [ -z "$OPENAI_API_KEY" ] && [ -n "$CHAT_GPT_API" ]; then
+    OPENAI_API_KEY="$CHAT_GPT_API"
+fi
+
+if [ -z "$DATABASE_URL" ] || [ -z "$DATABASE_URL_SYNC" ] || [ -z "$GOOGLE_API_KEY" ] || [ -z "$OPENAI_API_KEY" ]; then
+    echo "❌ .env 파일 내에 필수 변수(DATABASE_URL, DATABASE_URL_SYNC, GOOGLE_API_KEY, OPENAI_API_KEY 또는 CHAT_GPT_API)가 누락되었습니다."
     exit 1
 fi
 
 # 6. 소스코드 Cloud Run 배포!
 echo ""
 echo "🚀 (!!!) 본격적인 클라우드 소스코드 빌드 및 배포를 시작합니다 (!!!)"
-echo "이 과정은 5~10분 정도 걸릴당할 수 있으니 터미널을 끄지 말고 기다려주세요."
+echo "이 과정은 5~10분 정도 걸릴 수 있으니 터미널을 끄지 말고 기다려주세요."
 
 gcloud run deploy intern-project \
   --source . \
   --region asia-northeast3 \
   --allow-unauthenticated \
-  --memory 4Gi \
+  --memory 1Gi \
   --cpu 2 \
-  --set-env-vars="DATABASE_URL=$DATABASE_URL,DATABASE_URL_SYNC=$DATABASE_URL_SYNC,GOOGLE_API_KEY=$GOOGLE_API_KEY"
+  --set-env-vars="DATABASE_URL=$DATABASE_URL,DATABASE_URL_SYNC=$DATABASE_URL_SYNC,GOOGLE_API_KEY=$GOOGLE_API_KEY,OPENAI_API_KEY=$OPENAI_API_KEY"
 
 echo "======================================================"
 echo "🎉 모든 배포가 완료되었습니다!"
