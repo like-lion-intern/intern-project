@@ -17,6 +17,7 @@ from loader import load_data
 from features import calculate_signals
 from scoring import build_prompt_packet, build_category_packets, normalize_feature_bundle
 from llm_analysis import analyze_with_llm
+from prompts import get_report_synthesis_prompt
 
 
 def ensure_dir(path: str) -> None:
@@ -157,6 +158,16 @@ def run_pipeline(date: str, base_path: str = ".", output_dir: str | None = None,
     final_path = os.path.join(output_dir, "final_report.json")
     save_json(final_path, final_report)
     print(f"Saved: {final_path}")
+
+    if debug:
+        # 최종 결과를 기반으로 Markdown 리포트 합성용 프롬프트를 함께 저장한다.
+        synthesis_prompt = get_report_synthesis_prompt(
+            json.dumps(final_report, ensure_ascii=False, indent=2)
+        )
+        synthesis_prompt_path = os.path.join(output_dir, "report_synthesis_prompt.txt")
+        with open(synthesis_prompt_path, "w", encoding="utf-8") as f:
+            f.write(synthesis_prompt)
+        print(f"Saved: {synthesis_prompt_path}")
 
     print("--- Pipeline Completed ---")
     result = {
