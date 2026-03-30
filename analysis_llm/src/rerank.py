@@ -1,109 +1,168 @@
-"""
-Evidence reranking module.
-
-item_context와 evidence 후보 텍스트 사이의 의미적 유사도를 계산하여
-가장 관련성 높은 상위 k개의 evidence를 선택한다.
-
-E5-small 임베딩 기반으로 코사인 유사도를 계산하며,
-모델 로드 실패 시 키워드 오버랩 기반 fallback을 사용한다.
-"""
+# rerank.py
 from __future__ import annotations
 
-import math
-import logging
-from typing import List, Optional
+import os
+import re
+from typing import Any, List
 
-logger = logging.getLogger(__name__)
+from dotenv import load_dotenv
 
-# ─── 캐시 ──────────────────────────────────────────────────────────────────
-_rerank_model = None
-_rerank_loaded = False
+load_dotenv()
 
-
-def _get_rerank_model():
-    global _rerank_model, _rerank_loaded
-    if _rerank_loaded:
-        return _rerank_model
-    _rerank_loaded = True
-    try:
-        import os
-        import openai
-        api_key = os.getenv("OPENAI_API_KEY") or os.getenv("CHAT_GPT_API")
-        if api_key:
-            _rerank_model = openai.OpenAI(api_key=api_key)
-            logger.info("[rerank] OpenAI 클라이언트 로드 완료")
-        else:
-            raise ValueError("OPENAI_API_KEY 없음")
-    except Exception as exc:
-        logger.warning("[rerank] OpenAI 클라이언트 연결 실패, keyword fallback 사용: %s", exc)
-        _rerank_model = None
-    return _rerank_model
+_TRANSFORMERS_AVAILABLE = True
+try:
+    import torch
+    import torch.nn.functional as F
+    from torch import Tensor
+    from transformers import AutoModel, AutoTokenizer
+except Exception:
+    _TRANSFORMERS_AVAILABLE = False
+    torch = None
+    F = None
+    Tensor = None
+    AutoTokenizer = None
+    AutoModel = None
 
 
-# ─── 코사인 유사도 ──────────────────────────────────────────────────────────
-def _cosine(a: List[float], b: List[float]) -> float:
-    dot = sum(x * y for x, y in zip(a, b))
-    na = math.sqrt(sum(x * x for x in a))
-    nb = math.sqrt(sum(y * y for y in b))
-    if na == 0 or nb == 0:
-        return 0.0
-    return dot / (na * nb)
+def _normalize_text(text: str) -> str:
+    return re.sub(r"\s+", " ", str(text)).strip()
 
 
-# ─── keyword overlap fallback ──────────────────────────────────────────────
-def _keyword_score(query: str, text: str) -> float:
-    q_words = set(query.split())
-    t_words = set(text.split())
-    if not q_words:
-        return 0.0
-    return len(q_words & t_words) / len(q_words)
+def _candidate_text(candidate: Any) -> str:
+    if isinstance(candidate, dict):
+        return _normalize_text(candidate.get("span_text", ""))
+    return _normalize_text(candidate)
 
 
-# ─── 메인 함수 ──────────────────────────────────────────────────────────────
-def rerank_evidence(
-    item_context: str,
-    candidates: List[str],
-    top_k: int = 3,
-) -> List[str]:
-    """
-    item_context와 의미적으로 가장 유사한 candidates 상위 top_k개를 반환.
+def average_pool(last_hidden_states: "Tensor", attention_mask: "Tensor") -> "Tensor":
+    last_hidden = last_hidden_states.masked_fill(~attention_mask[..., None].bool(), 0.0)
+    denom = attention_mask.sum(dim=1)[..., None].clamp(min=1)
+    return last_hidden.sum(dim=1) / denom
 
-    Args:
-        item_context: 항목 평가 기준 설명 텍스트
-        candidates: evidence 후보 문자열 목록
-        top_k: 반환할 상위 개수
 
-    Returns:
-        유사도 순으로 정렬된 상위 top_k개의 evidence 문자열
-    """
+class E5Reranker:
+    def __init__(self, model_name: str = None):
+        if not _TRANSFORMERS_AVAILABLE:
+            raise RuntimeError("transformers/torch is not available")
+
+        model_name = model_name or os.getenv("E5_MODEL_NAME", "intfloat/multilingual-e5-small")
+        self.model_name = model_name
+        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+        self.tokenizer = AutoTokenizer.from_pretrained(model_name)
+        self.model = AutoModel.from_pretrained(model_name)
+        self.model.to(self.device)
+        self.model.eval()
+
+    def get_embeddings(self, texts: List[str], input_type: str = "query") -> "Tensor":
+        prefix = "query: " if input_type == "query" else "passage: "
+        prefixed_texts = [prefix + _normalize_text(text) for text in texts]
+
+        batch_dict = self.tokenizer(
+            prefixed_texts,
+            max_length=512,
+            padding=True,
+            truncation=True,
+            return_tensors="pt",
+        )
+        batch_dict = {k: v.to(self.device) for k, v in batch_dict.items()}
+
+        with torch.no_grad():
+            outputs = self.model(**batch_dict)
+            embeddings = average_pool(outputs.last_hidden_state, batch_dict["attention_mask"])
+
+        embeddings = F.normalize(embeddings, p=2, dim=1)
+        return embeddings
+
+    def score(self, query: str, passages: List[str]) -> List[float]:
+        if not passages:
+            return []
+
+        query_emb = self.get_embeddings([query], input_type="query")
+        passage_embs = self.get_embeddings(passages, input_type="passage")
+        scores = (query_emb @ passage_embs.T).squeeze(0)
+        return scores.tolist()
+
+
+_reranker = None
+_reranker_failed = False
+
+
+def get_reranker(model_name: str = None):
+    global _reranker, _reranker_failed
+    if _reranker_failed:
+        return None
+    if _reranker is None:
+        try:
+            _reranker = E5Reranker(model_name=model_name)
+        except Exception:
+            _reranker_failed = True
+            _reranker = None
+    return _reranker
+
+
+def _strip_segment_prefix(text: str) -> str:
+    text = _normalize_text(text)
+    if text.startswith("[segment ") and "]" in text:
+        return text.split("]", 1)[1].strip()
+    return text
+
+
+def _simple_keyword_scores(query: str, candidates: List[Any]) -> List[float]:
+    query_terms = set(re.findall(r"[가-힣A-Za-z0-9]+", query.lower()))
+    scores: List[float] = []
+
+    for candidate in candidates:
+        clean = _strip_segment_prefix(_candidate_text(candidate)).lower()
+        cand_terms = set(re.findall(r"[가-힣A-Za-z0-9]+", clean))
+        overlap = len(query_terms & cand_terms)
+        length_bonus = min(len(clean) / 100.0, 1.0)
+        local_bonus = 0.05 * float(candidate.get("local_score", 0.0)) if isinstance(candidate, dict) else 0.0
+        scores.append(overlap + 0.1 * length_bonus + local_bonus)
+
+    return scores
+
+
+def rerank_evidence(item_context: str, candidates: List[Any], top_k: int = 3) -> List[Any]:
     if not candidates:
         return []
-    if len(candidates) <= top_k:
-        return candidates
 
-    model = _get_rerank_model()
+    deduped: List[Any] = []
+    seen = set()
+    for candidate in candidates:
+        text = _candidate_text(candidate)
+        polarity = candidate.get("polarity", "") if isinstance(candidate, dict) else ""
+        dedupe_key = (text, polarity)
+        if text and dedupe_key not in seen:
+            seen.add(dedupe_key)
+            deduped.append(candidate)
 
-    if model is not None:
-        try:
-            # item_context가 긴 설명이라 하더라도 동일하게 임베딩 공간에 매핑.
-            # E5 모델과 달리 query:, passage: prefix가 필요없음.
-            all_texts = [item_context] + candidates
-            response = model.embeddings.create(
-                input=all_texts,
-                model="text-embedding-ada-002"
-            )
-            vecs = [data.embedding for data in response.data]
-            q_vec = vecs[0]
-            scored = [
-                (_cosine(q_vec, vecs[i + 1]), candidates[i])
-                for i in range(len(candidates))
-            ]
-            scored.sort(key=lambda x: x[0], reverse=True)
-            return [text for _, text in scored[:top_k]]
-        except Exception as exc:
-            logger.warning("[rerank] OpenAI API 호출 실패, keyword fallback: %s", exc)
+    if not deduped:
+        return []
 
-    # fallback: keyword overlap
-    scored = [(_keyword_score(item_context, c), c) for c in candidates]
-    scored.sort(key=lambda x: x[0], reverse=True)
-    return [text for _, text in scored[:top_k]]
+    reranker = get_reranker()
+    clean_candidates = [_strip_segment_prefix(_candidate_text(candidate)) for candidate in deduped]
+
+    try:
+        if reranker is not None:
+            scores = reranker.score(item_context, clean_candidates)
+        else:
+            scores = _simple_keyword_scores(item_context, deduped)
+    except Exception:
+        scores = _simple_keyword_scores(item_context, deduped)
+
+    ranked = sorted(
+        zip(deduped, scores),
+        key=lambda item: (-float(item[1]), -float(item[0].get("local_score", 0.0)) if isinstance(item[0], dict) else 0.0),
+    )
+
+    output = []
+    for candidate, score in ranked[:top_k]:
+        if isinstance(candidate, dict):
+            enriched = dict(candidate)
+            enriched["rerank_score"] = round(float(score), 4)
+            output.append(enriched)
+        else:
+            output.append({"span_text": _candidate_text(candidate), "rerank_score": round(float(score), 4)})
+
+    return output
