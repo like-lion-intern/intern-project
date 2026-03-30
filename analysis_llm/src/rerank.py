@@ -1,9 +1,9 @@
 # rerank.py
 from __future__ import annotations
 
-from typing import List
-import re
 import os
+import re
+from typing import Any, List
 
 from dotenv import load_dotenv
 
@@ -14,7 +14,7 @@ try:
     import torch
     import torch.nn.functional as F
     from torch import Tensor
-    from transformers import AutoTokenizer, AutoModel
+    from transformers import AutoModel, AutoTokenizer
 except Exception:
     _TRANSFORMERS_AVAILABLE = False
     torch = None
@@ -26,6 +26,12 @@ except Exception:
 
 def _normalize_text(text: str) -> str:
     return re.sub(r"\s+", " ", str(text)).strip()
+
+
+def _candidate_text(candidate: Any) -> str:
+    if isinstance(candidate, dict):
+        return _normalize_text(candidate.get("span_text", ""))
+    return _normalize_text(candidate)
 
 
 def average_pool(last_hidden_states: "Tensor", attention_mask: "Tensor") -> "Tensor":
@@ -68,18 +74,14 @@ class E5Reranker:
         embeddings = F.normalize(embeddings, p=2, dim=1)
         return embeddings
 
-    def rerank(self, query: str, passages: List[str], top_k: int = 3) -> List[str]:
+    def score(self, query: str, passages: List[str]) -> List[float]:
         if not passages:
             return []
-        if len(passages) <= top_k:
-            return passages[:top_k]
 
         query_emb = self.get_embeddings([query], input_type="query")
         passage_embs = self.get_embeddings(passages, input_type="passage")
-
         scores = (query_emb @ passage_embs.T).squeeze(0)
-        top_indices = torch.topk(scores, min(top_k, len(passages))).indices.tolist()
-        return [passages[i] for i in top_indices]
+        return scores.tolist()
 
 
 _reranker = None
@@ -106,68 +108,61 @@ def _strip_segment_prefix(text: str) -> str:
     return text
 
 
-def _simple_keyword_rerank(query: str, candidates: List[str], top_k: int = 3) -> List[str]:
+def _simple_keyword_scores(query: str, candidates: List[Any]) -> List[float]:
     query_terms = set(re.findall(r"[가-힣A-Za-z0-9]+", query.lower()))
-    scored = []
+    scores: List[float] = []
 
-    for idx, cand in enumerate(candidates):
-        clean = _strip_segment_prefix(cand).lower()
+    for candidate in candidates:
+        clean = _strip_segment_prefix(_candidate_text(candidate)).lower()
         cand_terms = set(re.findall(r"[가-힣A-Za-z0-9]+", clean))
         overlap = len(query_terms & cand_terms)
-
-        # 길이가 너무 짧은 근거는 살짝 불리하게
         length_bonus = min(len(clean) / 100.0, 1.0)
-        score = overlap + 0.1 * length_bonus
+        local_bonus = 0.05 * float(candidate.get("local_score", 0.0)) if isinstance(candidate, dict) else 0.0
+        scores.append(overlap + 0.1 * length_bonus + local_bonus)
 
-        scored.append((score, idx, cand))
-
-    scored.sort(key=lambda x: (-x[0], x[1]))
-    return [cand for _, _, cand in scored[:top_k]]
+    return scores
 
 
-def rerank_evidence(item_context: str, candidates: List[str], top_k: int = 3) -> List[str]:
+def rerank_evidence(item_context: str, candidates: List[Any], top_k: int = 3) -> List[Any]:
     if not candidates:
         return []
 
-    deduped = []
+    deduped: List[Any] = []
     seen = set()
-    for c in candidates:
-        norm = _normalize_text(c)
-        if norm and norm not in seen:
-            seen.add(norm)
-            deduped.append(c)
+    for candidate in candidates:
+        text = _candidate_text(candidate)
+        polarity = candidate.get("polarity", "") if isinstance(candidate, dict) else ""
+        dedupe_key = (text, polarity)
+        if text and dedupe_key not in seen:
+            seen.add(dedupe_key)
+            deduped.append(candidate)
 
-    if len(deduped) <= top_k:
-        return deduped[:top_k]
+    if not deduped:
+        return []
 
     reranker = get_reranker()
-
-    if reranker is None:
-        return _simple_keyword_rerank(item_context, deduped, top_k=top_k)
-
-    original_map = []
-    clean_candidates = []
-    for c in deduped:
-        cleaned = _strip_segment_prefix(c)
-        original_map.append((cleaned, c))
-        clean_candidates.append(cleaned)
+    clean_candidates = [_strip_segment_prefix(_candidate_text(candidate)) for candidate in deduped]
 
     try:
-        top_results = reranker.rerank(item_context, clean_candidates, top_k=top_k)
+        if reranker is not None:
+            scores = reranker.score(item_context, clean_candidates)
+        else:
+            scores = _simple_keyword_scores(item_context, deduped)
     except Exception:
-        return _simple_keyword_rerank(item_context, deduped, top_k=top_k)
+        scores = _simple_keyword_scores(item_context, deduped)
 
-    final_output = []
-    used = set()
-    for res in top_results:
-        res_norm = _normalize_text(res)
-        for cleaned, original in original_map:
-            if _normalize_text(cleaned) == res_norm and original not in used:
-                final_output.append(original)
-                used.add(original)
-                break
+    ranked = sorted(
+        zip(deduped, scores),
+        key=lambda item: (-float(item[1]), -float(item[0].get("local_score", 0.0)) if isinstance(item[0], dict) else 0.0),
+    )
 
-    if not final_output:
-        return _simple_keyword_rerank(item_context, deduped, top_k=top_k)
+    output = []
+    for candidate, score in ranked[:top_k]:
+        if isinstance(candidate, dict):
+            enriched = dict(candidate)
+            enriched["rerank_score"] = round(float(score), 4)
+            output.append(enriched)
+        else:
+            output.append({"span_text": _candidate_text(candidate), "rerank_score": round(float(score), 4)})
 
-    return final_output[:top_k]
+    return output
