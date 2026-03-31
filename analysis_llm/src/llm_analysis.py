@@ -146,8 +146,10 @@ def is_korean_text(text: str) -> bool:
     total = len(cleaned)
     korean = len(re.findall(r"[가-힣ㄱ-ㅎㅏ-ㅣ]", cleaned))
     english = len(re.findall(r"[A-Za-z]", cleaned))
+    korean_ratio = korean / total
+    english_ratio = english / total
 
-    return (korean / total) >= 0.85 and english == 0
+    return korean_ratio >= 0.8 and english_ratio <= 0.15
 
 
 def strip_markdown_codeblock(raw_text: str) -> str:
@@ -161,6 +163,77 @@ def strip_markdown_codeblock(raw_text: str) -> str:
         raw_text = "\n".join(lines).strip()
 
     return raw_text
+
+
+def _extract_json_object(raw_text: str) -> str:
+    raw_text = strip_markdown_codeblock(raw_text).strip()
+    if not raw_text:
+        raise ValueError("empty response")
+
+    start = raw_text.find("{")
+    if start < 0:
+        raise ValueError("json object start not found")
+
+    depth = 0
+    in_string = False
+    escaped = False
+
+    for idx in range(start, len(raw_text)):
+        ch = raw_text[idx]
+        if in_string:
+            if escaped:
+                escaped = False
+            elif ch == "\\":
+                escaped = True
+            elif ch == '"':
+                in_string = False
+            continue
+
+        if ch == '"':
+            in_string = True
+        elif ch == "{":
+            depth += 1
+        elif ch == "}":
+            depth -= 1
+            if depth == 0:
+                return raw_text[start : idx + 1]
+
+    # 닫는 괄호를 못 찾았으면 마지막 JSON 시작부터 끝까지라도 반환해 후속 보정 시도
+    return raw_text[start:].strip()
+
+
+def _parse_curriculum_match_response(raw_text: str) -> dict:
+    json_text = _extract_json_object(raw_text)
+
+    try:
+        parsed = json.loads(json_text)
+    except json.JSONDecodeError:
+        # 가장 흔한 실패는 reason 문자열이 길어져 일부가 잘린 경우다.
+        score_match = re.search(r'"score"\s*:\s*(\d+)', json_text)
+        reason_match = re.search(r'"reason"\s*:\s*"([\s\S]*)', json_text)
+        if not score_match:
+            raise
+
+        reason = ""
+        if reason_match:
+            reason = reason_match.group(1)
+            reason = reason.replace('\\"', '"').replace("\\n", " ")
+            reason = reason.split('"}', 1)[0].strip()
+            reason = reason.rstrip('",} ')
+
+        parsed = {
+            "score": int(score_match.group(1)),
+            "reason": reason or "응답 파싱 보정",
+        }
+
+    if not isinstance(parsed, dict):
+        raise ValueError("curriculum response is not a dict")
+    if "score" not in parsed:
+        raise ValueError("curriculum response missing score")
+    if "reason" not in parsed:
+        raise ValueError("curriculum response missing reason")
+
+    return parsed
 
 
 def generate_analysis_response(prompt: str):
@@ -204,16 +277,42 @@ def analyze_items(
         indent=2,
     )
 
-    # 프롬프트 크기 절감: context 각 1개로 트리밍, span_text 100자 제한
+    # 프롬프트 크기 절감: evidence를 polarity별로 유지하되 각 그룹 상위 1개만 남긴다.
     trimmed_evidence = {}
     for item_name, evs in evidence_by_item.items():
-        trimmed_evidence[item_name] = [
-            {
-                "span_text": ev.get("span_text", "")[:100],
-                "context_before": ev.get("context_before", [])[-1:],
+        if isinstance(evs, dict):
+            trimmed_evidence[item_name] = {
+                "supporting_evidence": [
+                    {
+                        "span_text": ev.get("span_text", "")[:100],
+                        "context_before": ev.get("context_before", [])[-1:],
+                        "evidence_type": ev.get("evidence_type", ""),
+                        "evidence_types": ev.get("evidence_types", []),
+                        "polarity": ev.get("polarity", ""),
+                        "rerank_score": ev.get("rerank_score", 0.0),
+                    }
+                    for ev in evs.get("supporting_evidence", [])[:1]
+                ],
+                "contrary_evidence": [
+                    {
+                        "span_text": ev.get("span_text", "")[:100],
+                        "context_before": ev.get("context_before", [])[-1:],
+                        "evidence_type": ev.get("evidence_type", ""),
+                        "evidence_types": ev.get("evidence_types", []),
+                        "polarity": ev.get("polarity", ""),
+                        "rerank_score": ev.get("rerank_score", 0.0),
+                    }
+                    for ev in evs.get("contrary_evidence", [])[:1]
+                ],
             }
-            for ev in evs[:1]
-        ]
+        else:
+            trimmed_evidence[item_name] = [
+                {
+                    "span_text": ev.get("span_text", "")[:100],
+                    "context_before": ev.get("context_before", [])[-1:],
+                }
+                for ev in evs[:1]
+            ]
 
     evidence_json = json.dumps(
         trimmed_evidence,
@@ -270,6 +369,7 @@ def analyze_items(
 
 1. 분석의 주된 근거는 정량적 피쳐(features)와 실제 발화 텍스트(evidence의 span_text, context)입니다.
    시그널(signals)은 수치 힌트로만 참고하고, 최종 판단은 실제 발화 내용과 정량 피쳐를 우선합니다.
+   supporting_evidence는 긍정 근거, contrary_evidence는 문제 근거이므로 polarity를 구분해서 해석하십시오.
 
 2. 정량적 피쳐에서 아래 수치를 반드시 확인하고 분석에 반영합니다:
    - 담화표지어 밀도(1000토큰당): 높을수록 불필요한 반복 표현 취약
@@ -488,31 +588,51 @@ def analyze_curriculum_match(
 반드시 아래 JSON 형식으로만 응답하십시오. 마크다운 코드블록 없이:
 {{"score": 85, "reason": "한국어로 작성된 이유. 어떤 내용이 일치하고 어떤 내용이 다른지 구체적으로 서술."}}"""
 
+    last_error = None
+    working_prompt = prompt
+
+    for attempt in range(3):
+        try:
+            response = client.models.generate_content(
+                model=MODEL_NAME,
+                contents=working_prompt,
+                config=types.GenerateContentConfig(
+                    temperature=0.1,
+                    max_output_tokens=512,
+                    response_mime_type="application/json",
+                ),
+            )
+            parsed = _parse_curriculum_match_response(response.text)
+
+            score = int(parsed.get("score", 0))
+            reason = str(parsed.get("reason", "")).strip()
+
+            if not reason:
+                reason = "일치도 판단 사유가 비어 있습니다."
+
+            return {
+                "score": max(0, min(100, score)),
+                "reason": reason,
+            }
+        except Exception as e:
+            last_error = e
+            working_prompt += """
+
+[재강조]
+이전 응답은 JSON 형식이 깨졌습니다.
+반드시 아래 형식의 JSON 객체 하나만 반환하십시오.
+{"score": 85, "reason": "한국어 설명"}
+추가 설명, 코드블록, 줄바꿈 설명문을 넣지 마십시오.
+"""
+
     try:
-        response = client.models.generate_content(
-            model=MODEL_NAME,
-            contents=prompt,
-            config=types.GenerateContentConfig(
-                temperature=0.1,
-                max_output_tokens=512,
-            ),
-        )
-        raw = strip_markdown_codeblock(response.text)
-        parsed = json.loads(raw)
-
-        score = int(parsed.get("score", 0))
-        reason = str(parsed.get("reason", ""))
-
-        return {
-            "score": max(0, min(100, score)),
-            "reason": reason,
-        }
-    except Exception as e:
         print(
-            f"[llm_analysis] 커리큘럼 일치도 분석 실패: {type(e).__name__}: {e}",
+            f"[llm_analysis] 커리큘럼 일치도 분석 실패: {type(last_error).__name__}: {last_error}",
             file=sys.stderr,
         )
-        return {"score": None, "reason": "분석 실패"}
+    except Exception:
+        pass
+    return {"score": None, "reason": "분석 실패"}
 
 
 def run_analysis(
