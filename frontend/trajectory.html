@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>강의 궤적 분석</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #f5f7fa;
+      --white: #ffffff;
+      --border: #e4e8ef;
+      --accent: #5b5ef6;
+      --accent-light: #eeecff;
+      --text: #111827;
+      --text-sub: #4b5563;
+      --text-muted: #9ca3af;
+      --red: #dc2626;
+      --green: #16a34a;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+      --radius: 14px;
+    }
+    body {
+      font-family: 'Pretendard', -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+    nav {
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+    .nav-logo {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+    }
+    .nav-badge {
+      font-size: 0.7rem;
+      background: var(--accent-light);
+      color: var(--accent);
+      padding: 2px 8px;
+      border-radius: 99px;
+      font-weight: 600;
+    }
+    .nav-actions { display: flex; gap: 8px; }
+    .btn {
+      padding: 8px 14px;
+      border: 1px solid var(--border);
+      background: var(--white);
+      border-radius: 8px;
+      font-size: 0.84rem;
+      font-weight: 600;
+      color: var(--text-sub);
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .btn.primary {
+      border-color: #c7c9fb;
+      background: var(--accent);
+      color: #fff;
+    }
+    .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+    .spinner {
+      width: 12px;
+      height: 12px;
+      border: 2px solid currentColor;
+      border-top-color: transparent;
+      border-radius: 50%;
+      display: inline-block;
+      animation: spin .7s linear infinite;
+      vertical-align: -2px;
+      margin-right: 6px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .page {
+      max-width: 980px;
+      margin: 28px auto;
+      padding: 0 20px 56px;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+    .header h1 { font-size: 1.4rem; font-weight: 800; }
+    .muted { color: var(--text-muted); font-size: 0.86rem; }
+
+    .card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
+      padding: 18px;
+      margin-bottom: 14px;
+    }
+    .section-title {
+      font-size: 0.9rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: var(--text-sub);
+    }
+    .status-panel {
+      border: 1px solid #d9def8;
+      background: #f7f8ff;
+      border-radius: 10px;
+      padding: 12px 14px;
+      margin-top: 10px;
+      font-size: 0.88rem;
+      color: var(--text-sub);
+      line-height: 1.45;
+    }
+    .status-panel strong { color: #3730a3; }
+
+    .kv {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+    @media(max-width:700px){ .kv { grid-template-columns: 1fr; } }
+    .kv .item {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px;
+      background: #fafbff;
+    }
+    .kv .k { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 4px; }
+    .kv .v { font-size: 0.95rem; font-weight: 700; }
+
+    ul.list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+    ul.list li {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 0.88rem;
+      line-height: 1.45;
+    }
+    .chip {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 700;
+      border-radius: 999px;
+      padding: 3px 8px;
+      margin-right: 6px;
+      background: #eef2ff;
+      color: #3730a3;
+    }
+    .danger { color: var(--red); }
+    .ok { color: var(--green); }
+
+    .toast {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 14px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+      display: none;
+      z-index: 100;
+      font-size: 0.86rem;
+      max-width: 340px;
+    }
+    .toast.error { color: var(--red); border-color: var(--red); }
+  </style>
+</head>
+<body>
+  <nav>
+    <a class="nav-logo" href="/site/index.html">🎓 강의 분석 시스템 <span class="nav-badge">AI Report</span></a>
+    <div class="nav-actions">
+      <a class="btn" href="/site/report.html">리포트</a>
+      <a class="btn" href="/site/index.html">업로드</a>
+    </div>
+  </nav>
+
+  <div class="page">
+    <div class="header">
+      <div>
+        <h1>📈 강의 궤적 분석</h1>
+        <div class="muted" id="metaPath">trajectory 파일 경로: -</div>
+      </div>
+      <div style="display:flex; gap:8px;">
+        <button class="btn" id="loadBtn">최신 불러오기</button>
+        <button class="btn primary" id="rebuildBtn">다시 생성</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-title">생성 기준 데이터</div>
+      <div class="kv" id="summaryGrid">
+        <div class="item"><div class="k">사용 가능 강의</div><div class="v" id="availableCount">-</div></div>
+        <div class="item"><div class="k">데이터 날짜 범위</div><div class="v" id="availableRange">-</div></div>
+        <div class="item"><div class="k">저장된 trajectory</div><div class="v" id="trajectoryFileCount">-</div></div>
+      </div>
+      <div class="status-panel" id="buildStatus">현재 상태를 불러오는 중입니다.</div>
+    </div>
+
+    <div class="card">
+      <div class="section-title">분석 기간</div>
+      <div class="kv" id="periodGrid"></div>
+    </div>
+
+    <div class="card">
+      <div class="section-title">반복 취약 패턴</div>
+      <ul class="list" id="weakList"></ul>
+    </div>
+
+    <div class="card">
+      <div class="section-title">카테고리 성장/퇴보 추이</div>
+      <ul class="list" id="trendList"></ul>
+    </div>
+
+    <div class="card">
+      <div class="section-title">커리큘럼 일치도 추이</div>
+      <ul class="list" id="curriculumList"></ul>
+    </div>
+
+    <div class="card">
+      <div class="section-title">과목 전환 영향</div>
+      <ul class="list" id="transitionList"></ul>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const API = '/api/v1';
+    let availableLectureCount = 0;
+    let generating = false;
+
+    function showToast(msg, isError) {
+      const el = document.getElementById('toast');
+      el.textContent = msg;
+      el.className = 'toast' + (isError ? ' error' : '');
+      el.style.display = 'block';
+      setTimeout(() => { el.style.display = 'none'; }, 3500);
+    }
+
+    async function parseApiBody(res) {
+      const t = await res.text();
+      if (!t) return {};
+      try { return JSON.parse(t); } catch { return { detail: t }; }
+    }
+
+    function errMsg(payload, res) {
+      if (payload && typeof payload === 'object') {
+        if (typeof payload.detail === 'string') return payload.detail;
+        if (typeof payload.error === 'string') return payload.error;
+      }
+      return `HTTP ${res.status} ${res.statusText}`;
+    }
+
+    function setList(id, items, fallback) {
+      const el = document.getElementById(id);
+      if (!items || !items.length) {
+        el.innerHTML = `<li>${fallback}</li>`;
+        return;
+      }
+      el.innerHTML = items.join('');
+    }
+
+    function setGenerating(isGenerating, statusText) {
+      generating = isGenerating;
+      const rebuildBtn = document.getElementById('rebuildBtn');
+      const loadBtn = document.getElementById('loadBtn');
+      rebuildBtn.disabled = isGenerating || availableLectureCount <= 0;
+      loadBtn.disabled = isGenerating;
+      rebuildBtn.innerHTML = isGenerating ? '<span class="spinner"></span>생성 중...' : '다시 생성';
+      if (statusText) {
+        document.getElementById('buildStatus').innerHTML = statusText;
+      }
+    }
+
+    function renderSummary(summary) {
+      const count = Number(summary?.available_lecture_count ?? 0);
+      availableLectureCount = Number.isFinite(count) ? count : 0;
+      const start = summary?.date_range?.start_date || '-';
+      const end = summary?.date_range?.end_date || '-';
+      const files = summary?.trajectory_file_count ?? 0;
+      const latest = summary?.latest_trajectory_exists
+        ? '최신 trajectory가 존재합니다.'
+        : '아직 생성된 trajectory가 없습니다.';
+
+      document.getElementById('availableCount').textContent = `${availableLectureCount}개`;
+      document.getElementById('availableRange').textContent = `${start} ~ ${end}`;
+      document.getElementById('trajectoryFileCount').textContent = `${files}개`;
+
+      if (availableLectureCount <= 0) {
+        setGenerating(false, '궤적 분석에 사용할 강의 결과가 없습니다. 먼저 강의 분석을 실행해 주세요.');
+      } else if (!generating) {
+        setGenerating(false, `현재 <strong>${availableLectureCount}개 강의</strong>를 기준으로 궤적 분석을 생성할 수 있습니다. ${latest}`);
+      }
+    }
+
+    function render(payload) {
+      const t = payload?.trajectory || payload || {};
+      document.getElementById('metaPath').textContent = 'trajectory 파일 경로: ' + (payload?.path || '-');
+
+      const p = t.analysis_period || {};
+      document.getElementById('periodGrid').innerHTML = `
+        <div class="item"><div class="k">시작일</div><div class="v">${p.start_date || '-'}</div></div>
+        <div class="item"><div class="k">종료일</div><div class="v">${p.end_date || '-'}</div></div>
+        <div class="item"><div class="k">강의 수</div><div class="v">${p.total_lectures ?? '-'}</div></div>
+      `;
+
+      const weak = (t.weak_patterns || []).map((w) =>
+        `<li><span class="chip danger">${w.item_name || '-'}</span> weak ${w.weak_count ?? '-'} / ${w.total_count ?? '-'} · conf ${w.avg_confidence ?? '-'}<br>${w.pattern_description || ''}</li>`
+      );
+      setList('weakList', weak, '취약 패턴 데이터가 없습니다.');
+
+      const trends = (t.growth_trends || []).map((g) =>
+        `<li><span class="chip">${g.category_name || '-'}</span> ${g.trend || '-'} · ${Array.isArray(g.score_range) ? g.score_range.join(' ~ ') : '-'}<br>${g.notable_changes || ''}</li>`
+      );
+      setList('trendList', trends, '추이 데이터가 없습니다.');
+
+      const ca = t.curriculum_alignment || {};
+      const low = (ca.low_score_dates || []).map((d) =>
+        `<li><span class="chip danger">${d.date || '-'}</span> score ${d.score ?? '-'}<br>${d.reason || ''}</li>`
+      );
+      const cItems = [
+        `<li><span class="chip ok">평균 일치도</span> ${ca.avg_score ?? '-'}</li>`,
+        `<li><span class="chip">전체 패턴</span> ${ca.overall_pattern || '-'}</li>`,
+        ...low,
+      ];
+      setList('curriculumList', cItems, '커리큘럼 데이터가 없습니다.');
+
+      const trans = (t.subject_transitions || []).map((s) =>
+        `<li><span class="chip">${s.from_subject || '-'} → ${s.to_subject || '-'}</span> (${s.transition_date || '-'})<br>${s.adaptation_note || ''}</li>`
+      );
+      setList('transitionList', trans, 'subject 전환 데이터가 없습니다.');
+    }
+
+    async function loadSummary() {
+      const res = await fetch(`${API}/trajectory/summary`);
+      const data = await parseApiBody(res);
+      if (!res.ok) throw new Error(errMsg(data, res));
+      renderSummary(data);
+      return data;
+    }
+
+    async function loadLatest() {
+      const res = await fetch(`${API}/trajectory/latest`);
+      const data = await parseApiBody(res);
+      if (!res.ok) throw new Error(errMsg(data, res));
+      render(data);
+      showToast('최신 trajectory를 불러왔습니다.');
+    }
+
+    async function rebuild() {
+      if (availableLectureCount <= 0) {
+        showToast('분석 가능한 강의 데이터가 없어 궤적을 생성할 수 없습니다.', true);
+        return;
+      }
+
+      setGenerating(true, `<strong>${availableLectureCount}개 강의</strong>를 기반으로 trajectory를 생성하는 중입니다. 최대 수십 초가 걸릴 수 있습니다.`);
+      try {
+        const res = await fetch(`${API}/trajectory/rebuild`, { method: 'POST' });
+        const data = await parseApiBody(res);
+        if (!res.ok) throw new Error(errMsg(data, res));
+        render(data);
+        await loadSummary();
+        setGenerating(false, `<strong>${availableLectureCount}개 강의</strong> 기반 trajectory 생성이 완료되었습니다.`);
+        showToast('trajectory를 다시 생성했습니다.');
+      } catch (e) {
+        setGenerating(false, 'trajectory 생성에 실패했습니다. 잠시 후 다시 시도해 주세요.');
+        throw e;
+      }
+    }
+
+    document.getElementById('loadBtn').addEventListener('click', async () => {
+      try {
+        await loadSummary();
+        await loadLatest();
+      } catch (e) {
+        showToast('불러오기 실패: ' + e.message, true);
+      }
+    });
+    document.getElementById('rebuildBtn').addEventListener('click', async () => {
+      try { await rebuild(); } catch (e) { showToast('생성 실패: ' + e.message, true); }
+    });
+
+    (async () => {
+      try {
+        await loadSummary();
+      } catch (e) {
+        showToast('요약 정보 로드 실패: ' + e.message, true);
+      }
+      try {
+        await loadLatest();
+      } catch (e) {
+        showToast('최신 trajectory 없음: ' + e.message, true);
+      }
+    })();
+  </script>
+</body>
+</html>
