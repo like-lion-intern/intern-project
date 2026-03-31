@@ -981,7 +981,7 @@ def calculate_signals(features_data: Dict[str, Any], chunks_data: Dict[str, Any]
             rule_name="이해 확인 질문",
             rule_groups=["strong", "weak"],
             validator=_is_question_like,
-            allow_weak_fallback=False,
+            allow_weak_fallback=True,
             debug_tracker=validator_debug,
             debug_key="이해 확인 질문",
         )
@@ -1003,7 +1003,7 @@ def calculate_signals(features_data: Dict[str, Any], chunks_data: Dict[str, Any]
             rule_name="참여 유도",
             rule_groups=["strong", "weak"],
             validator=_is_participation_prompt,
-            allow_weak_fallback=False,
+            allow_weak_fallback=True,
             debug_tracker=validator_debug,
             debug_key="참여 유도",
         )
@@ -1015,7 +1015,7 @@ def calculate_signals(features_data: Dict[str, Any], chunks_data: Dict[str, Any]
             rule_name="질문 응답 충분성",
             rule_groups=["strong", "weak"],
             validator=_is_question_answer_like,
-            allow_weak_fallback=False,
+            allow_weak_fallback=True,
             debug_tracker=validator_debug,
             debug_key="질문 응답 충분성",
         )
@@ -1281,4 +1281,3 @@ def calculate_signals(features_data: Dict[str, Any], chunks_data: Dict[str, Any]
         "segments": segments,
         "validator_debug": validator_debug,
     }
-

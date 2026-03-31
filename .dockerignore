@@ -1,0 +1,24 @@
+.venv/
+.env
+.envrc
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+ENV/
+*.log
+.DS_Store
+.git/
+.gitignore
+
+project-data/
+outputs/
+stt_log_removed/
+prepare_code/
+tmp_uploads/
+
+# 도커 내에서도 캐싱 관리를 하기 위해 불필요하게 넘기지 않습니다
+.cache/
