@@ -16,7 +16,7 @@ if not _api_key:
     raise ValueError("GOOGLE_API_KEY가 .env에 설정되어 있지 않습니다.")
 
 client = genai.Client(api_key=_api_key)
-MODEL_NAME = os.getenv("GEMINI_MODEL", "gemini-2.0-flash")
+MODEL_NAME = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
 
 VALID_LABELS = {"strong", "neutral", "weak"}
 
@@ -37,8 +37,9 @@ SYSTEM_PROMPT = """당신은 강의 품질 진단 전문가입니다.
 4) span_text (입력 원문 인용)
 
 중요:
-- reason 필드는 반드시 자연스러운 한국어 문장으로 작성
-- 외국어가 한 글자라도 섞이면 실패한 응답
+- reason 필드는 자연스러운 한국어 문장으로 작성
+- 한국어 문맥과 무관한 외국 문자(예: 벵골어 등)가 섞이면 실패한 응답
+- DB, API 같은 기술 약어는 예외적으로 허용
 
 출력 규칙:
 - 반드시 JSON 객체만 반환
@@ -126,41 +127,54 @@ def localize_keys(obj):
         return obj
 
 
-ALLOWED_ENGLISH_TOKENS = {"strong", "neutral", "weak"}
+ALLOWED_ENGLISH_TOKENS = {
+    "strong", "neutral", "weak",
+    "db", "api", "sql", "python", "llm", "cnn", "ml",
+    "segment", "segments", "json"
+}
 
 def sanitize_reason(text: str) -> str:
     if not text:
         return ""
 
     allowed_punct = set(" \t\n\r.,!?;:()[]{}-–—_/&%+*=~<>|@#`'\"·…")
+
     cleaned = []
     for ch in text:
         code = ord(ch)
-        if 0xAC00 <= code <= 0xD7A3:  # Hangul
+
+        # 한글
+        if 0xAC00 <= code <= 0xD7A3:
             cleaned.append(ch)
-        elif 0x0041 <= code <= 0x005A or 0x0061 <= code <= 0x007A:  # English
+        # 영문
+        elif 0x0041 <= code <= 0x005A or 0x0061 <= code <= 0x007A:
             cleaned.append(ch)
-        elif 0x0030 <= code <= 0x0039:  # number
+        # 숫자
+        elif 0x0030 <= code <= 0x0039:
             cleaned.append(ch)
+        # 공백/기호
         elif ch in allowed_punct:
             cleaned.append(ch)
         else:
+            # 뱅갈어 같은 이상 문자 제거
             cleaned.append(" ")
 
     return " ".join("".join(cleaned).split())
 
 
-def is_korean_text(text: str) -> bool:
+def is_valid_reason_text(text: str) -> bool:
     if not text or not text.strip():
         return True
 
-    normalized = sanitize_reason(text).lower()
+    sanitized = sanitize_reason(text)
+    if not sanitized:
+        return False
 
-    # 허용된 영어 토큰만 제거
+    lowered = sanitized.lower()
     for token in ALLOWED_ENGLISH_TOKENS:
-        normalized = normalized.replace(token, "")
+        lowered = lowered.replace(token, "")
 
-    cleaned = re.sub(r"[0-9\s\.,:;!\?\-\(\)\"'/%~·…]+", "", normalized)
+    cleaned = re.sub(r"[0-9\s\.,:;!\?\-\(\)\"'/%~·…_/&%+*=<>\[\]{}|@#`]+", "", lowered)
 
     if not cleaned:
         return True
@@ -168,30 +182,9 @@ def is_korean_text(text: str) -> bool:
     total = len(cleaned)
     korean = len(re.findall(r"[가-힣ㄱ-ㅎㅏ-ㅣ]", cleaned))
     english = len(re.findall(r"[A-Za-z]", cleaned))
-    korean_ratio = korean / total
-    english_ratio = english / total
 
-    return korean_ratio >= 0.8 and english_ratio <= 0.15
-
-
-def safe_parse_json_object(raw_text: str) -> dict:
-    raw_text = strip_markdown_codeblock(raw_text).strip()
-    try:
-        return json.loads(raw_text)
-    except Exception:
-        pass
-
-    start = raw_text.find("{")
-    end = raw_text.rfind("}")
-    if start != -1:
-        candidate = raw_text[start : end + 1] if (end != -1 and end > start) else (raw_text[start:] + "}")
-        try:
-            return json.loads(candidate)
-        except Exception:
-            if candidate.count('"') % 2 != 0:
-                candidate = raw_text[start:] + '"}'
-                return json.loads(candidate)
-    raise ValueError(f"JSON object not found or invalid in response: {raw_text}")
+    # 영문이 조금 섞여도 허용, 대신 한글이 주가 되어야 함
+    return (korean / total) >= 0.6 and english <= max(3, total * 0.4)
 
 
 def strip_markdown_codeblock(raw_text: str) -> str:
@@ -207,75 +200,54 @@ def strip_markdown_codeblock(raw_text: str) -> str:
     return raw_text
 
 
-def _extract_json_object(raw_text: str) -> str:
-    raw_text = strip_markdown_codeblock(raw_text).strip()
-    if not raw_text:
-        raise ValueError("empty response")
+def safe_parse_json_object(text: str) -> dict:
+    text = strip_markdown_codeblock(text).strip()
 
-    start = raw_text.find("{")
-    if start < 0:
-        raise ValueError("json object start not found")
-
-    depth = 0
-    in_string = False
-    escaped = False
-
-    for idx in range(start, len(raw_text)):
-        ch = raw_text[idx]
-        if in_string:
-            if escaped:
-                escaped = False
-            elif ch == "\\":
-                escaped = True
-            elif ch == '"':
-                in_string = False
-            continue
-
-        if ch == '"':
-            in_string = True
-        elif ch == "{":
-            depth += 1
-        elif ch == "}":
-            depth -= 1
-            if depth == 0:
-                return raw_text[start : idx + 1]
-
-    # 닫는 괄호를 못 찾았으면 마지막 JSON 시작부터 끝까지라도 반환해 후속 보정 시도
-    return raw_text[start:].strip()
-
-
-def _parse_curriculum_match_response(raw_text: str) -> dict:
-    json_text = _extract_json_object(raw_text)
-
+    # 전체 파싱 시도
     try:
-        parsed = json.loads(json_text)
-    except json.JSONDecodeError:
-        # 가장 흔한 실패는 reason 문자열이 길어져 일부가 잘린 경우다.
-        score_match = re.search(r'"score"\s*:\s*(\d+)', json_text)
-        reason_match = re.search(r'"reason"\s*:\s*"([\s\S]*)', json_text)
-        if not score_match:
-            raise
+        return json.loads(text)
+    except Exception:
+        pass
 
-        reason = ""
-        if reason_match:
-            reason = reason_match.group(1)
-            reason = reason.replace('\\"', '"').replace("\\n", " ")
-            reason = reason.split('"}', 1)[0].strip()
-            reason = reason.rstrip('",} ')
+    start = text.find("{")
+    end = text.rfind("}")
+    
+    if start != -1:
+        if end != -1 and end > start:
+            candidate = text[start:end+1]
+        else:
+            # 닫는 괄호가 없으면 일단 붙여봄
+            candidate = text[start:] + "}"
+        
+        try:
+            return json.loads(candidate)
+        except Exception:
+            # 따옴표가 안 닫힌 경우
+            if candidate.count('"') % 2 != 0:
+                candidate = text[start:] + '"}'
+                try:
+                    return json.loads(candidate)
+                except Exception:
+                    pass
 
-        parsed = {
-            "score": int(score_match.group(1)),
-            "reason": reason or "응답 파싱 보정",
-        }
+    raise ValueError(f"JSON object not found or invalid in response: {text}")
 
-    if not isinstance(parsed, dict):
-        raise ValueError("curriculum response is not a dict")
-    if "score" not in parsed:
-        raise ValueError("curriculum response missing score")
-    if "reason" not in parsed:
-        raise ValueError("curriculum response missing reason")
 
-    return parsed
+def fallback_parse_score_reason(text: str) -> dict:
+    score_match = re.search(r'"score"\s*:\s*(\d+)', text)
+    # "reason" 의 값을 추출 (마지막까지 매칭)
+    reason_match = re.search(r'"reason"\s*:\s*"([^"]*)', text, re.DOTALL)
+
+    if not score_match:
+        raise ValueError("score not found via fallback regex")
+
+    score = int(score_match.group(1))
+    reason = reason_match.group(1).strip() if reason_match else "이유 추출 실패"
+
+    return {
+        "score": score,
+        "reason": reason
+    }
 
 
 def generate_analysis_response(prompt: str):
@@ -319,7 +291,7 @@ def analyze_items(
         indent=2,
     )
 
-    # 프롬프트 크기 절감: evidence를 polarity별로 유지하되 각 그룹 상위 1개만 남긴다.
+    # 프롬프트 크기 절감: context 각 1개로 트리밍, span_text 100자 제한
     trimmed_evidence = {}
     for item_name, evs in evidence_by_item.items():
         if isinstance(evs, dict):
@@ -476,8 +448,9 @@ def analyze_items(
      "discourse_marker_per_1k_tokens가 높다" 대신 "담화표지어 밀도가 높다"
    - span_text, context_before는 원문 인용이므로 비한국어가 포함될 수 있으나,
      반드시 reason만큼은 100% 한국어 문장이어야 합니다.
-   - reason에 strong, neutral, weak를 제외한 영문 표현이 들어가면 실패입니다.
-   - reason은 어색한 번역투 문장보다 자연스러운 한국어 설명문으로 작성하십시오.
+   - reason은 기본적으로 자연스러운 한국어 문장으로 작성하십시오.
+   - 다만 DB, API, SQL, Python, LLM, segment 등 불가피한 기술 용어/약어는 허용합니다.
+   - 벵골어, 일본어, 중국어 등 한국어 문맥과 무관한 외국 문자 혼입은 금지합니다.
 
 7. 응답은 아래 JSON 구조만 반환합니다. support_strength 필드는 절대 포함하지 않습니다:
 {{
@@ -503,7 +476,8 @@ def analyze_items(
     for attempt in range(2):
         try:
             response = generate_analysis_response(working_prompt)
-            parsed = safe_parse_json_object(response.text)
+            raw_text = strip_markdown_codeblock(response.text)
+            parsed = json.loads(raw_text)
 
             if not isinstance(parsed, dict):
                 raise ValueError("LLM output is not a dict")
@@ -538,8 +512,8 @@ def analyze_items(
                         raise ValueError("support_strength is not allowed")
 
                     reason = sanitize_reason(str(ev.get("reason", "")))
-                    if not is_korean_text(reason):
-                        raise ValueError(f"Non-Korean reason detected: {reason}")
+                    if not is_valid_reason_text(reason):
+                        raise ValueError(f"Invalid reason detected after sanitization: {reason}")
 
                     cleaned_evidence.append({
                         "span_text": ev.get("span_text", ""),
@@ -626,54 +600,44 @@ def analyze_curriculum_match(
 - 30~49점: 커리큘럼과 부분적으로만 연관, 다른 내용이 많음
 - 0~29점: 커리큘럼과 거의 관련 없는 내용이 강의됨
 
-반드시 아래 JSON 형식으로만 응답하십시오. 마크다운 코드블록 없이:
-{{"score": 85, "reason": "한국어로 작성된 이유. 어떤 내용이 일치하고 어떤 내용이 다른지 구체적으로 서술."}}"""
+반드시 아래 JSON 형식으로만 응답하십시오.
+설명문, 코드블록, 추가 텍스트를 절대 출력하지 마십시오.
+reason은 한국어 1문장 또는 2문장으로만 작성하십시오.
+reason 안에 큰따옴표(")를 사용하지 마십시오.
 
-    last_error = None
-    working_prompt = prompt
-
-    for attempt in range(3):
-        try:
-            response = client.models.generate_content(
-                model=MODEL_NAME,
-                contents=working_prompt,
-                config=types.GenerateContentConfig(
-                    temperature=0.1,
-                    max_output_tokens=512,
-                    response_mime_type="application/json",
-                ),
-            )
-            parsed = _parse_curriculum_match_response(response.text)
-
-            score = int(parsed.get("score", 0))
-            reason = str(parsed.get("reason", "")).strip()
-
-            if not reason:
-                reason = "일치도 판단 사유가 비어 있습니다."
-
-            return {
-                "score": max(0, min(100, score)),
-                "reason": reason,
-            }
-        except Exception as e:
-            last_error = e
-            working_prompt += """
-
-[재강조]
-이전 응답은 JSON 형식이 깨졌습니다.
-반드시 아래 형식의 JSON 객체 하나만 반환하십시오.
-{"score": 85, "reason": "한국어 설명"}
-추가 설명, 코드블록, 줄바꿈 설명문을 넣지 마십시오.
-"""
+{{"score": 85, "reason": "강의 내용은 커리큘럼과 대체로 일치하며 일부 부가 설명이 포함되어 있습니다."}}"""
 
     try:
+        response = client.models.generate_content(
+            model=MODEL_NAME,
+            contents=prompt,
+            config=types.GenerateContentConfig(
+                temperature=0.1,
+                max_output_tokens=2048,
+                response_mime_type="application/json",
+            ),
+        )
+        raw_response = response.text
+        print(f"[curriculum raw response] {raw_response}", file=sys.stderr)
+        
+        try:
+            parsed = safe_parse_json_object(raw_response)
+        except Exception:
+            parsed = fallback_parse_score_reason(raw_response)
+
+        score = int(parsed.get("score", 0))
+        reason = str(parsed.get("reason", ""))
+
+        return {
+            "score": max(0, min(100, score)),
+            "reason": reason,
+        }
+    except Exception as e:
         print(
-            f"[llm_analysis] 커리큘럼 일치도 분석 실패: {type(last_error).__name__}: {last_error}",
+            f"[llm_analysis] 커리큘럼 일치도 분석 실패: {type(e).__name__}: {e}",
             file=sys.stderr,
         )
-    except Exception:
-        pass
-    return {"score": None, "reason": "분석 실패"}
+        return {"score": None, "reason": "분석 실패"}
 
 
 def run_analysis(
