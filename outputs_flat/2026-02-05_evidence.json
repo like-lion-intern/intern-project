@@ -1,0 +1,780 @@
+{
+  "불필요한 반복 표현": {
+    "supporting_evidence": [],
+    "contrary_evidence": [
+      {
+        "span_text": "됐으니까 자 그 다음에 내릴게요 몇 다시 몇이야 9-1 2% 사용해보자 이 정도는 할 수 있어야어 그러면 이거 그냥 가져와 이렇게 답답하니까 여기를 2% 풀면 된다는 거 아니야.",
+        "context_before": [
+          "그래야 문법이 복잡해지지 않는다."
+        ],
+        "evidence_type": "filler_spans, repetition_spans, language_expression_evidence",
+        "evidence_types": [
+          "filler_spans",
+          "repetition_spans",
+          "language_expression_evidence"
+        ],
+        "polarity": "contrary",
+        "matched_keywords": [
+          "그냥",
+          "어",
+          "음",
+          "자",
+          "그러면"
+        ],
+        "segment_id": "seg_33",
+        "chunk_id": "seg_33_chunk_01",
+        "start_ts": "01:39:55",
+        "end_ts": "01:42:01",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_instruction",
+        "local_score": 7.5,
+        "rerank_score": 0.8467
+      },
+      {
+        "span_text": "쭉 가는 거지 그 다음에 여기 이제 뒤로 한 번 더 가겠습니다.",
+        "context_before": [
+          "IF프너은 체크고 그 다음에 IF프문는 조건 트루 퍼스제 마음속으로 정리 좀 해 여기다 마음속으로 정리 아 그냥 똑같지만 그래도 IF은 얼리야 똑같지만 그래도 이건 널값처리 처리용으로 쓰는 거고, IF프는 단위 조건 분기야 단위 조건 분기 그 다음에 스위치 케이스만 얘는 가중 조건 선택문이야 이렇게 이 용도로 쓰는 하나는 IF픈널 그냥 하나는 IF프로 쓰면 되고 얘는 케이스 웬덴 S 엔드까지 외우시면 더 좋고 에이스 엔드까지 외우시면 더 좋고 케이스 왠드 에이스 엔드까지 외우시면 더 좋고 수고하셨"
+        ],
+        "evidence_type": "filler_spans, repetition_spans, language_expression_evidence",
+        "evidence_types": [
+          "filler_spans",
+          "repetition_spans",
+          "language_expression_evidence"
+        ],
+        "polarity": "contrary",
+        "matched_keywords": [
+          "이제",
+          "음"
+        ],
+        "segment_id": "seg_35",
+        "chunk_id": "seg_35_chunk_01",
+        "start_ts": "01:45:04",
+        "end_ts": "01:46:22",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_instruction",
+        "local_score": 3.15,
+        "rerank_score": 0.8437
+      }
+    ]
+  },
+  "발화 완결성": {
+    "supporting_evidence": [
+      {
+        "span_text": "그 다음에 순서로 반드시 익히면 틀릴 일이 없어요.",
+        "context_before": [
+          "페어절은 그 다음에 여기 내용 보면 썸은 그룹화웃 이후 결과가 나오기 때문에 조건을 결과 조건의 그룹화이 뒤에 선언하는 헤빙조을 사용하면 될 것이다."
+        ],
+        "evidence_type": "completion_evidence",
+        "evidence_types": [
+          "completion_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "."
+        ],
+        "segment_id": "seg_43",
+        "chunk_id": "seg_43_chunk_01",
+        "start_ts": "03:07:09",
+        "end_ts": "03:42:47",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 1.7,
+        "rerank_score": 0.8418
+      },
+      {
+        "span_text": "쭉 가는 거지 그 다음에 여기 이제 뒤로 한 번 더 가겠습니다.",
+        "context_before": [
+          "IF프너은 체크고 그 다음에 IF프문는 조건 트루 퍼스제 마음속으로 정리 좀 해 여기다 마음속으로 정리 아 그냥 똑같지만 그래도 IF은 얼리야 똑같지만 그래도 이건 널값처리 처리용으로 쓰는 거고, IF프는 단위 조건 분기야 단위 조건 분기 그 다음에 스위치 케이스만 얘는 가중 조건 선택문이야 이렇게 이 용도로 쓰는 하나는 IF픈널 그냥 하나는 IF프로 쓰면 되고 얘는 케이스 웬덴 S 엔드까지 외우시면 더 좋고 에이스 엔드까지 외우시면 더 좋고 케이스 왠드 에이스 엔드까지 외우시면 더 좋고 수고하셨"
+        ],
+        "evidence_type": "completion_evidence",
+        "evidence_types": [
+          "completion_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "."
+        ],
+        "segment_id": "seg_35",
+        "chunk_id": "seg_35_chunk_01",
+        "start_ts": "01:45:04",
+        "end_ts": "01:46:22",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_instruction",
+        "local_score": 1.95,
+        "rerank_score": 0.8317
+      }
+    ],
+    "contrary_evidence": []
+  },
+  "언어 일관성": {
+    "supporting_evidence": [
+      {
+        "span_text": "이거 이거 이제 강사가 얘기는 하고 넘어갔지만 그래도 확실하게 이유가 어디 있는데, 설명하는 거지 약간 이런 궁금하지 않아요.",
+        "context_before": [
+          "이거 지금 여기 설명하고 있는 거야."
+        ],
+        "evidence_type": "speech_style_evidence",
+        "evidence_types": [
+          "speech_style_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "하지"
+        ],
+        "segment_id": "seg_07",
+        "chunk_id": "seg_07_chunk_01",
+        "start_ts": "10:00:46",
+        "end_ts": "10:03:34",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 2.925,
+        "rerank_score": 0.8295
+      },
+      {
+        "span_text": "출력해보자 그런데 지금 저희가 여기 보시면 살이 디시머리 소수 이하 두 자리까지 나오는 거고, 급여가 그래서 이거는 소수 이하 자리는 빼고 오케이 표시를 해보자 라든지 아니면 천 단위",
+        "context_before": [
+          "몇 개 해볼까 날짜만 가져와 볼까 날짜 그어 날짜만 한번 가져와 어차피 나오는 다 리턴을 해주니까 이렇게 다 리턴해주니까 날짜만 한번 우리 아는 거 IMT 아니야. 계속% Y 대문자 여기 밑에 있잖아. MD 여기 제가 해놨으니까 YMD 이거 가져다가 사부작 가져와요. 뭔데 저 밑에다 이렇게 갖다 놓고 저렇게 쓰는 걸까 이렇게 해서 하나 했으면 2026년 2월 5일 시간 날짜 주고 싶어 HI 한 김에 대문자 HC% II는 소문자야 뭐였어요. 분 이렇게 해서 하면 시작했을 때 나오겠죠. 아 이렇게 쓰"
+        ],
+        "evidence_type": "speech_style_evidence",
+        "evidence_types": [
+          "speech_style_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "해"
+        ],
+        "segment_id": "seg_24",
+        "chunk_id": "seg_24_chunk_01",
+        "start_ts": "11:40:58",
+        "end_ts": "11:44:10",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_instruction",
+        "local_score": 3.0,
+        "rerank_score": 0.8127
+      }
+    ],
+    "contrary_evidence": [
+      {
+        "span_text": "여기까지 하시고 오늘은 여러분들 1시에 진행하도록 하겠습니다.",
+        "context_before": [
+          "내려요 여기에 5번까지만 한번 살짝 풀어 셀렉트 사원의 이름 이네임 그 다음에 입사율 하이어데이트 EAT 이거란 말이야. 이거고, 프롬이 일단은 EMP야 그 다음에 WHO이 HIR이 데이트 하이어데이트가 일단은 1985 이렇게 해서 일단 주고 일단 1985 이렇게 주자고 실행이 되나 보자 안된대 왜냐면, 자리 잠깐만 이거 통과되는 거 아니야. 8.4에 이게 왜냐면, 지금 이렇게 해 주면 연월일이 안 잡혀 있어서 우리가 보통 01 오류 났었구나 이렇게 해서 주라고 나오거든요. 형식 안 맞다. 오류"
+        ],
+        "evidence_type": "style_shift_spans",
+        "evidence_types": [
+          "style_shift_spans"
+        ],
+        "polarity": "contrary",
+        "matched_keywords": [
+          "하겠습니다",
+          "습니다"
+        ],
+        "segment_id": "seg_26",
+        "chunk_id": "seg_26_chunk_01",
+        "start_ts": "11:46:24",
+        "end_ts": "01:02:19",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_instruction",
+        "local_score": 4.0375,
+        "rerank_score": 0.8176
+      },
+      {
+        "span_text": "사부작 눌러서 보시면 될 것 같습니다.",
+        "context_before": [
+          "여기까지 투스크린 탭에 가시면 구체적으로 내용들이 나오더라부터 시작해서 설명을 하고 있으니 그냥는 페이지 장수가 PF로 뽑아냈을 때 페이지 미만이야 순수하게 워크벤치 활용하는 페이지만 뽑아내면 얼마 안 돼요."
+        ],
+        "evidence_type": "style_shift_spans",
+        "evidence_types": [
+          "style_shift_spans"
+        ],
+        "polarity": "contrary",
+        "matched_keywords": [
+          "습니다"
+        ],
+        "segment_id": "seg_08",
+        "chunk_id": "seg_08_chunk_01",
+        "start_ts": "10:03:53",
+        "end_ts": "10:04:59",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_instruction",
+        "local_score": 2.175,
+        "rerank_score": 0.8152
+      }
+    ]
+  },
+  "학습 목표 안내": {
+    "supporting_evidence": [
+      {
+        "span_text": "어제 기본 워크벤치 활용 그 다음에 쿼리 작성 이런 거 이것들을 지금 어제 학습을 하셨는데 오늘은 셀렉트 전체 실행 흐름 섹션이 있어요.",
+        "context_before": [
+          "여러분 안녕하세요."
+        ],
+        "evidence_type": "objective_intro_spans, intro_evidence",
+        "evidence_types": [
+          "objective_intro_spans",
+          "intro_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "오늘은",
+          "다음",
+          "오늘"
+        ],
+        "segment_id": "seg_01",
+        "chunk_id": "seg_01_chunk_01",
+        "start_ts": "09:11:48",
+        "end_ts": "09:35:17",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 8.575,
+        "rerank_score": 0.8302
+      },
+      {
+        "span_text": "조건 필터링 구현하는 방법 학습하시고 그 다음에 이제 마지막에 데이터 타입이 있는데, 오늘 아침부터 데이터 타입을 조금 보고 진행을 할까 해요.",
+        "context_before": [
+          "셀렉트 프로웨어 그룹바이 헤빙 오토바이 리밋 이런 것들을 조금 전체 셀렉트를 한번 공부해 보기로 하고 거기에서 저희 이제 그룹바이나 해빙에서 사용하고 있는 그룹 단위의 집계함수가 있습니다."
+        ],
+        "evidence_type": "objective_intro_spans, intro_evidence",
+        "evidence_types": [
+          "objective_intro_spans",
+          "intro_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "다음",
+          "오늘",
+          "진행"
+        ],
+        "segment_id": "seg_01",
+        "chunk_id": "seg_01_chunk_01",
+        "start_ts": "09:11:48",
+        "end_ts": "09:35:17",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 6.7125,
+        "rerank_score": 0.8096
+      }
+    ],
+    "contrary_evidence": []
+  },
+  "전날 복습 연계": {
+    "supporting_evidence": [
+      {
+        "span_text": "어제 기본 워크벤치 활용 그 다음에 쿼리 작성 이런 거 이것들을 지금 어제 학습을 하셨는데 오늘은 셀렉트 전체 실행 흐름 섹션이 있어요.",
+        "context_before": [
+          "여러분 안녕하세요."
+        ],
+        "evidence_type": "review_bridge_spans, bridge_evidence",
+        "evidence_types": [
+          "review_bridge_spans",
+          "bridge_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "어제"
+        ],
+        "segment_id": "seg_01",
+        "chunk_id": "seg_01_chunk_01",
+        "start_ts": "09:11:48",
+        "end_ts": "09:35:17",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 2.575,
+        "rerank_score": 0.8483
+      },
+      {
+        "span_text": "지금 어제 봤던 키만 해도 프라이머리 키랑 프라이머리 키랑 그 다음에 여기 있는 포링키랑 이렇게 지금 두 개 보신 거예요.",
+        "context_before": [
+          "이거 제약 조건라고 부르고 그 다음에 테이블 밑에 보시면 또 제약 조건이라는 애가 하나 떠 있어요. 제약 조건이 지금 현재 얘도 포함해 제약 조건이 지금 현재 두 가지 세트로 되어 있습니다. 현재 테이블을 만들 때 각각의 필드 뒤에다가 선언하는 것을 우리가 컬럼 라벨이라고 부르고 컬럼 뒤에다 선언해서 그 다음에 다 필드를 만들어 놓고 밑에다가 제약 조건을 추가하는 우리가 테이블 라벨이라고 불러요 제약 조건은 두 가지 형태로 만들 수가 있어요. 일단은 컬럼 뒤에 컬럼 라벨 형식으로 만들 수가 있고"
+        ],
+        "evidence_type": "review_bridge_spans, bridge_evidence",
+        "evidence_types": [
+          "review_bridge_spans",
+          "bridge_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "어제"
+        ],
+        "segment_id": "seg_03",
+        "chunk_id": "seg_03_chunk_01",
+        "start_ts": "09:43:06",
+        "end_ts": "09:50:52",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_example",
+        "local_score": 2.45,
+        "rerank_score": 0.8212
+      }
+    ],
+    "contrary_evidence": []
+  },
+  "설명 순서": {
+    "supporting_evidence": [],
+    "contrary_evidence": []
+  },
+  "핵심 내용 강조": {
+    "supporting_evidence": [
+      {
+        "span_text": "조금 똑같아서 이렇게 그리고 얘네들은 DB 용어들이라서 시작과 마무리가 반드시 엔드 키워드가 반드시 존속하 그래서 엔드 케이스 그 다음에 엔드 활 뭐 이런 식으로 되어 있습니다.",
+        "context_before": [
+          "쭉 가는 거지 그 다음에 여기 이제 뒤로 한 번 더 가겠습니다. 챕터 15에요. 또 가야 왼쪽이 이렇게 좀 펼쳐져서면 여러분들이 쭉 내려서 플로우 컨트롤 스테이트먼트 내려서 IF프 다음에 여기 인터레이트 가볼게 이거는 루프 안에 키워드야 인터레이터가 그래서 밑에 보시면 루프 스테이트먼트로 바로 이동하게끔 되어 있죠. 그래서 여기 왼쪽에 얘가 아까 쌍이라고 했잖아. 한 쌍 얘네가 한 쌍이에요. 이렇게 말했는데 여기 와서 루프 스테이트먼트를 점핑해서 가면 얘가 이렇게 라벨링이랑 이렇게 보여줍니다. 지"
+        ],
+        "evidence_type": "emphasis_spans, highlight_evidence",
+        "evidence_types": [
+          "emphasis_spans",
+          "highlight_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "반드시"
+        ],
+        "segment_id": "seg_36",
+        "chunk_id": "seg_36_chunk_01",
+        "start_ts": "01:46:35",
+        "end_ts": "02:00:48",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_instruction",
+        "local_score": 2.7,
+        "rerank_score": 0.8185
+      },
+      {
+        "span_text": "그 다음에 순서로 반드시 익히면 틀릴 일이 없어요.",
+        "context_before": [
+          "페어절은 그 다음에 여기 내용 보면 썸은 그룹화웃 이후 결과가 나오기 때문에 조건을 결과 조건의 그룹화이 뒤에 선언하는 헤빙조을 사용하면 될 것이다."
+        ],
+        "evidence_type": "emphasis_spans, highlight_evidence",
+        "evidence_types": [
+          "emphasis_spans",
+          "highlight_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "반드시"
+        ],
+        "segment_id": "seg_43",
+        "chunk_id": "seg_43_chunk_01",
+        "start_ts": "03:07:09",
+        "end_ts": "03:42:47",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 1.7,
+        "rerank_score": 0.8181
+      }
+    ],
+    "contrary_evidence": []
+  },
+  "마무리 요약": {
+    "supporting_evidence": [],
+    "contrary_evidence": []
+  },
+  "개념 정의": {
+    "supporting_evidence": [
+      {
+        "span_text": "TCL이라고 부르는구나 데이터 무결성 원칙에 의해서 컬럼 라벨 테이블 라벨에 제약 규칙을 만들었구나 까지만 정의하시면 돼요.",
+        "context_before": [
+          "기본 데이터 타입을 일단 너무 지금 도움할가 많아가지고, 쫙 정리를 조금 해 어제 연습 비트 좀 해보시라 해서 이그잼플 하나 드렸죠 비트는 줬더니, 1에서 14비트짜리 2 시작을 해서 일단은 형식이 들어가더라고. 티니 인티는 피했던 사람들은 티니 인티를 알아 스몰 인티라 우리는 모르니까 티니 인티는 바이트 수가 1 우리가 보통 아는이트 있죠. 1바이트를 128에서 127까지를 자바에서는 사용하고 있는데, 얘를 갖다가 정수는 T니티라고 불러 이거는 그냥 C 용어예요. 옛날에 서버에서 사용하던 용어를"
+        ],
+        "evidence_type": "definition_spans, concept_definition_evidence",
+        "evidence_types": [
+          "definition_spans",
+          "concept_definition_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "정의"
+        ],
+        "segment_id": "seg_05",
+        "chunk_id": "seg_05_chunk_01",
+        "start_ts": "09:58:04",
+        "end_ts": "09:59:32",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 2.2,
+        "rerank_score": 0.8027
+      },
+      {
+        "span_text": "집계함수를 다른 말로 그룹함수라고 하는데 집계함수는 결과가 무조건 하나헌트줄이 있어도 많아 만 줄이 있어도 만 하나 자체가 데이터가 한 줄 로우로 리턴이",
+        "context_before": [
+          "아까 위에 있는 집계함수 있죠."
+        ],
+        "evidence_type": "definition_spans, concept_definition_evidence",
+        "evidence_types": [
+          "definition_spans",
+          "concept_definition_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "라고 하는"
+        ],
+        "segment_id": "seg_38",
+        "chunk_id": "seg_38_chunk_01",
+        "start_ts": "02:08:08",
+        "end_ts": "02:09:54",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 2.575,
+        "rerank_score": 0.7898
+      }
+    ],
+    "contrary_evidence": []
+  },
+  "비유 및 예시 활용": {
+    "supporting_evidence": [
+      {
+        "span_text": "필드가 여러 개일 때 강사님 디폴트 이렇게 써도 당연히 되지 예를 들어서 여기 이렇게 돼도 디폴트가 들어가는 거죠.",
+        "context_before": [
+          "이번엔 되게끔 만들어주면 돼 그냥 비어있는 밸류즈 그 다음에 폴트 키워드 그 다음에 폴트 필드맵어 이렇게 하면 세개 다 들어가더라 성공 기본값 핸들링 하는 거 오늘 아침에 했습니다."
+        ],
+        "evidence_type": "example_spans, example_evidence",
+        "evidence_types": [
+          "example_spans",
+          "example_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "예를 들어"
+        ],
+        "segment_id": "seg_15",
+        "chunk_id": "seg_15_chunk_01",
+        "start_ts": "10:46:10",
+        "end_ts": "10:50:13",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 4.125,
+        "rerank_score": 0.8025
+      }
+    ],
+    "contrary_evidence": []
+  },
+  "선행 개념 확인": {
+    "supporting_evidence": [],
+    "contrary_evidence": []
+  },
+  "발화 속도 적절성": {
+    "supporting_evidence": [
+      {
+        "span_text": "여기까지 혹시 오셨을세 여기까지 오셨으면 얘는 하고 가야 돼 얘는 하고 가야 돼서 13.6에 오셨어 얘 복사해서 복사하셔가지고, 하나 만들어 놓은 거 있죠.",
+        "context_before": [
+          "칼럼 라벨 칼럼 라벨을 줄 수 있어요."
+        ],
+        "evidence_type": "pace_evidence",
+        "evidence_types": [
+          "pace_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [],
+        "segment_id": "seg_11",
+        "chunk_id": "seg_11_chunk_01",
+        "start_ts": "10:21:27",
+        "end_ts": "10:24:49",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_instruction",
+        "local_score": 1.4375,
+        "rerank_score": 0.8414
+      },
+      {
+        "span_text": "콤마하고 세미콜론으로 마무리하는 특징을 가지고 있어 하나 문장 끝나고 콤마 해주고 이렇게 해서 문법은 대충 셀렉트 보면 문법이 거진 다 나와 이 이게 키워드고 이렇게 외울 필요 없고",
+        "context_before": [
+          "1985년 이호일 사원의 이름과 입사회를 추력해라 그럼 대시도 얘가 인지하고 그다음에 슬롯시도 인지하고 그 다음에 여기 이제 하단에 또 세 번째 보시면 STRR2 데이트 문자열을 이렇게 왜 이렇게 STR2 언더바 데이트가 필요할 때가 있냐면 이 하이어데이트의 데이트 타입이 시간도 가지고 있단 말이야요 우리가 인서트를 할 때 그냥 나오만 입력하게 되면 시간이 따라 붙고 데이트라고 하는 타입 자체가 시간 날짜를 다 가지고 있어요. 그래서 저희가 이제 정확한 비교를 하고 싶다. 그러면 문자열을 2언더바"
+        ],
+        "evidence_type": "pace_evidence",
+        "evidence_types": [
+          "pace_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [],
+        "segment_id": "seg_28",
+        "chunk_id": "seg_28_chunk_01",
+        "start_ts": "01:12:20",
+        "end_ts": "01:26:37",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_example",
+        "local_score": 1.5,
+        "rerank_score": 0.8404
+      }
+    ],
+    "contrary_evidence": [
+      {
+        "span_text": "이거 이거 이제 강사가 얘기는 하고 넘어갔지만 그래도 확실하게 이유가 어디 있는데, 설명하는 거지 약간 이런 궁금하지 않아요.",
+        "context_before": [
+          "이거 지금 여기 설명하고 있는 거야."
+        ],
+        "evidence_type": "rapid_transition_spans",
+        "evidence_types": [
+          "rapid_transition_spans"
+        ],
+        "polarity": "contrary",
+        "matched_keywords": [
+          "high_span_density"
+        ],
+        "segment_id": "seg_07",
+        "chunk_id": "seg_07_chunk_01",
+        "start_ts": "10:00:46",
+        "end_ts": "10:03:34",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 2.9999,
+        "rerank_score": 0.8487
+      },
+      {
+        "span_text": "그 다음에 뭐 살짝 눌러보면 그에 대한 설명들이 이게 너무 그렇지 너무 많이 알면 힘들지만 이렇게 그림 나오고 이런 애들은 좀 편하잖아요.",
+        "context_before": [
+          "이제 TCPIP 접속했던 설명들이 조금 더 가이드가 디테일하게 나오죠."
+        ],
+        "evidence_type": "rapid_transition_spans",
+        "evidence_types": [
+          "rapid_transition_spans"
+        ],
+        "polarity": "contrary",
+        "matched_keywords": [
+          "high_utterances_per_min",
+          "high_span_density"
+        ],
+        "segment_id": "seg_06",
+        "chunk_id": "seg_06_chunk_01",
+        "start_ts": "09:59:49",
+        "end_ts": "10:00:38",
+        "parent_label": "정리",
+        "sub_label": "general",
+        "local_score": 4.5,
+        "rerank_score": 0.8452
+      }
+    ]
+  },
+  "예시 적절성": {
+    "supporting_evidence": [
+      {
+        "span_text": "때문에 실무에서는 반드시 어디를 우리가 DB 가잖아요.",
+        "context_before": [
+          "이제 좀 지친다 자 가보자 여기 맞아 9번 약간 이제 리밋하기 전에 셀렉몬이 어느 정도 끝났어 그룹 바이 뒤에다가 위드 롤업이라는 걸 쓰는데 위드 롤업은 실무에는 필수고 보고서"
+        ],
+        "evidence_type": "practical_example_spans, practical_example_evidence",
+        "evidence_types": [
+          "practical_example_spans",
+          "practical_example_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "실무에서",
+          "실무"
+        ],
+        "segment_id": "seg_43",
+        "chunk_id": "seg_43_chunk_01",
+        "start_ts": "03:07:09",
+        "end_ts": "03:42:47",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 4.6375,
+        "rerank_score": 0.822
+      },
+      {
+        "span_text": "조금 똑같아서 이렇게 그리고 얘네들은 DB 용어들이라서 시작과 마무리가 반드시 엔드 키워드가 반드시 존속하 그래서 엔드 케이스 그 다음에 엔드 활 뭐 이런 식으로 되어 있습니다.",
+        "context_before": [
+          "쭉 가는 거지 그 다음에 여기 이제 뒤로 한 번 더 가겠습니다. 챕터 15에요. 또 가야 왼쪽이 이렇게 좀 펼쳐져서면 여러분들이 쭉 내려서 플로우 컨트롤 스테이트먼트 내려서 IF프 다음에 여기 인터레이트 가볼게 이거는 루프 안에 키워드야 인터레이터가 그래서 밑에 보시면 루프 스테이트먼트로 바로 이동하게끔 되어 있죠. 그래서 여기 왼쪽에 얘가 아까 쌍이라고 했잖아. 한 쌍 얘네가 한 쌍이에요. 이렇게 말했는데 여기 와서 루프 스테이트먼트를 점핑해서 가면 얘가 이렇게 라벨링이랑 이렇게 보여줍니다. 지"
+        ],
+        "evidence_type": "practical_example_spans, practical_example_evidence",
+        "evidence_types": [
+          "practical_example_spans",
+          "practical_example_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "케이스"
+        ],
+        "segment_id": "seg_36",
+        "chunk_id": "seg_36_chunk_01",
+        "start_ts": "01:46:35",
+        "end_ts": "02:00:48",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_instruction",
+        "local_score": 4.5,
+        "rerank_score": 0.8158
+      }
+    ],
+    "contrary_evidence": []
+  },
+  "실습 연계": {
+    "supporting_evidence": [
+      {
+        "span_text": "그 다음에 뭐 살짝 눌러보면 그에 대한 설명들이 이게 너무 그렇지 너무 많이 알면 힘들지만 이렇게 그림 나오고 이런 애들은 좀 편하잖아요.",
+        "context_before": [
+          "이제 TCPIP 접속했던 설명들이 조금 더 가이드가 디테일하게 나오죠."
+        ],
+        "evidence_type": "practice_transition_spans, practice_evidence",
+        "evidence_types": [
+          "practice_transition_spans",
+          "practice_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "눌러보"
+        ],
+        "segment_id": "seg_06",
+        "chunk_id": "seg_06_chunk_01",
+        "start_ts": "09:59:49",
+        "end_ts": "10:00:38",
+        "parent_label": "정리",
+        "sub_label": "general",
+        "local_score": 2.575,
+        "rerank_score": 0.8295
+      },
+      {
+        "span_text": "이리 옵시다 이번에는 저희가 약간 점핑 좀 해서 점핑 좀 해서 실행 순서 한번 보고 다음에 이제 회화져",
+        "context_before": [
+          "흐름제어문 다시 이제 알겠다."
+        ],
+        "evidence_type": "practice_transition_spans, practice_evidence",
+        "evidence_types": [
+          "practice_transition_spans",
+          "practice_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "실행"
+        ],
+        "segment_id": "seg_36",
+        "chunk_id": "seg_36_chunk_01",
+        "start_ts": "01:46:35",
+        "end_ts": "02:00:48",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_instruction",
+        "local_score": 2.325,
+        "rerank_score": 0.8253
+      }
+    ],
+    "contrary_evidence": []
+  },
+  "오류 대응": {
+    "supporting_evidence": [
+      {
+        "span_text": "오류",
+        "context_before": [
+          "형식 안 맞다."
+        ],
+        "evidence_type": "error_response_spans, error_evidence",
+        "evidence_types": [
+          "error_response_spans",
+          "error_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "오류"
+        ],
+        "segment_id": "seg_25",
+        "chunk_id": "seg_25_chunk_01",
+        "start_ts": "11:44:39",
+        "end_ts": "11:46:17",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 1.2625,
+        "rerank_score": 0.8457
+      },
+      {
+        "span_text": "무조건 스트링보드로 에러가 나 그러니까가 무조건 널 처리를 인서트 할 때나 아니면은 뭐 어떨 때 난 너를 안 만나려고 그러면 여기서 이런 식으로 디폴트를",
+        "context_before": [
+          "디폴트 함수께서 필드 값을 줄 수 있게끔 이렇게 주는 것도 있더라 알고 계셔야 돼 간다 그리고 마이에스큐에서 우리 항상 이게 지금 낫널이나 이런 거 만나면 인서트 할 때"
+        ],
+        "evidence_type": "error_response_spans, error_evidence",
+        "evidence_types": [
+          "error_response_spans",
+          "error_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "에러"
+        ],
+        "segment_id": "seg_16",
+        "chunk_id": "seg_16_chunk_01",
+        "start_ts": "10:50:28",
+        "end_ts": "10:51:30",
+        "parent_label": "도입",
+        "sub_label": "general",
+        "local_score": 2.7,
+        "rerank_score": 0.8333
+      }
+    ],
+    "contrary_evidence": []
+  },
+  "이해 확인 질문": {
+    "supporting_evidence": [
+      {
+        "span_text": "저도 어제 여기 넘버 되는지 봤더니, 여기 넘버 호환은 안 됐어요렇게 이렇게 셀러리라는 걸 하나 만들겠는데 전체 자릿수 다칸의 소수 이하 두 자리로 만들겠어 이런 식으로 만든다.",
+        "context_before": [
+          "왼쪽에 보시면은 저희 이제 튜토리얼을 보고 있고 그 다음에 그 밑에 마이에스큐 프로그램즈 다브잡 내려오면 얘 카테고리가 좀 이상하다고 얘기했어요게 프로그램처럼 맨 처음에 입출력하자 그다음에 대어문 하자 이런 식으로 되어 있는 게 아니라 얘네들은 카테고리가 이제 설치 그 다음에 어드미니스트레이터 그 다음에 DCL 이렇게 카테고리를 나눠놨기 때문에 데이터 타입이 중간에 스텝 바이 스텝처럼 뭐 이렇게 있는 게 아니고 한눈에 그냥 볼 수 있게끔 데이터 타입은 지금 9개의 섹션으로 나눠져 있고 실제적으로"
+        ],
+        "evidence_type": "understanding_check_spans",
+        "evidence_types": [
+          "understanding_check_spans"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "됐어요"
+        ],
+        "segment_id": "seg_10",
+        "chunk_id": "seg_10_chunk_01",
+        "start_ts": "10:09:45",
+        "end_ts": "10:21:22",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 2.7,
+        "rerank_score": 0.8036
+      }
+    ],
+    "contrary_evidence": []
+  },
+  "참여 유도": {
+    "supporting_evidence": [
+      {
+        "span_text": "STR2 언더바 데이트가 필요할 때가 있냐면 이 하이어데이트의 데이트 타입이 시간도 가지고 있단 말이야요 우리가 인서트를 할 때 그냥 나오만 입력하게 되면 시간이 따라 붙고 데이트라고 하는 타입",
+        "context_before": [
+          "1985년 이호일 사원의 이름과 입사회를 추력해라 그럼 대시도 얘가 인지하고 그다음에 슬롯시도 인지하고 그 다음에 여기 이제 하단에 또 세 번째 보시면 STRR2 데이트 문자열을 이렇게 왜 이렇게"
+        ],
+        "evidence_type": "engagement_spans, interaction_prompt_spans, engagement_evidence",
+        "evidence_types": [
+          "engagement_spans",
+          "interaction_prompt_spans",
+          "engagement_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "따라"
+        ],
+        "segment_id": "seg_27",
+        "chunk_id": "seg_27_chunk_01",
+        "start_ts": "01:02:34",
+        "end_ts": "01:12:04",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_example",
+        "local_score": 2.7,
+        "rerank_score": 0.8012
+      }
+    ],
+    "contrary_evidence": []
+  },
+  "질문 응답 충분성": {
+    "supporting_evidence": [
+      {
+        "span_text": "알고는 가야죠 이렇게 지금 이 키에 대한 설명을 다시 한번 기본키는 선택키 그런데 원래 프라이머리 키가 하나의 테이블에 하나만 하게끔 되어 있어 그런데 저희가 시험용이 아니고 데이터베이스 설계할",
+        "context_before": [
+          "지금 어제 봤던 키만 해도 프라이머리 키랑 프라이머리 키랑 그 다음에 여기 있는 포링키랑 이렇게 지금 두 개 보신 거예요."
+        ],
+        "evidence_type": "followup_spans",
+        "evidence_types": [
+          "followup_spans"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "다시"
+        ],
+        "segment_id": "seg_03",
+        "chunk_id": "seg_03_chunk_01",
+        "start_ts": "09:43:06",
+        "end_ts": "09:50:52",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_example",
+        "local_score": 3.5,
+        "rerank_score": 0.8204
+      }
+    ],
+    "contrary_evidence": []
+  }
+}

@@ -1,0 +1,892 @@
+{
+  "불필요한 반복 표현": {
+    "supporting_evidence": [],
+    "contrary_evidence": [
+      {
+        "span_text": "그래서 1번은 그냥 뽑아오는 거 단순 나는 ERD로 하는 그다음에 명확한 거는 관계차수 얘기하는 거야.",
+        "context_before": [
+          "관계차수 같은 거 서명했거든요."
+        ],
+        "evidence_type": "filler_spans, repetition_spans, language_expression_evidence",
+        "evidence_types": [
+          "filler_spans",
+          "repetition_spans",
+          "language_expression_evidence"
+        ],
+        "polarity": "contrary",
+        "matched_keywords": [
+          "그래서",
+          "그냥",
+          "음"
+        ],
+        "segment_id": "seg_33",
+        "chunk_id": "seg_33_chunk_01",
+        "start_ts": "01:58:01",
+        "end_ts": "02:04:32",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 4.5375,
+        "rerank_score": 0.8532
+      },
+      {
+        "span_text": "저희는 DB 얼마 안 되신 분들은 단순 명사 사용해 작업 많이 하다 보면 연관 관계 단어를 자꾸 만들어 EMP 언더바 뎁트 이런 식으로 많이 만드시거든.",
+        "context_before": [
+          "현업에서 사용하는 용어를 사용해야 되고 과거 사용을 좀 자제해야 되고 단순 명사를 사용해야 된다."
+        ],
+        "evidence_type": "filler_spans, repetition_spans, language_expression_evidence",
+        "evidence_types": [
+          "filler_spans",
+          "repetition_spans",
+          "language_expression_evidence"
+        ],
+        "polarity": "contrary",
+        "matched_keywords": [
+          "이런 식으로",
+          "어",
+          "자"
+        ],
+        "segment_id": "seg_46",
+        "chunk_id": "seg_46_chunk_01",
+        "start_ts": "03:30:56",
+        "end_ts": "05:50:09",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 6.9,
+        "rerank_score": 0.8519
+      }
+    ]
+  },
+  "발화 완결성": {
+    "supporting_evidence": [
+      {
+        "span_text": "저희는 DB 얼마 안 되신 분들은 단순 명사 사용해 작업 많이 하다 보면 연관 관계 단어를 자꾸 만들어 EMP 언더바 뎁트 이런 식으로 많이 만드시거든.",
+        "context_before": [
+          "현업에서 사용하는 용어를 사용해야 되고 과거 사용을 좀 자제해야 되고 단순 명사를 사용해야 된다."
+        ],
+        "evidence_type": "completion_evidence",
+        "evidence_types": [
+          "completion_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "."
+        ],
+        "segment_id": "seg_46",
+        "chunk_id": "seg_46_chunk_01",
+        "start_ts": "03:30:56",
+        "end_ts": "05:50:09",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 2.7,
+        "rerank_score": 0.8427
+      },
+      {
+        "span_text": "것이 명확하야 우리가 여지껏 수업했단 말이야.",
+        "context_before": [
+          "ERD 만들고 그 다음 여기는 명확화라는 게 있어 애매모호한 거 제거하고 누구나 이해할 수 있는 구조로 표현하는데 ERD에서계 1대N이냐 이런 관계 있지 다대다냐 이런 거 관계를 지금 해주는"
+        ],
+        "evidence_type": "completion_evidence",
+        "evidence_types": [
+          "completion_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "."
+        ],
+        "segment_id": "seg_33",
+        "chunk_id": "seg_33_chunk_01",
+        "start_ts": "01:58:01",
+        "end_ts": "02:04:32",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 1.575,
+        "rerank_score": 0.8356
+      }
+    ],
+    "contrary_evidence": []
+  },
+  "언어 일관성": {
+    "supporting_evidence": [
+      {
+        "span_text": "지금 이거는 BAT야 확장자가 그래서 윈도우에서 실행하는 애들이에요해 아셨죠 자 그 다음에 살짝 와서 지금 이거는 말 그대로 환경설정 에디터잖아요서 지금 거기에 살짝 가서 조금 이따가 여기서 한번",
+        "context_before": [
+          "우리 과정은 뒤에가 좀 이렇게 좀 정리된 과정이라 그래서 이제 스토리지 조금 하시면 너무 많은 궁금증도 같이 늘어나요? 그러다 보니 의사가 앞에서 싹싹싹 이렇게 정리를 해드리잖아. 정리해드린 거는 그냥 100%는 숙지를 해도 10이면 1단계라고 제가 항상 얘기하고 그다에 이런 수업을 하지 그러면 아 이 명령을 이렇게 가져가는구나 라고 그냥 이해는 하셔야 돼 이렇게 만드는 거구나 이렇게 만들 거구나 내가 회사 가면 이렇게 만드는 거구나 약간 눈 살짝 이렇게 이해하시죠. 그래서 왜냐 지금 이제 거를"
+        ],
+        "evidence_type": "speech_style_evidence",
+        "evidence_types": [
+          "speech_style_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "해"
+        ],
+        "segment_id": "seg_15",
+        "chunk_id": "seg_15_chunk_01",
+        "start_ts": "11:38:52",
+        "end_ts": "11:40:44",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 3.0,
+        "rerank_score": 0.8158
+      },
+      {
+        "span_text": "말이 붙어 이렇게 이해 가죠 이렇게 그리고 이거는 DB 구조 계층을 얘기했어요.",
+        "context_before": [
+          "이렇게 들어가는 거고, 설계하기 위한 목적이고 설계 프로세스에 들어가는 거고, DB 3단계는 실제 방금 외부냐 그 다음에 개념이냐 내부 스키마냐 이런 용어가 붙어 여기는 모델이라는 말이 붙고는 스키마라는"
+        ],
+        "evidence_type": "speech_style_evidence",
+        "evidence_types": [
+          "speech_style_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "해"
+        ],
+        "segment_id": "seg_40",
+        "chunk_id": "seg_40_chunk_01",
+        "start_ts": "02:52:17",
+        "end_ts": "02:54:07",
+        "parent_label": "개념 설명",
+        "sub_label": "general",
+        "local_score": 2.55,
+        "rerank_score": 0.8144
+      }
+    ],
+    "contrary_evidence": [
+      {
+        "span_text": "실패합니다.",
+        "context_before": [
+          "개념 내부이고 구분은 관점 대상 목적을 세 가지를 기준으로 해서 카테고리를 남겨 맞아 옳지 이렇게 해서 외우시면 조금 편할 것 같아요."
+        ],
+        "evidence_type": "style_shift_spans",
+        "evidence_types": [
+          "style_shift_spans"
+        ],
+        "polarity": "contrary",
+        "matched_keywords": [
+          "합니다"
+        ],
+        "segment_id": "seg_39",
+        "chunk_id": "seg_39_chunk_01",
+        "start_ts": "02:50:23",
+        "end_ts": "02:51:58",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 1.8625,
+        "rerank_score": 0.818
+      },
+      {
+        "span_text": "안해요.",
+        "context_before": [
+          ""
+        ],
+        "evidence_type": "style_shift_spans",
+        "evidence_types": [
+          "style_shift_spans"
+        ],
+        "polarity": "contrary",
+        "matched_keywords": [
+          "해요",
+          "해"
+        ],
+        "segment_id": "seg_01",
+        "chunk_id": "seg_01_chunk_01",
+        "start_ts": "09:10:18",
+        "end_ts": "09:51:14",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_instruction",
+        "local_score": 3.6625,
+        "rerank_score": 0.8138
+      }
+    ]
+  },
+  "학습 목표 안내": {
+    "supporting_evidence": [
+      {
+        "span_text": "난 다음에 객체에 접근하는 방법이 있고 그다음에 룰을 정해서 해당 룰에 대한 명칭에 따른 권한을 먼저 부여한 다음 계정에 대한 그 룰을 주는 방법이 있었어요.",
+        "context_before": [
+          "저희 지금 어제 저희 어느 정도 구현하시는 방법들 그 다음에 사용자 계정 권한 주는 방 사용자 계정을 이제 사용하는 방법들은 다양한 패턴으로 사용할 수가 있는데, 계정 생성해서 로그인하고"
+        ],
+        "evidence_type": "objective_intro_spans, intro_evidence",
+        "evidence_types": [
+          "objective_intro_spans",
+          "intro_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "먼저",
+          "다음"
+        ],
+        "segment_id": "seg_01",
+        "chunk_id": "seg_01_chunk_01",
+        "start_ts": "09:10:18",
+        "end_ts": "09:51:14",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_instruction",
+        "local_score": 7.5,
+        "rerank_score": 0.8038
+      },
+      {
+        "span_text": "살짝은 그냥 스쳐갔지만 위로 살짝 상단 부분으로 살짝 오시면 여기 마에스큐 덤프라는 게 있고 헬프 그 다음에 여기가 우리 아까 그냥 일반적으로 마이에스켈 덤프 실행했을 때 나오는 가이드이고",
+        "context_before": [
+          "봤던 내용들이 이것까지 살짝 있어 봉급은 안데 줄어들 수 없어 까지 어제 수업했던 내용들이 살짝 내려오죠 살짝 델리미터 가서 딜리트 로그까지 했던 내용까지 살짝 되셨어요. 사보자 옵니다. 찾아서 오셔도 되고 저는 그냥 이렇게 사부작 보여드리면서 내리고 이면 좀 안 보였던 코드들도 이런 거 해석도 볼 수도 있고 중간에 가시면 커런트 데이터베이스 바이언더바 테스트라는 것이 이렇게 나오고 그레이트 데이터베이스 선언하는 것들은 또 백업해놓고, 여기주 마이 테스트라는 코드를 이렇게 얘네가 만들었어 이렇게"
+        ],
+        "evidence_type": "objective_intro_spans, intro_evidence",
+        "evidence_types": [
+          "objective_intro_spans",
+          "intro_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "다음"
+        ],
+        "segment_id": "seg_03",
+        "chunk_id": "seg_03_chunk_01",
+        "start_ts": "10:15:12",
+        "end_ts": "10:17:15",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_instruction",
+        "local_score": 4.5,
+        "rerank_score": 0.8013
+      }
+    ],
+    "contrary_evidence": []
+  },
+  "전날 복습 연계": {
+    "supporting_evidence": [
+      {
+        "span_text": "봤던 내용들이 이것까지 살짝 있어 봉급은 안데 줄어들 수 없어 까지 어제 수업했던 내용들이 살짝 내려오죠 살짝 델리미터 가서 딜리트 로그까지 했던 내용까지 살짝 되셨어요.",
+        "context_before": [
+          "안해요. 오늘 수업 진행하도록 하겠습니다. 저희 지금 어제 저희 어느 정도 구현하시는 방법들 그 다음에 사용자 계정 권한 주는 방 사용자 계정을 이제 사용하는 방법들은 다양한 패턴으로 사용할 수가 있는데, 계정 생성해서 로그인하고 난 다음에 객체에 접근하는 방법이 있고 그다음에 룰을 정해서 해당 룰에 대한 명칭에 따른 권한을 먼저 부여한 다음 계정에 대한 그 룰을 주는 방법이 있었어요. 그래서 보통은 이제 계정 자체가 하는 일들이 많고 또 다양한 계정들을 관리하기 위해서는 먼저 룰을 생성 권한주"
+        ],
+        "evidence_type": "review_bridge_spans, bridge_evidence",
+        "evidence_types": [
+          "review_bridge_spans",
+          "bridge_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "어제"
+        ],
+        "segment_id": "seg_02",
+        "chunk_id": "seg_02_chunk_01",
+        "start_ts": "09:51:30",
+        "end_ts": "10:14:58",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 2.7,
+        "rerank_score": 0.8702
+      },
+      {
+        "span_text": "저희 지금 어제 저희 어느 정도 구현하시는 방법들 그 다음에 사용자 계정 권한 주는 방 사용자 계정을 이제 사용하는 방법들은 다양한 패턴으로 사용할 수가 있는데, 계정 생성해서 로그인하고",
+        "context_before": [
+          "오늘 수업 진행하도록 하겠습니다."
+        ],
+        "evidence_type": "review_bridge_spans, bridge_evidence",
+        "evidence_types": [
+          "review_bridge_spans",
+          "bridge_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "어제"
+        ],
+        "segment_id": "seg_01",
+        "chunk_id": "seg_01_chunk_01",
+        "start_ts": "09:10:18",
+        "end_ts": "09:51:14",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_instruction",
+        "local_score": 2.7,
+        "rerank_score": 0.8041
+      }
+    ],
+    "contrary_evidence": []
+  },
+  "설명 순서": {
+    "supporting_evidence": [
+      {
+        "span_text": "난 다음에 객체에 접근하는 방법이 있고 그다음에 룰을 정해서 해당 룰에 대한 명칭에 따른 권한을 먼저 부여한 다음 계정에 대한 그 룰을 주는 방법이 있었어요.",
+        "context_before": [
+          "저희 지금 어제 저희 어느 정도 구현하시는 방법들 그 다음에 사용자 계정 권한 주는 방 사용자 계정을 이제 사용하는 방법들은 다양한 패턴으로 사용할 수가 있는데, 계정 생성해서 로그인하고"
+        ],
+        "evidence_type": "transition_evidence, structure_evidence",
+        "evidence_types": [
+          "transition_evidence",
+          "structure_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "먼저",
+          "그다음"
+        ],
+        "segment_id": "seg_01",
+        "chunk_id": "seg_01_chunk_01",
+        "start_ts": "09:10:18",
+        "end_ts": "09:51:14",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_instruction",
+        "local_score": 7.5,
+        "rerank_score": 0.8152
+      }
+    ],
+    "contrary_evidence": []
+  },
+  "핵심 내용 강조": {
+    "supporting_evidence": [
+      {
+        "span_text": "외우고 싶어 그렇지 수상화는 일단 대상이 있으면 중요 속성 뽑아내는 거 추상화 그래서 그냥 쭉쭉 뽑으면 되지 자동차 있어 그러면",
+        "context_before": [
+          "그래서 1번은 그냥 뽑아오는 거 단순 나는 ERD로 하는 그다음에 명확한 거는 관계차수 얘기하는 거야."
+        ],
+        "evidence_type": "emphasis_spans, highlight_evidence",
+        "evidence_types": [
+          "emphasis_spans",
+          "highlight_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "중요"
+        ],
+        "segment_id": "seg_33",
+        "chunk_id": "seg_33_chunk_01",
+        "start_ts": "01:58:01",
+        "end_ts": "02:04:32",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 2.45,
+        "rerank_score": 0.833
+      },
+      {
+        "span_text": "물리적과 독립성이 반드시 있어야 돼 논리적 어떤 거냐 개념 스키마가 변경이 되어도 잠깐만 얘 어디였어.",
+        "context_before": [
+          "구조이고 그 다음에 얘는 최적화가 목적이야 이 스키 아이들 완전 조금 대용한 체종으로 나오는 것이 비슷하지만은 실제 구조를 살짝 비교를 해서 구현하면 그렇게 어렵지 않다 그래서 잠깐 문제에 데이터 모델링 3단계야 그러면 개념 논리 물리 모델이 나와야 되고 이B에 3단계야 그러면 외부 개념 내부 스키마라는 말이 나와야 돼 맞어요. EB에 3단계 구조에서는 관점 대상 목적에 따라서 분류를 하기 때문에 문제가 섞어서 나올 수가 있어요. 외부는 지금 보여주는 거니까 사용자에다 뷰를 보여주는 사용자 맞춤을"
+        ],
+        "evidence_type": "emphasis_spans, highlight_evidence",
+        "evidence_types": [
+          "emphasis_spans",
+          "highlight_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "반드시"
+        ],
+        "segment_id": "seg_43",
+        "chunk_id": "seg_43_chunk_01",
+        "start_ts": "02:59:37",
+        "end_ts": "03:03:01",
+        "parent_label": "개념 설명",
+        "sub_label": "general",
+        "local_score": 2.1375,
+        "rerank_score": 0.8321
+      }
+    ],
+    "contrary_evidence": []
+  },
+  "마무리 요약": {
+    "supporting_evidence": [],
+    "contrary_evidence": []
+  },
+  "개념 정의": {
+    "supporting_evidence": [
+      {
+        "span_text": "지금 하고 혹시 정의가 안 되신 분들은 두 개의 파일을 드릴 테니까.",
+        "context_before": [
+          "자 수업 진행하도록 하겠습니다."
+        ],
+        "evidence_type": "definition_spans, concept_definition_evidence",
+        "evidence_types": [
+          "definition_spans",
+          "concept_definition_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "정의"
+        ],
+        "segment_id": "seg_05",
+        "chunk_id": "seg_05_chunk_01",
+        "start_ts": "11:02:11",
+        "end_ts": "11:09:08",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_instruction",
+        "local_score": 1.95,
+        "rerank_score": 0.8243
+      },
+      {
+        "span_text": "형식 수단 구조 그 세 가지만 있으면 사전적 정의 시험은 틀리지 않을 것 같아요.",
+        "context_before": [
+          "만들어지지 않은 모델 규칙을 가지고 있고 그 다음에 하기 전에 계획적 수단으로 미리 구조를 설계하는 거고, 그다음에 복잡하지만 단순하게 정리를 해서 만든 것이 모델이다."
+        ],
+        "evidence_type": "definition_spans, concept_definition_evidence",
+        "evidence_types": [
+          "definition_spans",
+          "concept_definition_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "정의"
+        ],
+        "segment_id": "seg_31",
+        "chunk_id": "seg_31_chunk_01",
+        "start_ts": "01:50:37",
+        "end_ts": "01:52:05",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 2.075,
+        "rerank_score": 0.8128
+      }
+    ],
+    "contrary_evidence": []
+  },
+  "비유 및 예시 활용": {
+    "supporting_evidence": [
+      {
+        "span_text": "이렇게 가는 거지 예를 들어서 여기서 엔티티가 이렇게 있잖아.",
+        "context_before": [
+          "순서 D 이렇게 작업 순서는 뭐 어떻게 해야 돼 맨 처음에 NTT 그리고 NTT 배치하고 관계 설정하고 관계명을 기술하고 그 다음에 관계 참여도 기술하고 이 필수 유물을 하고"
+        ],
+        "evidence_type": "example_spans, example_evidence",
+        "evidence_types": [
+          "example_spans",
+          "example_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "예를 들어"
+        ],
+        "segment_id": "seg_45",
+        "chunk_id": "seg_45_chunk_01",
+        "start_ts": "03:17:13",
+        "end_ts": "03:30:52",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 3.5625,
+        "rerank_score": 0.8174
+      },
+      {
+        "span_text": "그래서 이게 지금 현재 데이터 익스포트라는 것이 정확하게 좀 저 주 메뉴 서버에서 마치 VR에서 여기다가 데이터 익스포트라는 메뉴거든요.",
+        "context_before": [
+          "보시면 제가 이렇게 가지고 올게요 아까 콘솔에서는 그냥 내용이 없으니까 이렇게 됐었는데 그래서 만들어진단 말 몇 11번 이거거든."
+        ],
+        "evidence_type": "analogy_spans",
+        "evidence_types": [
+          "analogy_spans"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "마치"
+        ],
+        "segment_id": "seg_22",
+        "chunk_id": "seg_22_chunk_01",
+        "start_ts": "01:11:36",
+        "end_ts": "01:15:54",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_instruction",
+        "local_score": 4.1875,
+        "rerank_score": 0.796
+      }
+    ],
+    "contrary_evidence": []
+  },
+  "선행 개념 확인": {
+    "supporting_evidence": [],
+    "contrary_evidence": []
+  },
+  "발화 속도 적절성": {
+    "supporting_evidence": [
+      {
+        "span_text": "봤던 내용들이 이것까지 살짝 있어 봉급은 안데 줄어들 수 없어 까지 어제 수업했던 내용들이 살짝 내려오죠 살짝 델리미터 가서 딜리트 로그까지 했던 내용까지 살짝 되셨어요.",
+        "context_before": [
+          "안해요. 오늘 수업 진행하도록 하겠습니다. 저희 지금 어제 저희 어느 정도 구현하시는 방법들 그 다음에 사용자 계정 권한 주는 방 사용자 계정을 이제 사용하는 방법들은 다양한 패턴으로 사용할 수가 있는데, 계정 생성해서 로그인하고 난 다음에 객체에 접근하는 방법이 있고 그다음에 룰을 정해서 해당 룰에 대한 명칭에 따른 권한을 먼저 부여한 다음 계정에 대한 그 룰을 주는 방법이 있었어요. 그래서 보통은 이제 계정 자체가 하는 일들이 많고 또 다양한 계정들을 관리하기 위해서는 먼저 룰을 생성 권한주"
+        ],
+        "evidence_type": "pace_evidence",
+        "evidence_types": [
+          "pace_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [],
+        "segment_id": "seg_02",
+        "chunk_id": "seg_02_chunk_01",
+        "start_ts": "09:51:30",
+        "end_ts": "10:14:58",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 1.5,
+        "rerank_score": 0.8538
+      },
+      {
+        "span_text": "시퀄은 나중에 한다고 항상 그래서 개념 논리 물리 단계가 이렇게 설계 단계까지 나오는 그 그때 개발하고 테스트하고 전환 이행할 어렵지 않죠 이게 지금 프로젝트 생명주기에서 DB 데이터 모델링",
+        "context_before": [
+          "사D 보고 그냥 문제 풀면 된다고 그랬지 업무의 흐름과 데이터 중심 구조 속성 관계 ERD 나와 있고 얘는 독립성 재사용량이 높다 당연한 거 아니야. 이거 가져다가 나중에 크레트 해야 되니까. 그거 개념 뽑아내는 거니까 당연히 추상이지 그런 식으로 해서 문제 풀면 그렇게 어렵지 않아요. 문제도 몇 개 내놨으니까 개프할게 고차 이제 프로젝트 생명 주기에서 데이터 모델링 프로젝트 생명주기는 보통 우리가 맨 처음에 정보 전략 단계 분석 단계 설개 단계 이런 식으로 얘기를 하는데보 전략 계획 단계가 개념"
+        ],
+        "evidence_type": "pace_evidence",
+        "evidence_types": [
+          "pace_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [],
+        "segment_id": "seg_38",
+        "chunk_id": "seg_38_chunk_01",
+        "start_ts": "02:18:54",
+        "end_ts": "02:50:11",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 1.5,
+        "rerank_score": 0.8467
+      }
+    ],
+    "contrary_evidence": [
+      {
+        "span_text": "그 다음에 업데이트를 조금 안전하게 하고 싶은 것도 일단은 자동으로 내가 풀어서 커밋하는 것까지 줄 수 있죠.",
+        "context_before": [
+          "조금 특이한 테이블 자 그 다음에 시트 프롬 이용해서 조건 삭제도 역시 마찬가지로 이렇게 바이너리 타입의 B를 주셔야 된다."
+        ],
+        "evidence_type": "rapid_transition_spans",
+        "evidence_types": [
+          "rapid_transition_spans"
+        ],
+        "polarity": "contrary",
+        "matched_keywords": [
+          "high_utterances_per_min",
+          "high_span_density"
+        ],
+        "segment_id": "seg_26",
+        "chunk_id": "seg_26_chunk_01",
+        "start_ts": "01:32:15",
+        "end_ts": "01:33:00",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 4.2143,
+        "rerank_score": 0.8436
+      },
+      {
+        "span_text": "지금 이거는 BAT야 확장자가 그래서 윈도우에서 실행하는 애들이에요해 아셨죠 자 그 다음에 살짝 와서 지금 이거는 말 그대로 환경설정 에디터잖아요서 지금 거기에 살짝 가서 조금 이따가 여기서 한번",
+        "context_before": [
+          "우리 과정은 뒤에가 좀 이렇게 좀 정리된 과정이라 그래서 이제 스토리지 조금 하시면 너무 많은 궁금증도 같이 늘어나요? 그러다 보니 의사가 앞에서 싹싹싹 이렇게 정리를 해드리잖아. 정리해드린 거는 그냥 100%는 숙지를 해도 10이면 1단계라고 제가 항상 얘기하고 그다에 이런 수업을 하지 그러면 아 이 명령을 이렇게 가져가는구나 라고 그냥 이해는 하셔야 돼 이렇게 만드는 거구나 이렇게 만들 거구나 내가 회사 가면 이렇게 만드는 거구나 약간 눈 살짝 이렇게 이해하시죠. 그래서 왜냐 지금 이제 거를"
+        ],
+        "evidence_type": "rapid_transition_spans",
+        "evidence_types": [
+          "rapid_transition_spans"
+        ],
+        "polarity": "contrary",
+        "matched_keywords": [
+          "high_span_density"
+        ],
+        "segment_id": "seg_15",
+        "chunk_id": "seg_15_chunk_01",
+        "start_ts": "11:38:52",
+        "end_ts": "11:40:44",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 2.8572,
+        "rerank_score": 0.8427
+      }
+    ]
+  },
+  "예시 적절성": {
+    "supporting_evidence": [
+      {
+        "span_text": "현업에서 사용하는 용어를 사용해야 되고 과거 사용을 좀 자제해야 되고 단순 명사를 사용해야 된다.",
+        "context_before": [
+          "데이터는는 저장이 되기 위한 어떤 것이어야 하 목적을 좀 가지고 NT 명명 이걸 앞에서 했던 걸 다시 한번 또 설명하는 내용이라 중복되는 내용이 나올 수니다."
+        ],
+        "evidence_type": "practical_example_spans, practical_example_evidence",
+        "evidence_types": [
+          "practical_example_spans",
+          "practical_example_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "현업"
+        ],
+        "segment_id": "seg_46",
+        "chunk_id": "seg_46_chunk_01",
+        "start_ts": "03:30:56",
+        "end_ts": "05:50:09",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 2.075,
+        "rerank_score": 0.826
+      },
+      {
+        "span_text": "옳지 그 다음에 이게 익스트라 추출해서 케이스만 쓰는 거 이것들을 살짝 그다음 밑에 살짝 내 쿼리 속성 쿼리문을 실행할 때 쿼리 구조 수 작업 유형 데이터 접근 방식",
+        "context_before": [
+          "확인 보면 그거 하나 살짝 빠져있는 거 확인할 수 있지 그 다음에 인서트 인트는 복합으로 줄 수도 있고 업데이트 셋을 이용해서 수정을 할 수도 있고 딜리트 프롬 테이블 하게 되면 전체 삭제를 하니까 조건에 의해서 삭제할 수도 있고 그 다음에 우리 이거 제가 가지고 있는 셀렉트 소문자 우리 예전에 밸류 값으로 한번 넣어봤단 말이야. 있고 그 다음에 앞에가 언더바 바이너리라고 붙어있는 게 있어 좀 특이한 지금 현재 비트 그 다음에 이진 16 8진 그 다음에 특이한 거 지금 이런 타입들이 이 파일이 들"
+        ],
+        "evidence_type": "practical_example_spans, practical_example_evidence",
+        "evidence_types": [
+          "practical_example_spans",
+          "practical_example_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "케이스"
+        ],
+        "segment_id": "seg_28",
+        "chunk_id": "seg_28_chunk_01",
+        "start_ts": "01:40:32",
+        "end_ts": "01:41:41",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_instruction",
+        "local_score": 4.5,
+        "rerank_score": 0.8244
+      }
+    ],
+    "contrary_evidence": []
+  },
+  "실습 연계": {
+    "supporting_evidence": [
+      {
+        "span_text": "수업 시작할게요 이제 한두 개만 테스트해보고 DB 이제 실습은 살짝 마무리하도록 할게요 보셨을까요?",
+        "context_before": [
+          "오션 하도록 하겠습니다."
+        ],
+        "evidence_type": "practice_transition_spans, practice_evidence",
+        "evidence_types": [
+          "practice_transition_spans",
+          "practice_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "실습",
+          "해보"
+        ],
+        "segment_id": "seg_17",
+        "chunk_id": "seg_17_chunk_01",
+        "start_ts": "11:47:53",
+        "end_ts": "01:01:57",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_instruction",
+        "local_score": 3.2125,
+        "rerank_score": 0.8324
+      },
+      {
+        "span_text": "해서 이제 어느 정도의 실습에 대한 부분을 저희가 마무리를 했습니다.",
+        "context_before": [
+          "기준 그 다음에 이노디비 스토리 특성값 이런 것들이 있었다. 어디에 익스플랜 그럼 우리가 퍼리어 어트리뷰티스 속성들이라고 한다. 여기다가 이렇게 놓으면 또 이게 뭐지 결과 설명이야 도대체 이러면서 자 그 다음 밑에는 이 쇼 명령들 4부작 실행해서 현재 내가 지금 가지고 있는 내용들이 어떻게 배정이 되어 있는지 보는 것들 이건 첫날도 우리 했습니다. 밑에 살짝 내려서 테이블 하나 이렇게 만들어가지고 디폴트에다가 내용 주고 해당 타입 주고 제이슨 어레이 타입을 이렇게 살짝 주면 제이슨 타입으로 구현하"
+        ],
+        "evidence_type": "practice_transition_spans, practice_evidence",
+        "evidence_types": [
+          "practice_transition_spans",
+          "practice_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "실습"
+        ],
+        "segment_id": "seg_30",
+        "chunk_id": "seg_30_chunk_01",
+        "start_ts": "01:43:57",
+        "end_ts": "01:50:24",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 1.825,
+        "rerank_score": 0.8304
+      }
+    ],
+    "contrary_evidence": []
+  },
+  "오류 대응": {
+    "supporting_evidence": [
+      {
+        "span_text": "다음에 에러 있으면 에러를 실행하고 그 다음 밑에는 이제 압축하는 명령이야 이거 CMD에서 압축하는 명령 압축을 하고 난 다음에 에코니까 명령 실행한 결과 보여주고 지난 파일을셀을 실행을 해서",
+        "context_before": [
+          "이렇게 맞죠."
+        ],
+        "evidence_type": "error_response_spans, error_evidence",
+        "evidence_types": [
+          "error_response_spans",
+          "error_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "에러"
+        ],
+        "segment_id": "seg_11",
+        "chunk_id": "seg_11_chunk_01",
+        "start_ts": "11:24:22",
+        "end_ts": "11:26:13",
+        "parent_label": "도입",
+        "sub_label": "general",
+        "local_score": 2.7,
+        "rerank_score": 0.8401
+      },
+      {
+        "span_text": "지금 하고 혹시 정의가 안 되신 분들은 두 개의 파일을 드릴 테니까.",
+        "context_before": [
+          "자 수업 진행하도록 하겠습니다."
+        ],
+        "evidence_type": "error_response_spans, error_evidence",
+        "evidence_types": [
+          "error_response_spans",
+          "error_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "안 되"
+        ],
+        "segment_id": "seg_05",
+        "chunk_id": "seg_05_chunk_01",
+        "start_ts": "11:02:11",
+        "end_ts": "11:09:08",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_instruction",
+        "local_score": 1.95,
+        "rerank_score": 0.8256
+      }
+    ],
+    "contrary_evidence": []
+  },
+  "이해 확인 질문": {
+    "supporting_evidence": [
+      {
+        "span_text": "봅시다 여기 환경설정 에디터가 어떤 역할을 하는지 이건 여러분들 우리 설치되어 있는 DIM 폴더 이 프로그램이 됐어요.",
+        "context_before": [
+          "지금 이거는 BAT야 확장자가 그래서 윈도우에서 실행하는 애들이에요해 아셨죠 자 그 다음에 살짝 와서 지금 이거는 말 그대로 환경설정 에디터잖아요서 지금 거기에 살짝 가서 조금 이따가 여기서 한번"
+        ],
+        "evidence_type": "understanding_check_spans",
+        "evidence_types": [
+          "understanding_check_spans"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "됐어요"
+        ],
+        "segment_id": "seg_15",
+        "chunk_id": "seg_15_chunk_01",
+        "start_ts": "11:38:52",
+        "end_ts": "11:40:44",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 2.2625,
+        "rerank_score": 0.8268
+      },
+      {
+        "span_text": "이렇게 맞죠.",
+        "context_before": [
+          "이렇게 이거 지금 오늘 했던 거잖아."
+        ],
+        "evidence_type": "understanding_check_spans",
+        "evidence_types": [
+          "understanding_check_spans"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "맞죠"
+        ],
+        "segment_id": "seg_11",
+        "chunk_id": "seg_11_chunk_01",
+        "start_ts": "11:24:22",
+        "end_ts": "11:26:13",
+        "parent_label": "도입",
+        "sub_label": "general",
+        "local_score": 1.325,
+        "rerank_score": 0.8064
+      }
+    ],
+    "contrary_evidence": []
+  },
+  "참여 유도": {
+    "supporting_evidence": [
+      {
+        "span_text": "이런 거지 현실 세계에 표현하는 것이 아니라서 어떤 목적에 따라서 필요한 부분만 하는 거예요.",
+        "context_before": [
+          "개념적 정의를 한번 보도록 하자 모델은 사물이나 사건의 특정한 측면이나 관점을 명확하게 나타낸 것이다."
+        ],
+        "evidence_type": "engagement_spans, interaction_prompt_spans, engagement_evidence",
+        "evidence_types": [
+          "engagement_spans",
+          "interaction_prompt_spans",
+          "engagement_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "따라"
+        ],
+        "segment_id": "seg_31",
+        "chunk_id": "seg_31_chunk_01",
+        "start_ts": "01:50:37",
+        "end_ts": "01:52:05",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 2.075,
+        "rerank_score": 0.8207
+      },
+      {
+        "span_text": "이게 옵션에 따라서 어떻게 만들어지는지 알겠다.",
+        "context_before": [
+          "알겠다."
+        ],
+        "evidence_type": "engagement_spans, interaction_prompt_spans, engagement_evidence",
+        "evidence_types": [
+          "engagement_spans",
+          "interaction_prompt_spans",
+          "engagement_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "따라"
+        ],
+        "segment_id": "seg_23",
+        "chunk_id": "seg_23_chunk_01",
+        "start_ts": "01:16:08",
+        "end_ts": "01:19:24",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_instruction",
+        "local_score": 1.575,
+        "rerank_score": 0.8104
+      }
+    ],
+    "contrary_evidence": []
+  },
+  "질문 응답 충분성": {
+    "supporting_evidence": [
+      {
+        "span_text": "데이터는는 저장이 되기 위한 어떤 것이어야 하 목적을 좀 가지고 NT 명명 이걸 앞에서 했던 걸 다시 한번 또 설명하는 내용이라 중복되는 내용이 나올 수니다.",
+        "context_before": [
+          "문법인데 이 사람이 안 돼 그 다음에 업무상 관리가 필요한 관심사에 해당한다."
+        ],
+        "evidence_type": "followup_spans",
+        "evidence_types": [
+          "followup_spans"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "다시"
+        ],
+        "segment_id": "seg_46",
+        "chunk_id": "seg_46_chunk_01",
+        "start_ts": "03:30:56",
+        "end_ts": "05:50:09",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 3.5,
+        "rerank_score": 0.8329
+      },
+      {
+        "span_text": "코드가 지금 여기 옵션으로 들어가는 왜냐하면, 앞에서 내가 싱글 스레드를 구현을 할 때 락 상태로 진행을 하겠다고 했기 때문에 언체크한 상태잖아요.",
+        "context_before": [
+          "아까 우리 락 걸고 빼고 했던 코드가 있었죠."
+        ],
+        "evidence_type": "qa_response_spans, qa_evidence",
+        "evidence_types": [
+          "qa_response_spans",
+          "qa_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "왜냐하면"
+        ],
+        "segment_id": "seg_21",
+        "chunk_id": "seg_21_chunk_01",
+        "start_ts": "01:09:23",
+        "end_ts": "01:11:22",
+        "parent_label": "예제 설명",
+        "sub_label": "general",
+        "local_score": 4.3125,
+        "rerank_score": 0.813
+      }
+    ],
+    "contrary_evidence": []
+  }
+}

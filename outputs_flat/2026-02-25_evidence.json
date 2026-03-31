@@ -1,0 +1,892 @@
+{
+  "불필요한 반복 표현": {
+    "supporting_evidence": [],
+    "contrary_evidence": [
+      {
+        "span_text": "마지막 거거는 이것만 설명해도 대충 얘가 자기 자체가 펑셔널 언더바 인덱스라는 거를 키네임 줘 에드키 캔 하셨어요라 인덱스이고 이거",
+        "context_before": [
+          "추가를 하고 다음에 다시 한번 볼게요 오케이 추가하고 보세요."
+        ],
+        "evidence_type": "filler_spans, repetition_spans, language_expression_evidence",
+        "evidence_types": [
+          "filler_spans",
+          "repetition_spans",
+          "language_expression_evidence"
+        ],
+        "polarity": "contrary",
+        "matched_keywords": [
+          "어",
+          "자"
+        ],
+        "segment_id": "seg_25",
+        "chunk_id": "seg_25_chunk_01",
+        "start_ts": "02:15:04",
+        "end_ts": "02:18:20",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 3.5875,
+        "rerank_score": 0.85
+      },
+      {
+        "span_text": "이렇게 이거 돌아가는 거니까 다 그냥 엔터로 실습을 먼저 해보셔도 상관없어 언제도 좀 만",
+        "context_before": [
+          "여러분 얘도 앞에 설명을 이렇게 했는데 자분자분 좀 할 게 있어요."
+        ],
+        "evidence_type": "filler_spans, repetition_spans, language_expression_evidence",
+        "evidence_types": [
+          "filler_spans",
+          "repetition_spans",
+          "language_expression_evidence"
+        ],
+        "polarity": "contrary",
+        "matched_keywords": [
+          "그냥",
+          "어"
+        ],
+        "segment_id": "seg_35",
+        "chunk_id": "seg_35_chunk_01",
+        "start_ts": "03:40:26",
+        "end_ts": "05:50:24",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_instruction",
+        "local_score": 3.275,
+        "rerank_score": 0.8497
+      }
+    ]
+  },
+  "발화 완결성": {
+    "supporting_evidence": [
+      {
+        "span_text": "삭제한 거 빼고 이렇게 삭제한 거 빼고 그래서 사부작해서 좋아요.",
+        "context_before": [
+          "많이 줬는데 거기서 인덱스를 펼치면 이렇게 나옵니다."
+        ],
+        "evidence_type": "completion_evidence",
+        "evidence_types": [
+          "completion_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "."
+        ],
+        "segment_id": "seg_32",
+        "chunk_id": "seg_32_chunk_01",
+        "start_ts": "03:00:29",
+        "end_ts": "03:02:15",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_instruction",
+        "local_score": 1.825,
+        "rerank_score": 0.8379
+      },
+      {
+        "span_text": "있고요장으로 할 건지 아니면 카피 복제본으로 해서 구현할 건지가 있고 락 옵션이 이렇게 살짝 되어 있고 현재 하나면은 예제 샘플 코드가 다 들어있어요.",
+        "context_before": [
+          "하고 정보 보시면 조금 편해서 수정하고 삭제하는 것까지 그다음에 데이터 삭제하는 것까지 그래서 코드 풀이를 해놨으니까인하시고 어렵진 않았는데 14번이 좀 까다이 오래 걸리는데까요? 이런 애들은 만들어 놓고 프로시저에 넣어놓으면 되니까. 정리 한번 하시고 오후에는 저희 인덱스 그 다음에 뭐 액세스 컨트 것들 조금 진행을 하도록 하겠습니다. 오늘 1시 10분에 올게 1시 10분에 오겠습니다. 식사 맛있게 하십시오. 전체 내용이 그냥하여 이제 좀 정리를 조금 했습니다. 그리고 이제 얘가 인덱싱이 구현이"
+        ],
+        "evidence_type": "completion_evidence",
+        "evidence_types": [
+          "completion_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "."
+        ],
+        "segment_id": "seg_17",
+        "chunk_id": "seg_17_chunk_01",
+        "start_ts": "01:14:12",
+        "end_ts": "01:15:52",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_instruction",
+        "local_score": 2.6375,
+        "rerank_score": 0.8364
+      }
+    ],
+    "contrary_evidence": []
+  },
+  "언어 일관성": {
+    "supporting_evidence": [
+      {
+        "span_text": "그다음에 2번 파티셔닝 준비를 해서 생선 기본키 좀 변경해보고 하자 했는데 이제 1-1에서 CT 테이블에 컬럼이랑",
+        "context_before": [
+          "그래서 지금 크리에이트 시리즈로 복사해서 구조 확인하는 거 일단 하셨어요."
+        ],
+        "evidence_type": "speech_style_evidence",
+        "evidence_types": [
+          "speech_style_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "하자",
+          "해"
+        ],
+        "segment_id": "seg_10",
+        "chunk_id": "seg_10_chunk_01",
+        "start_ts": "11:07:36",
+        "end_ts": "11:09:01",
+        "parent_label": "도입",
+        "sub_label": "general",
+        "local_score": 4.6,
+        "rerank_score": 0.823
+      },
+      {
+        "span_text": "쇼 한번 살짝 보면 PDX 2 보시면 얘가 지금 난리가 났어 컬럼 여기 봐봐 합쳐져 있는 애들 있고 그 다음에 인덱스 빼기 CO1 이런 식으로 완전 복합으로 난리가",
+        "context_before": [
+          "그 다음에 얘로 확인하시면 끝에 외칭 로우라는 것도 나오고 실행 계획이 나오기 시작해요. 됐어요. 키는 뭘로 바뀌고요. 변환되고 그 다음에 여기 타입도 지금 전체 스캔으로 들어가기 때문에 지금 저는 일단 비어 있습니다. 이렇게 자 여기까지 확인하시고 표정 보겠습니다. 되셨어요. 살짝 갑니다. 얘가 지금 컬럼 프리빅스 키 파트 그 다음 펑셔널 키 윙크 키 풀 텍스트 그 다음에 멀티밸류 다중 인덱스 시작해서 쭉 있고 여기서부터는 이제 인덱스 옵이 들어가는 거야. 이렇게 종류가 있다. 가는 거죠. 여기"
+        ],
+        "evidence_type": "speech_style_evidence",
+        "evidence_types": [
+          "speech_style_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "봐"
+        ],
+        "segment_id": "seg_23",
+        "chunk_id": "seg_23_chunk_01",
+        "start_ts": "02:09:05",
+        "end_ts": "02:12:16",
+        "parent_label": "도입",
+        "sub_label": "general",
+        "local_score": 3.0,
+        "rerank_score": 0.8219
+      }
+    ],
+    "contrary_evidence": [
+      {
+        "span_text": "이렇게 자 여기까지 확인하시고 표정 보겠습니다.",
+        "context_before": [
+          "변환되고 그 다음에 여기 타입도 지금 전체 스캔으로 들어가기 때문에 지금 저는 일단 비어 있습니다."
+        ],
+        "evidence_type": "style_shift_spans",
+        "evidence_types": [
+          "style_shift_spans"
+        ],
+        "polarity": "contrary",
+        "matched_keywords": [
+          "보겠습니다",
+          "습니다"
+        ],
+        "segment_id": "seg_22",
+        "chunk_id": "seg_22_chunk_01",
+        "start_ts": "01:54:55",
+        "end_ts": "02:08:48",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_example",
+        "local_score": 3.975,
+        "rerank_score": 0.8212
+      },
+      {
+        "span_text": "하나씩 보고 어떤 애들이 들어가 있고 도대체 이게 무슨 말인지 한번 살짝 보시면 좋을 것 같습니다.",
+        "context_before": [
+          "컷할게요 여기는 오늘은 3시 40분 좀 지켜보려고 살짝 컷하고 이거는 제가 여기서부터는 제가 내일 할게요 여기까지 살짝 보세요."
+        ],
+        "evidence_type": "style_shift_spans",
+        "evidence_types": [
+          "style_shift_spans"
+        ],
+        "polarity": "contrary",
+        "matched_keywords": [
+          "습니다"
+        ],
+        "segment_id": "seg_35",
+        "chunk_id": "seg_35_chunk_01",
+        "start_ts": "03:40:26",
+        "end_ts": "05:50:24",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_instruction",
+        "local_score": 2.8,
+        "rerank_score": 0.8142
+      }
+    ]
+  },
+  "학습 목표 안내": {
+    "supporting_evidence": [
+      {
+        "span_text": "정보를 먼저 확인하고 그 다음에 내가 임포트를 해서 사용할 수 있는 부분들도 있었 두 가지 형태로 노출이 된다는 걸 학습을 하셨어요.",
+        "context_before": [
+          "여러분 오늘 수업 진행하도록 하겠습니다. 자 저희 어제 프로시저 내에서 예외 처리하는 핸들링을 조금 학습을 하셨어요. 우리가 자바에서 사용하고 있는 트라이 캐치를 구현을 할 때 얘네는 디크라 핸들러라고 하는 구문을 활용해서 오류를 처리할 수 있고 그다음에 거기에 해당하는 컨디션의 속성들을 이용을 해서 얘네가 다양한 형태의 예외 처리를 진행을 했었고 그 다음에 저희가 이제 이 예외가 발생하는 카테고리가 전체 한 4가지 정도 있었는데, 저희가 프로그램을 작성을 하면서 아니면 시퀄문을 구현하면서 만날"
+        ],
+        "evidence_type": "objective_intro_spans, intro_evidence",
+        "evidence_types": [
+          "objective_intro_spans",
+          "intro_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "먼저",
+          "다음"
+        ],
+        "segment_id": "seg_02",
+        "chunk_id": "seg_02_chunk_01",
+        "start_ts": "09:14:20",
+        "end_ts": "09:21:20",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_instruction",
+        "local_score": 7.3125,
+        "rerank_score": 0.8357
+      },
+      {
+        "span_text": "요새는 어제 했던 24일 수업에 이벤트 핸들 다음에 프로시저랑 펑션이랑 그 다음에 사용자 함수랑 그 다음 외부 함수 가지고 오는 방법 그 다음에 파티션 그 다음에 이제 오늘",
+        "context_before": [
+          "정보를 먼저 확인하고 그 다음에 내가 임포트를 해서 사용할 수 있는 부분들도 있었 두 가지 형태로 노출이 된다는 걸 학습을 하셨어요. 그다음에 어제 파티션이라는 것을 이제 사용을 했었습니다. 파티션은 이제 하다가 살짝 뒤에 부분 좀 놔두 나눠놓고 오늘 오전에 이제 진행을 할 건데 파티션을 해보니까 이 파티션이 언제 필요한냐 이런 것들도 조금 생각을 해볼 필요가 있었어요. 그래서 파티션을 할 때는 어제 우리가 명시적으로 데이터를 일단은 분할하는 거는 맞죠. 그런데 이제 데이터가 이제 커 그러면서 빅"
+        ],
+        "evidence_type": "objective_intro_spans, intro_evidence",
+        "evidence_types": [
+          "objective_intro_spans",
+          "intro_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "다음",
+          "오늘"
+        ],
+        "segment_id": "seg_03",
+        "chunk_id": "seg_03_chunk_01",
+        "start_ts": "09:21:34",
+        "end_ts": "09:24:06",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 5.7,
+        "rerank_score": 0.8303
+      }
+    ],
+    "contrary_evidence": []
+  },
+  "전날 복습 연계": {
+    "supporting_evidence": [
+      {
+        "span_text": "요새는 어제 했던 24일 수업에 이벤트 핸들 다음에 프로시저랑 펑션이랑 그 다음에 사용자 함수랑 그 다음 외부 함수 가지고 오는 방법 그 다음에 파티션 그 다음에 이제 오늘",
+        "context_before": [
+          "정보를 먼저 확인하고 그 다음에 내가 임포트를 해서 사용할 수 있는 부분들도 있었 두 가지 형태로 노출이 된다는 걸 학습을 하셨어요. 그다음에 어제 파티션이라는 것을 이제 사용을 했었습니다. 파티션은 이제 하다가 살짝 뒤에 부분 좀 놔두 나눠놓고 오늘 오전에 이제 진행을 할 건데 파티션을 해보니까 이 파티션이 언제 필요한냐 이런 것들도 조금 생각을 해볼 필요가 있었어요. 그래서 파티션을 할 때는 어제 우리가 명시적으로 데이터를 일단은 분할하는 거는 맞죠. 그런데 이제 데이터가 이제 커 그러면서 빅"
+        ],
+        "evidence_type": "review_bridge_spans, bridge_evidence",
+        "evidence_types": [
+          "review_bridge_spans",
+          "bridge_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "어제"
+        ],
+        "segment_id": "seg_03",
+        "chunk_id": "seg_03_chunk_01",
+        "start_ts": "09:21:34",
+        "end_ts": "09:24:06",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 2.7,
+        "rerank_score": 0.8539
+      },
+      {
+        "span_text": "자 저희 어제 프로시저 내에서 예외 처리하는 핸들링을 조금 학습을 하셨어요.",
+        "context_before": [
+          "여러분 오늘 수업 진행하도록 하겠습니다."
+        ],
+        "evidence_type": "review_bridge_spans, bridge_evidence",
+        "evidence_types": [
+          "review_bridge_spans",
+          "bridge_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "어제"
+        ],
+        "segment_id": "seg_01",
+        "chunk_id": "seg_01_chunk_01",
+        "start_ts": "09:11:09",
+        "end_ts": "09:14:07",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_instruction",
+        "local_score": 1.8875,
+        "rerank_score": 0.8413
+      }
+    ],
+    "contrary_evidence": []
+  },
+  "설명 순서": {
+    "supporting_evidence": [
+      {
+        "span_text": "분포를 이렇게 해서 도움말 이거 살짝 보시면 되고에 살짝 내리면 지금 저희는 어제 여기서 레인지를 먼저 쓰고 그 다음에 파티션 선언할 때 파티션 이름이랑 그 다음에 밸류즈 그다음에",
+        "context_before": [
+          "이렇게 1번 스타일이고 어제 여기까지는 알고 수업을 했었는데 수업을 하다 보면 밑에 여기에서 파티션 바이 레인지에서 사용할 수 있는 연산제 볼 수 있고 여기 어제 첫 번째가 지금 현재 레인지 파티션 선언했던 부분이고 두 번째가 지금 현재 리스트 파티션을 했을 때예요. 리스트 파티션 같은 경우에도 역시 마찬가지로 여기 목록이 이렇게 나오는 상황이고 그 다음에 분포를 했을 때는 숫자를 줬단 말이에요. 이렇게 해서 그렇지 이렇게 해이냐 키냐 이렇게 갈 때는 얘가 지금 파티션의 숫자를 줬단 말이에요. 이"
+        ],
+        "evidence_type": "transition_evidence, structure_evidence",
+        "evidence_types": [
+          "transition_evidence",
+          "structure_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "먼저",
+          "그다음"
+        ],
+        "segment_id": "seg_07",
+        "chunk_id": "seg_07_chunk_01",
+        "start_ts": "09:32:45",
+        "end_ts": "09:52:56",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 7.5,
+        "rerank_score": 0.821
+      }
+    ],
+    "contrary_evidence": []
+  },
+  "핵심 내용 강조": {
+    "supporting_evidence": [
+      {
+        "span_text": "저희가 뭐 시간 나면 마지막에 여기 트리거 살짝 넣어놨는데 트리거 이런 것들은 굉장히 중요하게 생각을 하고 있어요다 보니까 이제 면접할 때도 내용이 이제 많이 뒷부분에 이런 내용들을 많이",
+        "context_before": [
+          "요새는 어제 했던 24일 수업에 이벤트 핸들 다음에 프로시저랑 펑션이랑 그 다음에 사용자 함수랑 그 다음 외부 함수 가지고 오는 방법 그 다음에 파티션 그 다음에 이제 오늘"
+        ],
+        "evidence_type": "emphasis_spans, highlight_evidence",
+        "evidence_types": [
+          "emphasis_spans",
+          "highlight_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "중요"
+        ],
+        "segment_id": "seg_03",
+        "chunk_id": "seg_03_chunk_01",
+        "start_ts": "09:21:34",
+        "end_ts": "09:24:06",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 2.7,
+        "rerank_score": 0.8311
+      },
+      {
+        "span_text": "저희 지금 그 옵션 인덱스 옵션 정리를 할 건데 이 내용이 좀 많아서 저희 살짝 저희 거 그냥 살짝 좀 보고 맞춰볼게요 중요한 것만 저희 이거 인덱스 옵션",
+        "context_before": [
+          "자 수업 진행하도록 하겠습니다."
+        ],
+        "evidence_type": "emphasis_spans, highlight_evidence",
+        "evidence_types": [
+          "emphasis_spans",
+          "highlight_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "중요"
+        ],
+        "segment_id": "seg_30",
+        "chunk_id": "seg_30_chunk_01",
+        "start_ts": "02:57:00",
+        "end_ts": "02:58:11",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 2.7,
+        "rerank_score": 0.8305
+      }
+    ],
+    "contrary_evidence": []
+  },
+  "마무리 요약": {
+    "supporting_evidence": [
+      {
+        "span_text": "그 다음에 여기까지 확인하시고 옵션을 하다 보면서 기본 옵션이 들어가기 때문에 실제 인덱스에 보시면 여기 이 부분에 옵션이 그렇게 뭐 추가돼서 올라오거나 이런 건 없어 기본으로 그냥 우리가",
+        "context_before": [
+          "볼 수 있 여기까지 일단 확인 아무 테이블이나 눌러서 기존에 작업했던 거를 하는 게 아니라 그냥 아무 테이블이나 눌러서 살짝 보시면 되고 그다음에 이제 EMP 언더바 테스트에다가 우리가 많이 줬는데 거기서 인덱스를 펼치면 이렇게 나옵니다. 삭제한 거 빼고 이렇게 삭제한 거 빼고 그래서 사부작해서 좋아요. 그리고 클릭하면당 인덱스 값이 들어가 있는 내용이 뭐뭐 있는지 인포에서 확인할 수 있게요 인포 한번 눌러볼까 이게제 우리 여러 개의 인덱스를 지정을 했으니까 비주얼 툴에서는 지금 인덱스가 복합키가"
+        ],
+        "evidence_type": "closing_summary_spans, summary_evidence",
+        "evidence_types": [
+          "closing_summary_spans",
+          "summary_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "여기까지"
+        ],
+        "segment_id": "seg_33",
+        "chunk_id": "seg_33_chunk_01",
+        "start_ts": "03:02:30",
+        "end_ts": "03:13:08",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 2.7,
+        "rerank_score": 0.8197
+      },
+      {
+        "span_text": "컷할게요 여기는 오늘은 3시 40분 좀 지켜보려고 살짝 컷하고 이거는 제가 여기서부터는 제가 내일 할게요 여기까지 살짝 보세요.",
+        "context_before": [
+          "드랍만 했는데 얘네가 이제 종류가 다양하게 좀 있다 보니까 그 종류를 가져다가 단닐럼 넥스 그 다음 복합 인덱스 뭐 이런 것들 그래서 오늘은 왠만하면 옵티마이저 기준으로 해서 인덱스 테이블을 확인해서 현재 카디널리티라든지 복합키를 주는 기준 일반 무결성 제약 조건에서 복합키를 굉장히 많이 주는데 복합기를 주는 기준 이런 것들을 복습하면서 추가로 학습을 했어요. 사실 이것만 하셔도 충분하다 그리고 메이커 측에서 제공해주는 샘플을 지금 몇 번입니까? 마지막이죠. 다양한 패턴으로 지금 선언을 했습니다1"
+        ],
+        "evidence_type": "closing_summary_spans, summary_evidence",
+        "evidence_types": [
+          "closing_summary_spans",
+          "summary_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "여기까지"
+        ],
+        "segment_id": "seg_35",
+        "chunk_id": "seg_35_chunk_01",
+        "start_ts": "03:40:26",
+        "end_ts": "05:50:24",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_instruction",
+        "local_score": 2.325,
+        "rerank_score": 0.8127
+      }
+    ],
+    "contrary_evidence": []
+  },
+  "개념 정의": {
+    "supporting_evidence": [
+      {
+        "span_text": "우리가 자바에서 사용하고 있는 트라이 캐치를 구현을 할 때 얘네는 디크라 핸들러라고 하는 구문을 활용해서 오류를 처리할 수 있고 그다음에 거기에 해당하는 컨디션의 속성들을 이용을 해서 얘네가 다양한",
+        "context_before": [
+          "자 저희 어제 프로시저 내에서 예외 처리하는 핸들링을 조금 학습을 하셨어요."
+        ],
+        "evidence_type": "definition_spans, concept_definition_evidence",
+        "evidence_types": [
+          "definition_spans",
+          "concept_definition_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "라고 하는"
+        ],
+        "segment_id": "seg_01",
+        "chunk_id": "seg_01_chunk_01",
+        "start_ts": "09:11:09",
+        "end_ts": "09:14:07",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_instruction",
+        "local_score": 2.7,
+        "rerank_score": 0.8013
+      },
+      {
+        "span_text": "옛날할 때도 쓰고 일반적으로 쓰고 그러면은 지금 현재 ADX 뎁트의 잡이라고 하는 애가 이렇게 만들어지고 루테너랑 잡이랑 이렇게 만들어지고 현재 여기에 보면은 패키드가 여기 널널이 딱 됐고 비틀고",
+        "context_before": [
+          "썼어요."
+        ],
+        "evidence_type": "definition_spans, concept_definition_evidence",
+        "evidence_types": [
+          "definition_spans",
+          "concept_definition_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "라고 하는"
+        ],
+        "segment_id": "seg_20",
+        "chunk_id": "seg_20_chunk_01",
+        "start_ts": "01:37:09",
+        "end_ts": "01:51:29",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 2.7,
+        "rerank_score": 0.7941
+      }
+    ],
+    "contrary_evidence": []
+  },
+  "비유 및 예시 활용": {
+    "supporting_evidence": [
+      {
+        "span_text": "높을 경우에 인덱스가 바람직하다라고 우리는 판단 예를 들어서 데이터를 9개로 조게 이렇게 나눠놓고 그 다음에 검색하는 것과 3개로 나눠놓고 검색하는 건 다르 그렇지 다르거든.",
+        "context_before": [
+          "IDX 뎁프트 잡에 EMP 테스트의 복합 인덱스를 하나 이렇게 살짝 걸고 그 다음에 이제 익스플레인으로 확인하시거나 아니면은 또 인덱스로 다시 한번 확인 한번 확인하시면 복합 인덱스는 우리가 많이 썼어요. 옛날할 때도 쓰고 일반적으로 쓰고 그러면은 지금 현재 ADX 뎁트의 잡이라고 하는 애가 이렇게 만들어지고 루테너랑 잡이랑 이렇게 만들어지고 현재 여기에 보면은 패키드가 여기 널널이 딱 됐고 비틀고 묶여있는 것들도 살짝 볼 수가 있어요. 성곡 확인 3-1 확인 코멘트에도 똑같이 나오네요. 여기까지"
+        ],
+        "evidence_type": "example_spans, example_evidence",
+        "evidence_types": [
+          "example_spans",
+          "example_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "예를 들어"
+        ],
+        "segment_id": "seg_21",
+        "chunk_id": "seg_21_chunk_01",
+        "start_ts": "01:51:43",
+        "end_ts": "01:54:42",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_example",
+        "local_score": 4.5,
+        "rerank_score": 0.8002
+      }
+    ],
+    "contrary_evidence": []
+  },
+  "선행 개념 확인": {
+    "supporting_evidence": [
+      {
+        "span_text": "여 지금 TV T까지 보시고 기존에 만약에",
+        "context_before": [
+          "지금 프라이머리가 살짝 걸려 있는 상태에서 운동하는 걸 지금 확인할 수가 있어요."
+        ],
+        "evidence_type": "prerequisite_bridge_spans, prerequisite_evidence",
+        "evidence_types": [
+          "prerequisite_bridge_spans",
+          "prerequisite_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "기존"
+        ],
+        "segment_id": "seg_31",
+        "chunk_id": "seg_31_chunk_01",
+        "start_ts": "02:58:30",
+        "end_ts": "03:00:15",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 1.6375,
+        "rerank_score": 0.8376
+      },
+      {
+        "span_text": "볼 수 있 여기까지 일단 확인 아무 테이블이나 눌러서 기존에 작업했던 거를 하는 게 아니라 그냥 아무 테이블이나 눌러서 살짝 보시면 되고 그다음에 이제 EMP 언더바 테스트에다가 우리가",
+        "context_before": [
+          "T디서 작업을 했을까나 마이 테스티즈 여기서 만들어 놓은 거 한번 살짝 보고 가도록 할게요 컬럼에 지금 구현되어 있는 부분은 지금 여기까지 프라이머리 키 하나 걸려있는 것까지가 지금 인덱스가 기본으로 지금 걸려 있는 것이 여기 보면 인덱스 타일 비트리로 살짝 기본적으로 주지 않아도 비트리로 딱 되어 있고 그 다음에 도구 상자를 살짝 눌러서 포상자를 누르면은 컬럼에 인덱스에 지금 프라이머리가 살짝 걸려 있는 상태에서 운동하는 걸 지금 확인할 수가 있어요. 여 지금 TV T까지 보시고 기존에 만약에"
+        ],
+        "evidence_type": "prerequisite_bridge_spans, prerequisite_evidence",
+        "evidence_types": [
+          "prerequisite_bridge_spans",
+          "prerequisite_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "기존"
+        ],
+        "segment_id": "seg_32",
+        "chunk_id": "seg_32_chunk_01",
+        "start_ts": "03:00:29",
+        "end_ts": "03:02:15",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_instruction",
+        "local_score": 2.7,
+        "rerank_score": 0.807
+      }
+    ],
+    "contrary_evidence": []
+  },
+  "발화 속도 적절성": {
+    "supporting_evidence": [
+      {
+        "span_text": "있고요장으로 할 건지 아니면 카피 복제본으로 해서 구현할 건지가 있고 락 옵션이 이렇게 살짝 되어 있고 현재 하나면은 예제 샘플 코드가 다 들어있어요.",
+        "context_before": [
+          "하고 정보 보시면 조금 편해서 수정하고 삭제하는 것까지 그다음에 데이터 삭제하는 것까지 그래서 코드 풀이를 해놨으니까인하시고 어렵진 않았는데 14번이 좀 까다이 오래 걸리는데까요? 이런 애들은 만들어 놓고 프로시저에 넣어놓으면 되니까. 정리 한번 하시고 오후에는 저희 인덱스 그 다음에 뭐 액세스 컨트 것들 조금 진행을 하도록 하겠습니다. 오늘 1시 10분에 올게 1시 10분에 오겠습니다. 식사 맛있게 하십시오. 전체 내용이 그냥하여 이제 좀 정리를 조금 했습니다. 그리고 이제 얘가 인덱싱이 구현이"
+        ],
+        "evidence_type": "pace_evidence",
+        "evidence_types": [
+          "pace_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [],
+        "segment_id": "seg_17",
+        "chunk_id": "seg_17_chunk_01",
+        "start_ts": "01:14:12",
+        "end_ts": "01:15:52",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_instruction",
+        "local_score": 1.4375,
+        "rerank_score": 0.8475
+      },
+      {
+        "span_text": "이렇게 구현이 된 내용들을 자분자분 이렇게 설명을 자분자분 이렇게 하고 있는 거지 그 다음에 나머지는 지금 했던 내용을 그대로 가지고 있다가 이런 내용 보면은 이제 편해 역시 마찬가지로",
+        "context_before": [
+          "확인하셨어요."
+        ],
+        "evidence_type": "pace_evidence",
+        "evidence_types": [
+          "pace_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [],
+        "segment_id": "seg_28",
+        "chunk_id": "seg_28_chunk_01",
+        "start_ts": "02:28:10",
+        "end_ts": "02:29:34",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 1.5,
+        "rerank_score": 0.8475
+      }
+    ],
+    "contrary_evidence": [
+      {
+        "span_text": "있고요장으로 할 건지 아니면 카피 복제본으로 해서 구현할 건지가 있고 락 옵션이 이렇게 살짝 되어 있고 현재 하나면은 예제 샘플 코드가 다 들어있어요.",
+        "context_before": [
+          "하고 정보 보시면 조금 편해서 수정하고 삭제하는 것까지 그다음에 데이터 삭제하는 것까지 그래서 코드 풀이를 해놨으니까인하시고 어렵진 않았는데 14번이 좀 까다이 오래 걸리는데까요? 이런 애들은 만들어 놓고 프로시저에 넣어놓으면 되니까. 정리 한번 하시고 오후에는 저희 인덱스 그 다음에 뭐 액세스 컨트 것들 조금 진행을 하도록 하겠습니다. 오늘 1시 10분에 올게 1시 10분에 오겠습니다. 식사 맛있게 하십시오. 전체 내용이 그냥하여 이제 좀 정리를 조금 했습니다. 그리고 이제 얘가 인덱싱이 구현이"
+        ],
+        "evidence_type": "rapid_transition_spans",
+        "evidence_types": [
+          "rapid_transition_spans"
+        ],
+        "polarity": "contrary",
+        "matched_keywords": [
+          "high_span_density"
+        ],
+        "segment_id": "seg_17",
+        "chunk_id": "seg_17_chunk_01",
+        "start_ts": "01:14:12",
+        "end_ts": "01:15:52",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_instruction",
+        "local_score": 2.3001,
+        "rerank_score": 0.8475
+      },
+      {
+        "span_text": "이렇게 구현이 된 내용들을 자분자분 이렇게 설명을 자분자분 이렇게 하고 있는 거지 그 다음에 나머지는 지금 했던 내용을 그대로 가지고 있다가 이런 내용 보면은 이제 편해 역시 마찬가지로",
+        "context_before": [
+          "확인하셨어요."
+        ],
+        "evidence_type": "rapid_transition_spans",
+        "evidence_types": [
+          "rapid_transition_spans"
+        ],
+        "polarity": "contrary",
+        "matched_keywords": [
+          "high_span_density"
+        ],
+        "segment_id": "seg_28",
+        "chunk_id": "seg_28_chunk_01",
+        "start_ts": "02:28:10",
+        "end_ts": "02:29:34",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 4.5,
+        "rerank_score": 0.8475
+      }
+    ]
+  },
+  "예시 적절성": {
+    "supporting_evidence": [
+      {
+        "span_text": "이런 케이스이고 그 다음에 케이스 2 그러니까 여러분 이거는 말로 설명하거나 튜처리얼 보고 그냥 눈으로 볼 수가 없어요.",
+        "context_before": [
+          "그래서 우리가 이제 인덱스를 가지고 온 거야."
+        ],
+        "evidence_type": "practical_example_spans, practical_example_evidence",
+        "evidence_types": [
+          "practical_example_spans",
+          "practical_example_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "케이스"
+        ],
+        "segment_id": "seg_26",
+        "chunk_id": "seg_26_chunk_01",
+        "start_ts": "02:18:26",
+        "end_ts": "02:20:55",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_example",
+        "local_score": 4.125,
+        "rerank_score": 0.8321
+      },
+      {
+        "span_text": "들어가 있는 케이스 중복을 일부러 넣었어요.",
+        "context_before": [
+          "이거 일괄로 하셔도 되는데 제가 그냥 샘플 포드 그대로 가지고 와서 이렇게 하면 얘도 어제 내용이랑 그렇게 다르지 않죠 이렇게 옳지 여기 아이디 1234 55 이렇게 두 개가"
+        ],
+        "evidence_type": "practical_example_spans, practical_example_evidence",
+        "evidence_types": [
+          "practical_example_spans",
+          "practical_example_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "케이스"
+        ],
+        "segment_id": "seg_08",
+        "chunk_id": "seg_08_chunk_01",
+        "start_ts": "09:53:11",
+        "end_ts": "09:56:46",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 3.375,
+        "rerank_score": 0.8263
+      }
+    ],
+    "contrary_evidence": []
+  },
+  "실습 연계": {
+    "supporting_evidence": [
+      {
+        "span_text": "이렇게 이거 돌아가는 거니까 다 그냥 엔터로 실습을 먼저 해보셔도 상관없어 언제도 좀 만",
+        "context_before": [
+          "여러분 얘도 앞에 설명을 이렇게 했는데 자분자분 좀 할 게 있어요."
+        ],
+        "evidence_type": "practice_transition_spans, practice_evidence",
+        "evidence_types": [
+          "practice_transition_spans",
+          "practice_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "실습",
+          "해보"
+        ],
+        "segment_id": "seg_35",
+        "chunk_id": "seg_35_chunk_01",
+        "start_ts": "03:40:26",
+        "end_ts": "05:50:24",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_instruction",
+        "local_score": 3.275,
+        "rerank_score": 0.8277
+      },
+      {
+        "span_text": "어제 예제를 살짝 이제 연도별로 우리가 튜토리얼 예제를 그대로 가져다 쓰다 보니까 튜토리얼 예제를 가져다가 레인지도 해보고 리스트도 해보고 해시하고 키 같은 경우에는 조금 특징이 달라 어떠냐면 얘네들은",
+        "context_before": [
+          "돼요."
+        ],
+        "evidence_type": "practice_transition_spans, practice_evidence",
+        "evidence_types": [
+          "practice_transition_spans",
+          "practice_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "해보"
+        ],
+        "segment_id": "seg_05",
+        "chunk_id": "seg_05_chunk_01",
+        "start_ts": "09:29:01",
+        "end_ts": "09:31:10",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_example",
+        "local_score": 2.7,
+        "rerank_score": 0.8224
+      }
+    ],
+    "contrary_evidence": []
+  },
+  "오류 대응": {
+    "supporting_evidence": [
+      {
+        "span_text": "우리가 자바에서 사용하고 있는 트라이 캐치를 구현을 할 때 얘네는 디크라 핸들러라고 하는 구문을 활용해서 오류를 처리할 수 있고 그다음에 거기에 해당하는 컨디션의 속성들을 이용을 해서 얘네가 다양한",
+        "context_before": [
+          "자 저희 어제 프로시저 내에서 예외 처리하는 핸들링을 조금 학습을 하셨어요."
+        ],
+        "evidence_type": "error_response_spans, error_evidence",
+        "evidence_types": [
+          "error_response_spans",
+          "error_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "오류"
+        ],
+        "segment_id": "seg_01",
+        "chunk_id": "seg_01_chunk_01",
+        "start_ts": "09:11:09",
+        "end_ts": "09:14:07",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_instruction",
+        "local_score": 2.7,
+        "rerank_score": 0.8457
+      },
+      {
+        "span_text": "이렇게 가겠지 실행을 해보면 없으면 없다라고 오류가 날 거고, 있으면 삭제할 거고, 그리고 나서 얘가 실제 에 티션 주기 전에 인덱스가 있",
+        "context_before": [
+          "뭐 여기 프라이머리 키 만약에 유니크 키가 있으면 유니크 키를 삭제할 거야."
+        ],
+        "evidence_type": "error_response_spans, error_evidence",
+        "evidence_types": [
+          "error_response_spans",
+          "error_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "오류"
+        ],
+        "segment_id": "seg_12",
+        "chunk_id": "seg_12_chunk_01",
+        "start_ts": "11:11:23",
+        "end_ts": "11:14:46",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 2.575,
+        "rerank_score": 0.8347
+      }
+    ],
+    "contrary_evidence": []
+  },
+  "이해 확인 질문": {
+    "supporting_evidence": [
+      {
+        "span_text": "표현식하고 DSC 정렬 인덱스를 지금 추가한 케이스 있 쓸까나 저장 좀 하고 지금은 하시면서 지금 뭐 보는 상황이냐면 계속 인덱스를 확인하는 케이스까지 됐어요.",
+        "context_before": [
+          "살짝 이런 식으로 설정을 해야 얘네가 마무리가 잘 된다."
+        ],
+        "evidence_type": "understanding_check_spans",
+        "evidence_types": [
+          "understanding_check_spans"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "됐어요"
+        ],
+        "segment_id": "seg_26",
+        "chunk_id": "seg_26_chunk_01",
+        "start_ts": "02:18:26",
+        "end_ts": "02:20:55",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_example",
+        "local_score": 2.6375,
+        "rerank_score": 0.8296
+      },
+      {
+        "span_text": "만든 거예 우리가 어떻게 하면 셀렉을 할 수 있는지 확인한 거지 됐어요.",
+        "context_before": [
+          "케이스사 여기까지는 좀 많이 쓰는 거니까 그럼 알터 테이블로 표현식 하고 얘는 플러스 해서 여기 뭐 썼냐면 오토바이 할 수 있게끔 정렬 키워드를 줬어요게 DSC에 정렬 인덱스를 복합으로"
+        ],
+        "evidence_type": "understanding_check_spans",
+        "evidence_types": [
+          "understanding_check_spans"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "됐어요"
+        ],
+        "segment_id": "seg_27",
+        "chunk_id": "seg_27_chunk_01",
+        "start_ts": "02:21:14",
+        "end_ts": "02:28:07",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_example",
+        "local_score": 1.95,
+        "rerank_score": 0.814
+      }
+    ],
+    "contrary_evidence": []
+  },
+  "참여 유도": {
+    "supporting_evidence": [],
+    "contrary_evidence": []
+  },
+  "질문 응답 충분성": {
+    "supporting_evidence": [
+      {
+        "span_text": "테이블을 확인해서 현재 카디널리티라든지 복합키를 주는 기준 일반 무결성 제약 조건에서 복합키를 굉장히 많이 주는데 복합기를 주는 기준 이런 것들을 복습하면서 추가로 학습을 했어요.",
+        "context_before": [
+          "드랍만 했는데 얘네가 이제 종류가 다양하게 좀 있다 보니까 그 종류를 가져다가 단닐럼 넥스 그 다음 복합 인덱스 뭐 이런 것들 그래서 오늘은 왠만하면 옵티마이저 기준으로 해서 인덱스"
+        ],
+        "evidence_type": "qa_response_spans, qa_evidence",
+        "evidence_types": [
+          "qa_response_spans",
+          "qa_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "추가로"
+        ],
+        "segment_id": "seg_34",
+        "chunk_id": "seg_34_chunk_01",
+        "start_ts": "03:13:20",
+        "end_ts": "03:40:06",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 2.7,
+        "rerank_score": 0.8133
+      }
+    ],
+    "contrary_evidence": []
+  }
+}

@@ -1,0 +1,665 @@
+{
+  "불필요한 반복 표현": {
+    "supporting_evidence": [],
+    "contrary_evidence": [
+      {
+        "span_text": "자 저희 어제는 인덱스 구현해서 개념하고 필요성 진행하는 걸 사용을 했었고 원 익스플레인이랑 그 다음에 인덱스 CRD 이런 것들을 작성을 하셨습니다.",
+        "context_before": [
+          "오늘 수업 진행하도록 하겠습니다."
+        ],
+        "evidence_type": "filler_spans, repetition_spans, language_expression_evidence",
+        "evidence_types": [
+          "filler_spans",
+          "repetition_spans",
+          "language_expression_evidence"
+        ],
+        "polarity": "contrary",
+        "matched_keywords": [
+          "어",
+          "음",
+          "자"
+        ],
+        "segment_id": "seg_01",
+        "chunk_id": "seg_01_chunk_01",
+        "start_ts": "09:10:27",
+        "end_ts": "09:11:54",
+        "parent_label": "도입",
+        "sub_label": "general",
+        "local_score": 4.9125,
+        "rerank_score": 0.8471
+      },
+      {
+        "span_text": "자 저희가 이제 다시 한번 정리를 좀 해보면 쉬운데 쉬워요 쉬운데 이제 명령 플로우가 좀 익숙하지 않을 수가 있어서 참 안 외워지는 코드 얘기는 맞는데 그래도 내용은 그렇게",
+        "context_before": [
+          "여러분들 수업 진행하도록 하겠습니다."
+        ],
+        "evidence_type": "filler_spans, repetition_spans, language_expression_evidence",
+        "evidence_types": [
+          "filler_spans",
+          "repetition_spans",
+          "language_expression_evidence"
+        ],
+        "polarity": "contrary",
+        "matched_keywords": [
+          "이제",
+          "어",
+          "자"
+        ],
+        "segment_id": "seg_07",
+        "chunk_id": "seg_07_chunk_01",
+        "start_ts": "11:01:03",
+        "end_ts": "11:05:40",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 5.1,
+        "rerank_score": 0.8414
+      }
+    ]
+  },
+  "발화 완결성": {
+    "supporting_evidence": [
+      {
+        "span_text": "펑션도 되게 저는 그냥 이거 편안하게 이거 하시라고 합니다.",
+        "context_before": [
+          "이런 펑션이 있었거든요."
+        ],
+        "evidence_type": "completion_evidence",
+        "evidence_types": [
+          "completion_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "합니다",
+          "."
+        ],
+        "segment_id": "seg_04",
+        "chunk_id": "seg_04_chunk_01",
+        "start_ts": "09:37:02",
+        "end_ts": "09:46:39",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_instruction",
+        "local_score": 4.7625,
+        "rerank_score": 0.8282
+      },
+      {
+        "span_text": "SSL 그 다음에 여러분들 뭐 요새 아기사자 뭐 하고 있지 아기사자 하고 있지 저거 코바네 뛰트 이런 거 하면서 설명 좀 하고 있죠.",
+        "context_before": [
+          "없어요."
+        ],
+        "evidence_type": "completion_evidence",
+        "evidence_types": [
+          "completion_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "."
+        ],
+        "segment_id": "seg_14",
+        "chunk_id": "seg_14_chunk_01",
+        "start_ts": "11:55:37",
+        "end_ts": "12:04:01",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_instruction",
+        "local_score": 2.6375,
+        "rerank_score": 0.8259
+      }
+    ],
+    "contrary_evidence": []
+  },
+  "언어 일관성": {
+    "supporting_evidence": [
+      {
+        "span_text": "SSL 그 다음에 여러분들 뭐 요새 아기사자 뭐 하고 있지 아기사자 하고 있지 저거 코바네 뛰트 이런 거 하면서 설명 좀 하고 있죠.",
+        "context_before": [
+          "없어요."
+        ],
+        "evidence_type": "speech_style_evidence",
+        "evidence_types": [
+          "speech_style_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "있죠"
+        ],
+        "segment_id": "seg_14",
+        "chunk_id": "seg_14_chunk_01",
+        "start_ts": "11:55:37",
+        "end_ts": "12:04:01",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_instruction",
+        "local_score": 3.0,
+        "rerank_score": 0.8161
+      },
+      {
+        "span_text": "가요 그러면 이 계정으로 접속을 하자마자 셀렉트를 하는 애가 되는 거고, 이 계정으로 접속을 하자마자 그 다음에 업데이트를 하는 애가 되는 거야.",
+        "context_before": [
+          "그냥 복습해야 이제부터 그 다음에 데이터베이스의 공부다 일단은 권한을 다 줘보고 그 다음에 특정 테이블 시티지 특정 테이블에다가 다시 한번 줘보고 적용해보고 이렇게 가는 것이 지금 6단계니까 복습의 거 어차피 우리가 리보크까지 다 했으니까 그러니까 4부작 그냥 4부작 같이 하 지금 현재 크라이버를 이용을 해서 현재 계정이 유저가는 필드들 확인하시고 유저 테이블에 호스트 유저 하게 되면 지금은 뉴 테스트 뉴 유저 이렇게 해서 저희가 지금 들쑥날쑥 만들고 지금 호스트 하나 추가 명시로 했습니다. 몇개"
+        ],
+        "evidence_type": "speech_style_evidence",
+        "evidence_types": [
+          "speech_style_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "되는 거야",
+          "하자"
+        ],
+        "segment_id": "seg_11",
+        "chunk_id": "seg_11_chunk_01",
+        "start_ts": "11:31:42",
+        "end_ts": "11:41:39",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_instruction",
+        "local_score": 4.8,
+        "rerank_score": 0.8112
+      }
+    ],
+    "contrary_evidence": [
+      {
+        "span_text": "어제 열어놨던 여기 워크벤치 하나 열려있고 그 다음에 이제 도움말 제가 이렇게 하나 열어놓은 상태입니다.",
+        "context_before": [
+          "안녕하세요. 오늘 수업 진행하도록 하겠습니다. 자 저희 어제는 인덱스 구현해서 개념하고 필요성 진행하는 걸 사용을 했었고 원 익스플레인이랑 그 다음에 인덱스 CRD 이런 것들을 작성을 하셨습니다. 오늘은 어제 사용자 개정 권한 저희 어제 살짝 내용 전체 확인하고 그 다음에 저희 오늘 이어서 진행을 할 거고요. 계정 인증 구조가 있어요. 그래서 저희가 만약에 데이터베이스를 서버에 접속을 하려고 그러면 서버에 접속할 수 있는 계정을 먼저 생성하고 그 다음에 권한 부여받고 그 다음에 객체에 접근할 수"
+        ],
+        "evidence_type": "style_shift_spans",
+        "evidence_types": [
+          "style_shift_spans"
+        ],
+        "polarity": "contrary",
+        "matched_keywords": [
+          "입니다"
+        ],
+        "segment_id": "seg_02",
+        "chunk_id": "seg_02_chunk_01",
+        "start_ts": "09:12:01",
+        "end_ts": "09:16:03",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 2.7375,
+        "rerank_score": 0.8141
+      },
+      {
+        "span_text": "펑션도 되게 저는 그냥 이거 편안하게 이거 하시라고 합니다.",
+        "context_before": [
+          "이런 펑션이 있었거든요."
+        ],
+        "evidence_type": "style_shift_spans",
+        "evidence_types": [
+          "style_shift_spans"
+        ],
+        "polarity": "contrary",
+        "matched_keywords": [
+          "합니다"
+        ],
+        "segment_id": "seg_04",
+        "chunk_id": "seg_04_chunk_01",
+        "start_ts": "09:37:02",
+        "end_ts": "09:46:39",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_instruction",
+        "local_score": 2.3625,
+        "rerank_score": 0.8134
+      }
+    ]
+  },
+  "학습 목표 안내": {
+    "supporting_evidence": [
+      {
+        "span_text": "오늘은 어제 사용자 개정 권한 저희 어제 살짝 내용 전체 확인하고 그 다음에 저희 오늘 이어서 진행을 할 거고요.",
+        "context_before": [
+          "자 저희 어제는 인덱스 구현해서 개념하고 필요성 진행하는 걸 사용을 했었고 원 익스플레인이랑 그 다음에 인덱스 CRD 이런 것들을 작성을 하셨습니다."
+        ],
+        "evidence_type": "objective_intro_spans, intro_evidence",
+        "evidence_types": [
+          "objective_intro_spans",
+          "intro_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "오늘은",
+          "다음",
+          "오늘",
+          "진행"
+        ],
+        "segment_id": "seg_01",
+        "chunk_id": "seg_01_chunk_01",
+        "start_ts": "09:10:27",
+        "end_ts": "09:11:54",
+        "parent_label": "도입",
+        "sub_label": "general",
+        "local_score": 9.5875,
+        "rerank_score": 0.8169
+      },
+      {
+        "span_text": "어제 했던 내용을 3번 가도록 할게요 저희가 사용자 권한 관리가 크리에이트 유저 그라이트 리버크 그 다음에 쇼 그랜트스 이렇게 돼서 이제 저희 익용 기본 명령이 있고 그 다음에",
+        "context_before": [
+          "어제 열어놨던 여기 워크벤치 하나 열려있고 그 다음에 이제 도움말 제가 이렇게 하나 열어놓은 상태입니다."
+        ],
+        "evidence_type": "objective_intro_spans, intro_evidence",
+        "evidence_types": [
+          "objective_intro_spans",
+          "intro_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "다음"
+        ],
+        "segment_id": "seg_02",
+        "chunk_id": "seg_02_chunk_01",
+        "start_ts": "09:12:01",
+        "end_ts": "09:16:03",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 4.5,
+        "rerank_score": 0.8044
+      }
+    ],
+    "contrary_evidence": []
+  },
+  "전날 복습 연계": {
+    "supporting_evidence": [
+      {
+        "span_text": "자 저희 어제는 인덱스 구현해서 개념하고 필요성 진행하는 걸 사용을 했었고 원 익스플레인이랑 그 다음에 인덱스 CRD 이런 것들을 작성을 하셨습니다.",
+        "context_before": [
+          "오늘 수업 진행하도록 하겠습니다."
+        ],
+        "evidence_type": "review_bridge_spans, bridge_evidence",
+        "evidence_types": [
+          "review_bridge_spans",
+          "bridge_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "어제"
+        ],
+        "segment_id": "seg_01",
+        "chunk_id": "seg_01_chunk_01",
+        "start_ts": "09:10:27",
+        "end_ts": "09:11:54",
+        "parent_label": "도입",
+        "sub_label": "general",
+        "local_score": 2.5125,
+        "rerank_score": 0.8369
+      },
+      {
+        "span_text": "오늘은 어제 사용자 개정 권한 저희 어제 살짝 내용 전체 확인하고 그 다음에 저희 오늘 이어서 진행을 할 거고요.",
+        "context_before": [
+          "자 저희 어제는 인덱스 구현해서 개념하고 필요성 진행하는 걸 사용을 했었고 원 익스플레인이랑 그 다음에 인덱스 CRD 이런 것들을 작성을 하셨습니다."
+        ],
+        "evidence_type": "review_bridge_spans, bridge_evidence",
+        "evidence_types": [
+          "review_bridge_spans",
+          "bridge_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "어제"
+        ],
+        "segment_id": "seg_01",
+        "chunk_id": "seg_01_chunk_01",
+        "start_ts": "09:10:27",
+        "end_ts": "09:11:54",
+        "parent_label": "도입",
+        "sub_label": "general",
+        "local_score": 2.3875,
+        "rerank_score": 0.8361
+      }
+    ],
+    "contrary_evidence": []
+  },
+  "설명 순서": {
+    "supporting_evidence": [],
+    "contrary_evidence": []
+  },
+  "핵심 내용 강조": {
+    "supporting_evidence": [
+      {
+        "span_text": "오늘 타면서 강사가 도움말하고 그 다음에 애드미니스트레이션의 매니지먼트랑 비교하는 부분들을 비교하고 어떤 속성 값을 뽑아왔는지 이런 것들이 핵심이니까.",
+        "context_before": [
+          "이렇게 주고 그 다음에 여기 있는 속성 어트리뷰트 주고 그래서 여기다가 헤어 유저를 등록한 다음에 유저는 하셔가지고, 여기 앞에 있는 애가 유저고 뒤에 있는 애가 호스트잖아요. 앞에 있는 애를 살짝 두고 이렇게 실행하시면 됩니다. 생성하신 다음에 사이즈 붙여서 박태리뷰트 생성하신 다음에 하시면 괜찮 성공 이게 아 여러분 이거는 지금 빨간 줄이 나와 떠날 수 있는 내용들이니까. 살짝 하시면 무리 없이 감셨어요. 이런 식으로 사용할 수 있다. 이렇게 되어 있으니까 수 하셨습니까? 여러분 지금 계정 어"
+        ],
+        "evidence_type": "emphasis_spans, highlight_evidence",
+        "evidence_types": [
+          "emphasis_spans",
+          "highlight_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "핵심"
+        ],
+        "segment_id": "seg_17",
+        "chunk_id": "seg_17_chunk_01",
+        "start_ts": "01:49:21",
+        "end_ts": "05:50:44",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_instruction",
+        "local_score": 2.325,
+        "rerank_score": 0.8329
+      }
+    ],
+    "contrary_evidence": []
+  },
+  "마무리 요약": {
+    "supporting_evidence": [
+      {
+        "span_text": "얘는 여기서 더 깊게 들어가면 너무 많이 들어가서 여기까지만 해도 괜찮습니다.",
+        "context_before": [
+          "하고 이제 트리거 좀 진행해도 될까요?"
+        ],
+        "evidence_type": "closing_summary_spans, summary_evidence",
+        "evidence_types": [
+          "closing_summary_spans",
+          "summary_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "여기까지"
+        ],
+        "segment_id": "seg_17",
+        "chunk_id": "seg_17_chunk_01",
+        "start_ts": "01:49:21",
+        "end_ts": "05:50:44",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_instruction",
+        "local_score": 1.8875,
+        "rerank_score": 0.8031
+      }
+    ],
+    "contrary_evidence": []
+  },
+  "개념 정의": {
+    "supporting_evidence": [
+      {
+        "span_text": "부여하는 그서 단계치 이것만 복습하실 때 하시면 될 것 같다 그리고 이제 여기도 보시면은 룰이라고 하는 것이 있죠.",
+        "context_before": [
+          "가요 그러면 이 계정으로 접속을 하자마자 셀렉트를 하는 애가 되는 거고, 이 계정으로 접속을 하자마자 그 다음에 업데이트를 하는 애가 되는 거야. 이렇게 바로 들어오자마자 일하는 거지 이해 가셨어요. 그다음 내립니다. 권한 확인을 한번 해보자 얘는 지금 그란트에 뭘 받았어. 진짜 권한을 받은 거지 나는 셀렉트 사원이야 이렇게 나 사원이야 뭐 있는 업데이트라는 애를 권한을 받았으니까 나 뭐 들어오자마자 대리야 요새 뭐 대리라는 얘기는 안 하지 않지만 이런 식으로 해서 권한을 확인을 하는 거지 직급확"
+        ],
+        "evidence_type": "definition_spans, concept_definition_evidence",
+        "evidence_types": [
+          "definition_spans",
+          "concept_definition_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "라고 하는"
+        ],
+        "segment_id": "seg_12",
+        "chunk_id": "seg_12_chunk_01",
+        "start_ts": "11:41:57",
+        "end_ts": "11:46:59",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_example",
+        "local_score": 2.325,
+        "rerank_score": 0.7992
+      },
+      {
+        "span_text": "명령어를 조금 이렇서 그란트는 특이한 키워드가 온하고 2가 있는데",
+        "context_before": [
+          "이렇게 그래서 권한 설정을 줄 때 사용하고 있는 키워드는 이제 온 시리즈 이렇게 세트예요."
+        ],
+        "evidence_type": "definition_spans, concept_definition_evidence",
+        "evidence_types": [
+          "definition_spans",
+          "concept_definition_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "란"
+        ],
+        "segment_id": "seg_07",
+        "chunk_id": "seg_07_chunk_01",
+        "start_ts": "11:01:03",
+        "end_ts": "11:05:40",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 3.5625,
+        "rerank_score": 0.7987
+      }
+    ],
+    "contrary_evidence": []
+  },
+  "비유 및 예시 활용": {
+    "supporting_evidence": [
+      {
+        "span_text": "그런데 나는 여기서 내가 주고 싶은 것만 주고 싶어 예를 들어서 너는 이렇게 해서 나는 너한테 뷰만 주고 싶어 이러고 싶을 때 있잖아.",
+        "context_before": [
+          "할 수 있고 요 할 수 있는 부분이까 지금 올 프리빌리즈이고 그다음에 아까 위에 보시면 개장 권한에서 부여를 할 때 셀렉트나 이런 것들을 권한 부여하는 것도 있어요. 올만 있는 건 아니고 여기 밑에 있구나 만약에 내가 전체 다 안 주고 팔렉트 인서트 업데이트 딜리트를 일단 내가 원하는 대상한테 주고 싶게 특히나 마이언더바 EMP에 이렇게 주면 얘는 올 프리빌리지를 받게 되면 얘를 다 받는 거지만 실제 여기에서 오브젝트 라이트라고 해서 이 부분이지 이 부분 중에 이렇게 4개만 받았다는 거잖아. 이렇"
+        ],
+        "evidence_type": "example_spans, example_evidence",
+        "evidence_types": [
+          "example_spans",
+          "example_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "예를 들어"
+        ],
+        "segment_id": "seg_09",
+        "chunk_id": "seg_09_chunk_01",
+        "start_ts": "11:07:35",
+        "end_ts": "11:19:38",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_instruction",
+        "local_score": 4.4375,
+        "rerank_score": 0.7937
+      }
+    ],
+    "contrary_evidence": []
+  },
+  "선행 개념 확인": {
+    "supporting_evidence": [],
+    "contrary_evidence": []
+  },
+  "발화 속도 적절성": {
+    "supporting_evidence": [
+      {
+        "span_text": "자 저희가 이제 다시 한번 정리를 좀 해보면 쉬운데 쉬워요 쉬운데 이제 명령 플로우가 좀 익숙하지 않을 수가 있어서 참 안 외워지는 코드 얘기는 맞는데 그래도 내용은 그렇게",
+        "context_before": [
+          "여러분들 수업 진행하도록 하겠습니다."
+        ],
+        "evidence_type": "pace_evidence",
+        "evidence_types": [
+          "pace_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [],
+        "segment_id": "seg_07",
+        "chunk_id": "seg_07_chunk_01",
+        "start_ts": "11:01:03",
+        "end_ts": "11:05:40",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 1.5,
+        "rerank_score": 0.8467
+      },
+      {
+        "span_text": "아니면 크리에이티 계정 생성하는 옵션들이 조금 많아서 실제 내용들을 다 접목할 수는 없었지만 얘네가 제공해주는 메이커 측에서 제공해주는 튜토리얼 중에 코드 중에 그나마 조금",
+        "context_before": [
+          "옵션이 굉장히 크리트 룰 옵션이라든지."
+        ],
+        "evidence_type": "pace_evidence",
+        "evidence_types": [
+          "pace_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [],
+        "segment_id": "seg_15",
+        "chunk_id": "seg_15_chunk_01",
+        "start_ts": "01:21:35",
+        "end_ts": "01:25:41",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_instruction",
+        "local_score": 1.5,
+        "rerank_score": 0.8393
+      }
+    ],
+    "contrary_evidence": [
+      {
+        "span_text": "자 저희 어제는 인덱스 구현해서 개념하고 필요성 진행하는 걸 사용을 했었고 원 익스플레인이랑 그 다음에 인덱스 CRD 이런 것들을 작성을 하셨습니다.",
+        "context_before": [
+          "오늘 수업 진행하도록 하겠습니다."
+        ],
+        "evidence_type": "rapid_transition_spans",
+        "evidence_types": [
+          "rapid_transition_spans"
+        ],
+        "polarity": "contrary",
+        "matched_keywords": [
+          "high_utterances_per_min",
+          "high_span_density"
+        ],
+        "segment_id": "seg_01",
+        "chunk_id": "seg_01_chunk_01",
+        "start_ts": "09:10:27",
+        "end_ts": "09:11:54",
+        "parent_label": "도입",
+        "sub_label": "general",
+        "local_score": 4.5,
+        "rerank_score": 0.8263
+      },
+      {
+        "span_text": "할 수 있고 요 할 수 있는 부분이까 지금 올 프리빌리즈이고 그다음에 아까 위에 보시면 개장 권한에서 부여를 할 때 셀렉트나 이런 것들을 권한 부여하는 것도 있어요.",
+        "context_before": [
+          "여러분들 수업 진행하도록 하겠습니다. 자 저희가 이제 다시 한번 정리를 좀 해보면 쉬운데 쉬워요 쉬운데 이제 명령 플로우가 좀 익숙하지 않을 수가 있어서 참 안 외워지는 코드 얘기는 맞는데 그래도 내용은 그렇게 어렵진 않다 일단은 저희가 뭐 했냐면 그냥 처음에 계정 생성했어요. 그 다음에 I EMP가 있는 애들만 프리빌리지라는 것을 줬습니다. 이렇게 그래서 권한 설정을 줄 때 사용하고 있는 키워드는 이제 온 시리즈 이렇게 세트예요. 명령어를 조금 이렇서 그란트는 특이한 키워드가 온하고 2가 있는데"
+        ],
+        "evidence_type": "rapid_transition_spans",
+        "evidence_types": [
+          "rapid_transition_spans"
+        ],
+        "polarity": "contrary",
+        "matched_keywords": [
+          "high_span_density"
+        ],
+        "segment_id": "seg_08",
+        "chunk_id": "seg_08_chunk_01",
+        "start_ts": "11:05:55",
+        "end_ts": "11:07:23",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_example",
+        "local_score": 2.9544,
+        "rerank_score": 0.8187
+      }
+    ]
+  },
+  "예시 적절성": {
+    "supporting_evidence": [],
+    "contrary_evidence": []
+  },
+  "실습 연계": {
+    "supporting_evidence": [
+      {
+        "span_text": "앞에 있는 애를 살짝 두고 이렇게 실행하시면 됩니다.",
+        "context_before": [
+          "이렇게 주고 그 다음에 여기 있는 속성 어트리뷰트 주고 그래서 여기다가 헤어 유저를 등록한 다음에 유저는 하셔가지고, 여기 앞에 있는 애가 유저고 뒤에 있는 애가 호스트잖아요."
+        ],
+        "evidence_type": "practice_transition_spans, practice_evidence",
+        "evidence_types": [
+          "practice_transition_spans",
+          "practice_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "실행"
+        ],
+        "segment_id": "seg_16",
+        "chunk_id": "seg_16_chunk_01",
+        "start_ts": "01:25:58",
+        "end_ts": "01:49:08",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_instruction",
+        "local_score": 1.7,
+        "rerank_score": 0.8262
+      },
+      {
+        "span_text": "실행을 한번 해보면 그러면 로컬 호스트에 접근 가능 사용자 이렇게 되어 있거든요.",
+        "context_before": [
+          "그 다음에 DB 테이블 구조 확인을 살짝 보시기가 이제 필즈거든요. 어떤 필즈들이 있는지를 조금 더 내용을 또 확인을 해보시면 되고 이렇게 내용들이 실제 좀 자분자분 있습니다만 그래서 지금 숏 테이블즈에 DB를 하나 가지고 왔으니까 DB 안에 뭐가 들어있는지를 지금 하나 살짝 보는 거죠. 되셨어요. 그 다음에 컬럼즈라는 것도 아까 있었으니까 컬럼즈도 조금 한번 보시고 이렇게 얘만 보지 말고 이렇게 그래서 여기에 쇼 해서 가지고 있는 컬럼즈에는 어떤 것들이 있는까 필즈하고 컬럼하고 똑같은 내용들이니"
+        ],
+        "evidence_type": "practice_transition_spans, practice_evidence",
+        "evidence_types": [
+          "practice_transition_spans",
+          "practice_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "해보",
+          "실행",
+          "한번 해보"
+        ],
+        "segment_id": "seg_06",
+        "chunk_id": "seg_06_chunk_01",
+        "start_ts": "09:57:19",
+        "end_ts": "10:39:28",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_instruction",
+        "local_score": 4.35,
+        "rerank_score": 0.8221
+      }
+    ],
+    "contrary_evidence": []
+  },
+  "오류 대응": {
+    "supporting_evidence": [],
+    "contrary_evidence": []
+  },
+  "이해 확인 질문": {
+    "supporting_evidence": [],
+    "contrary_evidence": []
+  },
+  "참여 유도": {
+    "supporting_evidence": [
+      {
+        "span_text": "실행을 한번 해보면 그러면 로컬 호스트에 접근 가능 사용자 이렇게 되어 있거든요.",
+        "context_before": [
+          "그 다음에 DB 테이블 구조 확인을 살짝 보시기가 이제 필즈거든요. 어떤 필즈들이 있는지를 조금 더 내용을 또 확인을 해보시면 되고 이렇게 내용들이 실제 좀 자분자분 있습니다만 그래서 지금 숏 테이블즈에 DB를 하나 가지고 왔으니까 DB 안에 뭐가 들어있는지를 지금 하나 살짝 보는 거죠. 되셨어요. 그 다음에 컬럼즈라는 것도 아까 있었으니까 컬럼즈도 조금 한번 보시고 이렇게 얘만 보지 말고 이렇게 그래서 여기에 쇼 해서 가지고 있는 컬럼즈에는 어떤 것들이 있는까 필즈하고 컬럼하고 똑같은 내용들이니"
+        ],
+        "evidence_type": "engagement_spans, interaction_prompt_spans, engagement_evidence",
+        "evidence_types": [
+          "engagement_spans",
+          "interaction_prompt_spans",
+          "engagement_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "한번 해보"
+        ],
+        "segment_id": "seg_06",
+        "chunk_id": "seg_06_chunk_01",
+        "start_ts": "09:57:19",
+        "end_ts": "10:39:28",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_instruction",
+        "local_score": 1.95,
+        "rerank_score": 0.8295
+      },
+      {
+        "span_text": "권한 확인을 한번 해보자 얘는 지금 그란트에 뭘 받았어.",
+        "context_before": [
+          "그다음 내립니다."
+        ],
+        "evidence_type": "engagement_spans, interaction_prompt_spans, engagement_evidence",
+        "evidence_types": [
+          "engagement_spans",
+          "interaction_prompt_spans",
+          "engagement_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "한번 해보"
+        ],
+        "segment_id": "seg_11",
+        "chunk_id": "seg_11_chunk_01",
+        "start_ts": "11:31:42",
+        "end_ts": "11:41:39",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_instruction",
+        "local_score": 1.7625,
+        "rerank_score": 0.7863
+      }
+    ],
+    "contrary_evidence": []
+  },
+  "질문 응답 충분성": {
+    "supporting_evidence": [],
+    "contrary_evidence": []
+  }
+}

@@ -1,0 +1,867 @@
+{
+  "불필요한 반복 표현": {
+    "supporting_evidence": [],
+    "contrary_evidence": [
+      {
+        "span_text": "할 때는 적재를 해놓고, 그다음에 저희가 RD 작업도 해야 되고 그 다음에 저희 그 셀렉 문장 전체를 이용해서 정렬 인덱스 색깅까지 해야 되는 상황이 발생을 하다 보니 그냥",
+        "context_before": [
+          "저희가 이제 어제는 문자열 다음에 이제 패턴 기반 처리 그 다음에 파일을 로드를 하는 것을 지금 외부 파일을 데이터를 테이블로 적재할 수 있다라는 것을 했었는데 테이블로 데이터를 적재를"
+        ],
+        "evidence_type": "filler_spans, repetition_spans, language_expression_evidence",
+        "evidence_types": [
+          "filler_spans",
+          "repetition_spans",
+          "language_expression_evidence"
+        ],
+        "polarity": "contrary",
+        "matched_keywords": [
+          "그냥",
+          "음"
+        ],
+        "segment_id": "seg_01",
+        "chunk_id": "seg_01_chunk_01",
+        "start_ts": "09:10:30",
+        "end_ts": "09:11:47",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 3.9,
+        "rerank_score": 0.8546
+      },
+      {
+        "span_text": "저는 뭐 펑션은 너무 개수도 많고 외워지지도 않아 펑션 저 같은 경우에 매번 이제 API 가서 확인하고 하면 아 맞아 저거였지 약간 이런 느낌이라면 조이는 문법이 조금 정형화되어",
+        "context_before": [
+          "오늘 조희는 펑션보다 좀 괜찮죠 아니에요."
+        ],
+        "evidence_type": "filler_spans, repetition_spans, language_expression_evidence",
+        "evidence_types": [
+          "filler_spans",
+          "repetition_spans",
+          "language_expression_evidence"
+        ],
+        "polarity": "contrary",
+        "matched_keywords": [
+          "이제",
+          "약간",
+          "어"
+        ],
+        "segment_id": "seg_32",
+        "chunk_id": "seg_32_chunk_01",
+        "start_ts": "03:10:19",
+        "end_ts": "03:13:51",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_example",
+        "local_score": 5.1,
+        "rerank_score": 0.8523
+      }
+    ]
+  },
+  "발화 완결성": {
+    "supporting_evidence": [
+      {
+        "span_text": "먼저 선조인 나머지 후 조인문으로 작성해요.",
+        "context_before": [
+          "있잖아요."
+        ],
+        "evidence_type": "completion_evidence",
+        "evidence_types": [
+          "completion_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "해요",
+          "."
+        ],
+        "segment_id": "seg_17",
+        "chunk_id": "seg_17_chunk_01",
+        "start_ts": "01:16:37",
+        "end_ts": "01:18:16",
+        "parent_label": "개념 설명",
+        "sub_label": "general",
+        "local_score": 4.575,
+        "rerank_score": 0.84
+      },
+      {
+        "span_text": "동작된다.",
+        "context_before": [
+          "온이나 유징 없이 동작하지만 좀 사용하지 않는 이캐조잉 같은 경우에는 는 연산자를 사용해서 조건을 지정하고 테이블 간에 일치하는 여러 개의 컬럼의 범위만 추출하는 방법 시장 이너 조인과 동일하게"
+        ],
+        "evidence_type": "completion_evidence",
+        "evidence_types": [
+          "completion_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "."
+        ],
+        "segment_id": "seg_20",
+        "chunk_id": "seg_20_chunk_01",
+        "start_ts": "01:27:06",
+        "end_ts": "01:32:53",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 1.2625,
+        "rerank_score": 0.8349
+      }
+    ],
+    "contrary_evidence": []
+  },
+  "언어 일관성": {
+    "supporting_evidence": [
+      {
+        "span_text": "여기 코드로 조인하신 분 돼 두 개의 같아 이해가시 그러면 한번 해보자 알겠다.",
+        "context_before": [
+          "도시 이름하고 국가 이름하고 그런데 얘네들은 지금 현재 뭘로 지금 연결되어 있다."
+        ],
+        "evidence_type": "speech_style_evidence",
+        "evidence_types": [
+          "speech_style_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "해"
+        ],
+        "segment_id": "seg_35",
+        "chunk_id": "seg_35_chunk_01",
+        "start_ts": "03:51:52",
+        "end_ts": "04:02:01",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_instruction",
+        "local_score": 2.6125,
+        "rerank_score": 0.8145
+      },
+      {
+        "span_text": "그리고 유진 같은 칼럼인 DPTN를 해서 묶겠어 이렇게 비교를 하겠어 이렇게 주면단은 애들이 나온다는 거지 DNA잉 뎁트 조인 D DPTNO 이렇게 하면 결과가 동일하게 나올네요.",
+        "context_before": [
+          "이렇게제 프롬을 가고 그 다음에 EMP를 가고 그다음에 뎁프트 테이블을 가지고 와서 회혈을 하지 페어을 하게 되면 두 개의 뎁트 번호가 같아야 되잖아. 예를 들어서 DPT NO는 DPT NO 이렇게 가야 딱 내용을 가지고 오셨죠 사원의 이름과 맞는 부사명을 가지고 올 때 벡터N너가 맞아야 되잖아. 그러면 어떤 애가 뎁터 애너인지를 모르니 테이블의 별칭을 명시를 해서 두 개를 비교하는 구문을 만들어주죠 얘가 있죠. 얘 얘는 2점을 하든 D점을 하든 지금 동일한 상태예요. 얘는 D점 이렇게 얘가 E가"
+        ],
+        "evidence_type": "speech_style_evidence",
+        "evidence_types": [
+          "speech_style_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "해"
+        ],
+        "segment_id": "seg_10",
+        "chunk_id": "seg_10_chunk_01",
+        "start_ts": "10:59:55",
+        "end_ts": "11:03:23",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_example",
+        "local_score": 3.0,
+        "rerank_score": 0.813
+      }
+    ],
+    "contrary_evidence": [
+      {
+        "span_text": "하고 가지고 한 세트 붙이고 네 여기다가 워드는 괜히 깔았겠어죠 오늘은 계속 조회만 합니다.",
+        "context_before": [
+          "칼럼 보고 테이블 아웃치는데 이게 뭐가 어려워 그렇지 이렇게 해놓고, 뒤에 있는 이렇게 만들어 놓은 거 있지 오케 이거 가지고 와 이렇게 또 이제 사부작 가져와 아 아까"
+        ],
+        "evidence_type": "style_shift_spans",
+        "evidence_types": [
+          "style_shift_spans"
+        ],
+        "polarity": "contrary",
+        "matched_keywords": [
+          "합니다"
+        ],
+        "segment_id": "seg_04",
+        "chunk_id": "seg_04_chunk_01",
+        "start_ts": "10:15:11",
+        "end_ts": "10:20:17",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_example",
+        "local_score": 2.675,
+        "rerank_score": 0.8134
+      },
+      {
+        "span_text": "익스플레인이라는 스테이트먼트를 한 적이 있습니다.",
+        "context_before": [
+          "며칠 전 아니에요."
+        ],
+        "evidence_type": "style_shift_spans",
+        "evidence_types": [
+          "style_shift_spans"
+        ],
+        "polarity": "contrary",
+        "matched_keywords": [
+          "습니다"
+        ],
+        "segment_id": "seg_25",
+        "chunk_id": "seg_25_chunk_01",
+        "start_ts": "02:03:56",
+        "end_ts": "02:12:37",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_instruction",
+        "local_score": 2.1125,
+        "rerank_score": 0.8097
+      }
+    ]
+  },
+  "학습 목표 안내": {
+    "supporting_evidence": [
+      {
+        "span_text": "투 시리즈의 베이스 그 다음에 프롬 베이스 이렇게 해서 얘네가 내부적으로 인코딩하는 방법들 이런 것들을 어제 좀 학습을 하셨습니다.",
+        "context_before": [
+          "안녕하세요. 오늘 수업 진행하도록 하겠습니다. 저희가 이제 어제는 문자열 다음에 이제 패턴 기반 처리 그 다음에 파일을 로드를 하는 것을 지금 외부 파일을 데이터를 테이블로 적재할 수 있다라는 것을 했었는데 테이블로 데이터를 적재를 할 때는 적재를 해놓고, 그다음에 저희가 RD 작업도 해야 되고 그 다음에 저희 그 셀렉 문장 전체를 이용해서 정렬 인덱스 색깅까지 해야 되는 상황이 발생을 하다 보니 그냥 일반 파일을 가져다가 로드하는 것이 목적이 아니라 프로세싱하는 데 목적이에요. 그래서 로드를 어"
+        ],
+        "evidence_type": "objective_intro_spans, intro_evidence",
+        "evidence_types": [
+          "objective_intro_spans",
+          "intro_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "다음"
+        ],
+        "segment_id": "seg_02",
+        "chunk_id": "seg_02_chunk_01",
+        "start_ts": "09:11:56",
+        "end_ts": "10:10:13",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 4.1875,
+        "rerank_score": 0.8111
+      },
+      {
+        "span_text": "할 때는 적재를 해놓고, 그다음에 저희가 RD 작업도 해야 되고 그 다음에 저희 그 셀렉 문장 전체를 이용해서 정렬 인덱스 색깅까지 해야 되는 상황이 발생을 하다 보니 그냥",
+        "context_before": [
+          "저희가 이제 어제는 문자열 다음에 이제 패턴 기반 처리 그 다음에 파일을 로드를 하는 것을 지금 외부 파일을 데이터를 테이블로 적재할 수 있다라는 것을 했었는데 테이블로 데이터를 적재를"
+        ],
+        "evidence_type": "objective_intro_spans, intro_evidence",
+        "evidence_types": [
+          "objective_intro_spans",
+          "intro_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "다음"
+        ],
+        "segment_id": "seg_01",
+        "chunk_id": "seg_01_chunk_01",
+        "start_ts": "09:10:30",
+        "end_ts": "09:11:47",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 4.5,
+        "rerank_score": 0.8074
+      }
+    ],
+    "contrary_evidence": []
+  },
+  "전날 복습 연계": {
+    "supporting_evidence": [
+      {
+        "span_text": "어제는 함수를 사용하는 것도 맞지만, 테이블 생성할 때 문자",
+        "context_before": [
+          "그다음에 세 번째는 얘네가 가지고 있는 타입 형태를 조금 보셔야 컬레이션이랑 그다음에 캐릭터셋을 이용을 해서 정렬 색인할 수 있었다."
+        ],
+        "evidence_type": "review_bridge_spans, bridge_evidence",
+        "evidence_types": [
+          "review_bridge_spans",
+          "bridge_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "어제"
+        ],
+        "segment_id": "seg_02",
+        "chunk_id": "seg_02_chunk_01",
+        "start_ts": "09:11:56",
+        "end_ts": "10:10:13",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 1.7625,
+        "rerank_score": 0.8389
+      },
+      {
+        "span_text": "투 시리즈의 베이스 그 다음에 프롬 베이스 이렇게 해서 얘네가 내부적으로 인코딩하는 방법들 이런 것들을 어제 좀 학습을 하셨습니다.",
+        "context_before": [
+          "안녕하세요. 오늘 수업 진행하도록 하겠습니다. 저희가 이제 어제는 문자열 다음에 이제 패턴 기반 처리 그 다음에 파일을 로드를 하는 것을 지금 외부 파일을 데이터를 테이블로 적재할 수 있다라는 것을 했었는데 테이블로 데이터를 적재를 할 때는 적재를 해놓고, 그다음에 저희가 RD 작업도 해야 되고 그 다음에 저희 그 셀렉 문장 전체를 이용해서 정렬 인덱스 색깅까지 해야 되는 상황이 발생을 하다 보니 그냥 일반 파일을 가져다가 로드하는 것이 목적이 아니라 프로세싱하는 데 목적이에요. 그래서 로드를 어"
+        ],
+        "evidence_type": "review_bridge_spans, bridge_evidence",
+        "evidence_types": [
+          "review_bridge_spans",
+          "bridge_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "어제"
+        ],
+        "segment_id": "seg_02",
+        "chunk_id": "seg_02_chunk_01",
+        "start_ts": "09:11:56",
+        "end_ts": "10:10:13",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 2.3875,
+        "rerank_score": 0.8311
+      }
+    ],
+    "contrary_evidence": []
+  },
+  "설명 순서": {
+    "supporting_evidence": [],
+    "contrary_evidence": []
+  },
+  "핵심 내용 강조": {
+    "supporting_evidence": [
+      {
+        "span_text": "지켜볼게요 이렇게 꼭 옳지 이렇게 일단은 얘는 아웃풋이 없어 우리는 아웃풋쯤은 정답이잖아.",
+        "context_before": [
+          "새로운 데이터 자꾸 익숙해지고, 복습해보고 이렇게 이번 주 지난주 4시를 너무 많이 넘어서 오늘은 좀 여기까지만다 왜냐하면, 이거 풀 시간도 좀 줘야 돼서 다음 주부터 시간 좀 많이"
+        ],
+        "evidence_type": "emphasis_spans, highlight_evidence",
+        "evidence_types": [
+          "emphasis_spans",
+          "highlight_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "꼭"
+        ],
+        "segment_id": "seg_36",
+        "chunk_id": "seg_36_chunk_01",
+        "start_ts": "04:02:25",
+        "end_ts": "05:50:53",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 1.95,
+        "rerank_score": 0.828
+      },
+      {
+        "span_text": "거 나머지는 폴스를 전부 다로 뭘로 나온다 얘가 중요하지X는 지금 여기 널값까지 이렇게 3개가 다 나왔어 이렇게 사작사부작사부작 사부작 그 나머지 애들은 다 널로 나온다 이거 뭐라고랬어.",
+        "context_before": [
+          "실행을 해보면 그래서 다 맞는 거 하나 나온다 데이터 상관없지 EF 널 준 게 상관이 하나도 없어 그 다음에 왼쪽에 있는 애들은 다 나오고 오른쪽에 있는 애들은 맞는"
+        ],
+        "evidence_type": "emphasis_spans, highlight_evidence",
+        "evidence_types": [
+          "emphasis_spans",
+          "highlight_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "중요"
+        ],
+        "segment_id": "seg_07",
+        "chunk_id": "seg_07_chunk_01",
+        "start_ts": "10:23:46",
+        "end_ts": "10:27:10",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_instruction",
+        "local_score": 2.7,
+        "rerank_score": 0.8209
+      }
+    ],
+    "contrary_evidence": []
+  },
+  "마무리 요약": {
+    "supporting_evidence": [
+      {
+        "span_text": "새로운 데이터 자꾸 익숙해지고, 복습해보고 이렇게 이번 주 지난주 4시를 너무 많이 넘어서 오늘은 좀 여기까지만다 왜냐하면, 이거 풀 시간도 좀 줘야 돼서 다음 주부터 시간 좀 많이",
+        "context_before": [
+          "각각 이거는 알죠 그런데 얘와 얘는 지금 현재 얘와 얘는 코드와 코드하고 지금 여기 있는 컨츄리 코드가 값이 같게끔 조인할 수 있어 내가 지금 도시 이름하고 국가 이름을 출력하고 싶은 거야. 그럼 여기가 도시 이름이니까. 얘랑 그 다음에 얘가 가지고 있는 이 이름이랑 각각의 네임을 출력하고 싶은 거예요. 도시 이름하고 국가 이름하고 그런데 얘네들은 지금 현재 뭘로 지금 연결되어 있다. 여기 코드로 조인하신 분 돼 두 개의 같아 이해가시 그러면 한번 해보자 알겠다. 그러면 얘도 두 개가 있을 거잖아"
+        ],
+        "evidence_type": "closing_summary_spans, summary_evidence",
+        "evidence_types": [
+          "closing_summary_spans",
+          "summary_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "여기까지"
+        ],
+        "segment_id": "seg_36",
+        "chunk_id": "seg_36_chunk_01",
+        "start_ts": "04:02:25",
+        "end_ts": "05:50:53",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 2.7,
+        "rerank_score": 0.8121
+      }
+    ],
+    "contrary_evidence": []
+  },
+  "개념 정의": {
+    "supporting_evidence": [
+      {
+        "span_text": "다음에 온 또는 유징을 사용을 해서 조인 조건을 전부 다 조인들은 사용하고 있는데, 내가 비교하고자 내가 조인하고자 하는럽명이 달라 온 나타유징이라고 하는 키워드를 이용을 해서 기타를 처리하게 된다.",
+        "context_before": [
+          "어제 펑션 끝나고 한번 다시 한번 정리를 해봅시다 저희 가기 전에 도움마 보기 전에 이너조이는 두 테이블에서 일치하는 값만 출력이 되고 N하고 폴스는 모두 제외된대 NF 제외 그"
+        ],
+        "evidence_type": "definition_spans, concept_definition_evidence",
+        "evidence_types": [
+          "definition_spans",
+          "concept_definition_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "라고 하는"
+        ],
+        "segment_id": "seg_19",
+        "chunk_id": "seg_19_chunk_01",
+        "start_ts": "01:24:50",
+        "end_ts": "01:26:52",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_instruction",
+        "local_score": 2.7,
+        "rerank_score": 0.7917
+      },
+      {
+        "span_text": "라고 하는 거 혹시 기억나시나요?",
+        "context_before": [
+          "것이 있고 내가 코드를 작성하는 부분들이 쭉 있어 얘네가 색인 테이블을 내부적으로 해시 값으로 가지고 있어요."
+        ],
+        "evidence_type": "definition_spans, concept_definition_evidence",
+        "evidence_types": [
+          "definition_spans",
+          "concept_definition_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "라고 하는"
+        ],
+        "segment_id": "seg_31",
+        "chunk_id": "seg_31_chunk_01",
+        "start_ts": "02:40:05",
+        "end_ts": "02:49:03",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 1.5125,
+        "rerank_score": 0.7886
+      }
+    ],
+    "contrary_evidence": []
+  },
+  "비유 및 예시 활용": {
+    "supporting_evidence": [
+      {
+        "span_text": "그러니까 예를 들어서 줘도렇게 줘도 별칭이 필요해서 회어절에서 한번 불러야 된다던지 이런 부분들이 있을 때는 이렇게 별칭을 주는 케이스로 온으로 연산도 하고 그 다음에 이렇게 이너 조인 풀",
+        "context_before": [
+          "그리고 유진 같은 칼럼인 DPTN를 해서 묶겠어 이렇게 비교를 하겠어 이렇게 주면단은 애들이 나온다는 거지 DNA잉 뎁트 조인 D DPTNO 이렇게 하면 결과가 동일하게 나올네요. 여기서 컬럼명이 다를 때는 운이라는 키워드를 사용을 해야 되는데 여기 있는 IC는 같은 칼럼일 때는 유징이라는 거를 사용을 해서 별칭을 제거해버립니다. 그 얘가 조이는 그냥 기본으로 이너 조인이라고 했죠. 그러면 케이스 1 이너 조인을 명명한다. 케이스 2 여기도 별칭을 주겠다. 그리고 온으로 바꾸겠다. 이런 식으로 사"
+        ],
+        "evidence_type": "example_spans, example_evidence",
+        "evidence_types": [
+          "example_spans",
+          "example_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "예를 들어"
+        ],
+        "segment_id": "seg_11",
+        "chunk_id": "seg_11_chunk_01",
+        "start_ts": "11:03:36",
+        "end_ts": "11:15:51",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_example",
+        "local_score": 4.5,
+        "rerank_score": 0.826
+      },
+      {
+        "span_text": "보면 옆에 있는 단어들이랑 있는 내용들이랑 비슷하게 맵핑이 지금 레코드가 되어 있죠.",
+        "context_before": [
+          "이렇게 해놨습니다."
+        ],
+        "evidence_type": "analogy_spans",
+        "evidence_types": [
+          "analogy_spans"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "비슷하게"
+        ],
+        "segment_id": "seg_34",
+        "chunk_id": "seg_34_chunk_01",
+        "start_ts": "03:28:39",
+        "end_ts": "03:51:38",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 3.75,
+        "rerank_score": 0.813
+      }
+    ],
+    "contrary_evidence": []
+  },
+  "선행 개념 확인": {
+    "supporting_evidence": [
+      {
+        "span_text": "옳지 기억나죠.",
+        "context_before": [
+          "라고 하는 거 혹시 기억나시나요?"
+        ],
+        "evidence_type": "prerequisite_bridge_spans, prerequisite_evidence",
+        "evidence_types": [
+          "prerequisite_bridge_spans",
+          "prerequisite_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "기억나죠"
+        ],
+        "segment_id": "seg_31",
+        "chunk_id": "seg_31_chunk_01",
+        "start_ts": "02:40:05",
+        "end_ts": "02:49:03",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 3.125,
+        "rerank_score": 0.793
+      }
+    ],
+    "contrary_evidence": []
+  },
+  "발화 속도 적절성": {
+    "supporting_evidence": [
+      {
+        "span_text": "저는 뭐 펑션은 너무 개수도 많고 외워지지도 않아 펑션 저 같은 경우에 매번 이제 API 가서 확인하고 하면 아 맞아 저거였지 약간 이런 느낌이라면 조이는 문법이 조금 정형화되어",
+        "context_before": [
+          "오늘 조희는 펑션보다 좀 괜찮죠 아니에요."
+        ],
+        "evidence_type": "pace_evidence",
+        "evidence_types": [
+          "pace_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [],
+        "segment_id": "seg_32",
+        "chunk_id": "seg_32_chunk_01",
+        "start_ts": "03:10:19",
+        "end_ts": "03:13:51",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_example",
+        "local_score": 1.5,
+        "rerank_score": 0.8539
+      },
+      {
+        "span_text": "새로운 데이터 자꾸 익숙해지고, 복습해보고 이렇게 이번 주 지난주 4시를 너무 많이 넘어서 오늘은 좀 여기까지만다 왜냐하면, 이거 풀 시간도 좀 줘야 돼서 다음 주부터 시간 좀 많이",
+        "context_before": [
+          "각각 이거는 알죠 그런데 얘와 얘는 지금 현재 얘와 얘는 코드와 코드하고 지금 여기 있는 컨츄리 코드가 값이 같게끔 조인할 수 있어 내가 지금 도시 이름하고 국가 이름을 출력하고 싶은 거야. 그럼 여기가 도시 이름이니까. 얘랑 그 다음에 얘가 가지고 있는 이 이름이랑 각각의 네임을 출력하고 싶은 거예요. 도시 이름하고 국가 이름하고 그런데 얘네들은 지금 현재 뭘로 지금 연결되어 있다. 여기 코드로 조인하신 분 돼 두 개의 같아 이해가시 그러면 한번 해보자 알겠다. 그러면 얘도 두 개가 있을 거잖아"
+        ],
+        "evidence_type": "pace_evidence",
+        "evidence_types": [
+          "pace_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [],
+        "segment_id": "seg_36",
+        "chunk_id": "seg_36_chunk_01",
+        "start_ts": "04:02:25",
+        "end_ts": "05:50:53",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 1.5,
+        "rerank_score": 0.8478
+      }
+    ],
+    "contrary_evidence": [
+      {
+        "span_text": "실제 많이 쓰진 않지만 밑에 살짝 나오니까 조금 이다가 이거 살짝 복사해서 정리를 한번 하도록 합시다.",
+        "context_before": [
+          "두종관계 그래서 우리가 XY는 주종관계가 안 돼서 우리가P하고 뎁트라는 걸 이용해서 셀프 조인을 한번 만들어봤고 자 그 다음에 내추럴 조인 테이블에 컬럼명이 같을 때 자동으로 동일한 컬럼명을 가지고 오니까 내추럴 조연했을 때는 테이블명만 명시하게 돼요. 온이나 유징 없이 동작하지만 좀 사용하지 않는 이캐조잉 같은 경우에는 는 연산자를 사용해서 조건을 지정하고 테이블 간에 일치하는 여러 개의 컬럼의 범위만 추출하는 방법 시장 이너 조인과 동일하게 동작된다. 이제 대충 읽으니까치 이렇게 생각되 자 여"
+        ],
+        "evidence_type": "rapid_transition_spans",
+        "evidence_types": [
+          "rapid_transition_spans"
+        ],
+        "polarity": "contrary",
+        "matched_keywords": [
+          "high_utterances_per_min",
+          "high_span_density"
+        ],
+        "segment_id": "seg_21",
+        "chunk_id": "seg_21_chunk_01",
+        "start_ts": "01:33:02",
+        "end_ts": "01:34:56",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 2.4062,
+        "rerank_score": 0.8427
+      },
+      {
+        "span_text": "할 때는 적재를 해놓고, 그다음에 저희가 RD 작업도 해야 되고 그 다음에 저희 그 셀렉 문장 전체를 이용해서 정렬 인덱스 색깅까지 해야 되는 상황이 발생을 하다 보니 그냥",
+        "context_before": [
+          "저희가 이제 어제는 문자열 다음에 이제 패턴 기반 처리 그 다음에 파일을 로드를 하는 것을 지금 외부 파일을 데이터를 테이블로 적재할 수 있다라는 것을 했었는데 테이블로 데이터를 적재를"
+        ],
+        "evidence_type": "rapid_transition_spans",
+        "evidence_types": [
+          "rapid_transition_spans"
+        ],
+        "polarity": "contrary",
+        "matched_keywords": [
+          "high_span_density"
+        ],
+        "segment_id": "seg_01",
+        "chunk_id": "seg_01_chunk_01",
+        "start_ts": "09:10:30",
+        "end_ts": "09:11:47",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 4.5,
+        "rerank_score": 0.8342
+      }
+    ]
+  },
+  "예시 적절성": {
+    "supporting_evidence": [
+      {
+        "span_text": "쓰는 거니까 얘는 어떤 형태냐면 여러분 이거 실무에서는 지금 사용하고 있지 않아요.",
+        "context_before": [
+          "어느 정도 나와줘야 그 다음에 밑에 내릴게요 내 추럴조 조이는 이거 둘 다 이제 사용을 하고 있는데, 그러 마이에스케렌는 내추럴 조인 대체하는 애들은 없어 왜냐하면, 이너 조인 형태로"
+        ],
+        "evidence_type": "practical_example_spans, practical_example_evidence",
+        "evidence_types": [
+          "practical_example_spans",
+          "practical_example_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "실무에서",
+          "실무"
+        ],
+        "segment_id": "seg_13",
+        "chunk_id": "seg_13_chunk_01",
+        "start_ts": "11:36:13",
+        "end_ts": "11:44:33",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 4.95,
+        "rerank_score": 0.8403
+      },
+      {
+        "span_text": "그러니까 예를 들어서 줘도렇게 줘도 별칭이 필요해서 회어절에서 한번 불러야 된다던지 이런 부분들이 있을 때는 이렇게 별칭을 주는 케이스로 온으로 연산도 하고 그 다음에 이렇게 이너 조인 풀",
+        "context_before": [
+          "그리고 유진 같은 칼럼인 DPTN를 해서 묶겠어 이렇게 비교를 하겠어 이렇게 주면단은 애들이 나온다는 거지 DNA잉 뎁트 조인 D DPTNO 이렇게 하면 결과가 동일하게 나올네요. 여기서 컬럼명이 다를 때는 운이라는 키워드를 사용을 해야 되는데 여기 있는 IC는 같은 칼럼일 때는 유징이라는 거를 사용을 해서 별칭을 제거해버립니다. 그 얘가 조이는 그냥 기본으로 이너 조인이라고 했죠. 그러면 케이스 1 이너 조인을 명명한다. 케이스 2 여기도 별칭을 주겠다. 그리고 온으로 바꾸겠다. 이런 식으로 사"
+        ],
+        "evidence_type": "practical_example_spans, practical_example_evidence",
+        "evidence_types": [
+          "practical_example_spans",
+          "practical_example_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "케이스"
+        ],
+        "segment_id": "seg_11",
+        "chunk_id": "seg_11_chunk_01",
+        "start_ts": "11:03:36",
+        "end_ts": "11:15:51",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_example",
+        "local_score": 4.5,
+        "rerank_score": 0.8271
+      }
+    ],
+    "contrary_evidence": []
+  },
+  "실습 연계": {
+    "supporting_evidence": [
+      {
+        "span_text": "것이 있고 내가 코드를 작성하는 부분들이 쭉 있어 얘네가 색인 테이블을 내부적으로 해시 값으로 가지고 있어요.",
+        "context_before": [
+          "행을 만들어주는래 여기에 순서를 가만히 보면 그렇구나 그래서 작은 애들 가져다가 필터링해서 해시탭을 만들고 그 다음에 뭐 해시한다고 해놨네 이런 작업들을 지금 여기서 설명을 해주고 있는 거예요. 됐어요. 그지 그리고 코스트 할 때 뒤에 나오는 이 로즈라는 것이 좀 재밌어 천작업 후 리턴에 대한 여기 해시 조인의 히스토리를 알려주는 애들 있어요. 알아야 된다. 그서 가끔씩 스플레인 넣어가지고 알고 모르고 투플레인 넣어가지고 도대체 얘가 인덱스가 있는 애야 없는 애야 비교를 해보는 거지 이렇게 프로젝"
+        ],
+        "evidence_type": "practice_transition_spans, practice_evidence",
+        "evidence_types": [
+          "practice_transition_spans",
+          "practice_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "작성"
+        ],
+        "segment_id": "seg_31",
+        "chunk_id": "seg_31_chunk_01",
+        "start_ts": "02:40:05",
+        "end_ts": "02:49:03",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 2.2,
+        "rerank_score": 0.8325
+      },
+      {
+        "span_text": "그서 가끔씩 스플레인 넣어가지고 알고 모르고 투플레인 넣어가지고 도대체 얘가 인덱스가 있는 애야 없는 애야 비교를 해보는 거지 이렇게 프로젝",
+        "context_before": [
+          "알아야 된다."
+        ],
+        "evidence_type": "practice_transition_spans, practice_evidence",
+        "evidence_types": [
+          "practice_transition_spans",
+          "practice_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "해보"
+        ],
+        "segment_id": "seg_30",
+        "chunk_id": "seg_30_chunk_01",
+        "start_ts": "02:36:09",
+        "end_ts": "02:39:58",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 2.45,
+        "rerank_score": 0.8301
+      }
+    ],
+    "contrary_evidence": []
+  },
+  "오류 대응": {
+    "supporting_evidence": [],
+    "contrary_evidence": []
+  },
+  "이해 확인 질문": {
+    "supporting_evidence": [
+      {
+        "span_text": "됐어요.",
+        "context_before": [
+          "행을 만들어주는래 여기에 순서를 가만히 보면 그렇구나 그래서 작은 애들 가져다가 필터링해서 해시탭을 만들고 그 다음에 뭐 해시한다고 해놨네 이런 작업들을 지금 여기서 설명을 해주고 있는 거예요."
+        ],
+        "evidence_type": "understanding_check_spans",
+        "evidence_types": [
+          "understanding_check_spans"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "됐어요"
+        ],
+        "segment_id": "seg_30",
+        "chunk_id": "seg_30_chunk_01",
+        "start_ts": "02:36:09",
+        "end_ts": "02:39:58",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 1.2625,
+        "rerank_score": 0.7986
+      },
+      {
+        "span_text": "오늘 조희는 펑션보다 좀 괜찮죠 아니에요.",
+        "context_before": [
+          "사부작 수업 진행할까요?"
+        ],
+        "evidence_type": "understanding_check_spans",
+        "evidence_types": [
+          "understanding_check_spans"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "괜찮죠"
+        ],
+        "segment_id": "seg_32",
+        "chunk_id": "seg_32_chunk_01",
+        "start_ts": "03:10:19",
+        "end_ts": "03:13:51",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_example",
+        "local_score": 1.575,
+        "rerank_score": 0.7939
+      }
+    ],
+    "contrary_evidence": []
+  },
+  "참여 유도": {
+    "supporting_evidence": [
+      {
+        "span_text": "EQ조인 했던 것들을 가져다가 한번 추가로 진행을 한번 해보도록 할게요 저희 8번까지 하셨어요.",
+        "context_before": [
+          "그럼 이제 여기 했던 내용들을 다 한번 위에 이제 저희가 뭐 했습니까?"
+        ],
+        "evidence_type": "engagement_spans, interaction_prompt_spans, engagement_evidence",
+        "evidence_types": [
+          "engagement_spans",
+          "interaction_prompt_spans",
+          "engagement_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "한번 해보"
+        ],
+        "segment_id": "seg_17",
+        "chunk_id": "seg_17_chunk_01",
+        "start_ts": "01:16:37",
+        "end_ts": "01:18:16",
+        "parent_label": "개념 설명",
+        "sub_label": "general",
+        "local_score": 2.0125,
+        "rerank_score": 0.8211
+      },
+      {
+        "span_text": "여기 코드로 조인하신 분 돼 두 개의 같아 이해가시 그러면 한번 해보자 알겠다.",
+        "context_before": [
+          "도시 이름하고 국가 이름하고 그런데 얘네들은 지금 현재 뭘로 지금 연결되어 있다."
+        ],
+        "evidence_type": "engagement_spans, interaction_prompt_spans, engagement_evidence",
+        "evidence_types": [
+          "engagement_spans",
+          "interaction_prompt_spans",
+          "engagement_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "한번 해보"
+        ],
+        "segment_id": "seg_35",
+        "chunk_id": "seg_35_chunk_01",
+        "start_ts": "03:51:52",
+        "end_ts": "04:02:01",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_instruction",
+        "local_score": 2.0125,
+        "rerank_score": 0.8111
+      }
+    ],
+    "contrary_evidence": []
+  },
+  "질문 응답 충분성": {
+    "supporting_evidence": [
+      {
+        "span_text": "EQ조인 했던 것들을 가져다가 한번 추가로 진행을 한번 해보도록 할게요 저희 8번까지 하셨어요.",
+        "context_before": [
+          "그럼 이제 여기 했던 내용들을 다 한번 위에 이제 저희가 뭐 했습니까?"
+        ],
+        "evidence_type": "qa_response_spans, qa_evidence",
+        "evidence_types": [
+          "qa_response_spans",
+          "qa_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "추가로"
+        ],
+        "segment_id": "seg_17",
+        "chunk_id": "seg_17_chunk_01",
+        "start_ts": "01:16:37",
+        "end_ts": "01:18:16",
+        "parent_label": "개념 설명",
+        "sub_label": "general",
+        "local_score": 2.0125,
+        "rerank_score": 0.839
+      },
+      {
+        "span_text": "이미지를 제가 붙인다는 걸 잊어버려서 여러분들 나중에 문의하실 때 워크벤치에서 파일에서 내보내기 P",
+        "context_before": [
+          "이겁니다."
+        ],
+        "evidence_type": "qa_response_spans, qa_evidence",
+        "evidence_types": [
+          "qa_response_spans",
+          "qa_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "문의"
+        ],
+        "segment_id": "seg_33",
+        "chunk_id": "seg_33_chunk_01",
+        "start_ts": "03:14:15",
+        "end_ts": "03:28:25",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 2.0125,
+        "rerank_score": 0.8381
+      }
+    ],
+    "contrary_evidence": []
+  }
+}

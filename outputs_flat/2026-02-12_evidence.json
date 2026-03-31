@@ -1,0 +1,774 @@
+{
+  "불필요한 반복 표현": {
+    "supporting_evidence": [],
+    "contrary_evidence": [
+      {
+        "span_text": "쓰고 나서 출력하겠어제가 한 문장이야 출력 안 하면 안 나오니까 3단계가 안 나와 그래서 이거는 3번 출력까지 하겠다.",
+        "context_before": [
+          "이런 얘기 그리고 나는 시작을 1로 하겠어 그리고 나서 재귀열과 합치기 유니온도 사용하지만 유니온 5을 보통 사용하고 나서 다음 값을 넥스트로 해서 구현하고 비교는 5보다 작을 때까지 돌리겠습다"
+        ],
+        "evidence_type": "filler_spans, repetition_spans, language_expression_evidence",
+        "evidence_types": [
+          "filler_spans",
+          "repetition_spans",
+          "language_expression_evidence"
+        ],
+        "polarity": "contrary",
+        "matched_keywords": [
+          "그래서",
+          "어"
+        ],
+        "segment_id": "seg_18",
+        "chunk_id": "seg_18_chunk_01",
+        "start_ts": "10:27:27",
+        "end_ts": "10:40:45",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_example",
+        "local_score": 3.525,
+        "rerank_score": 0.8534
+      },
+      {
+        "span_text": "반복이라 이렇게 그래서 여기가 초기는 나머지가 반복이겠구나 여기 있는 3은 고정값이겠네 반복할 때 2에서까지가 반복을 하면서 범위 10보다 작을 때까지 아니면 9하고 같을 때까지 범위를 타겠구나 까지는 우리가",
+        "context_before": [
+          "이거는 뭐 내용 그렇게 생각한 내용은 아니에요."
+        ],
+        "evidence_type": "filler_spans, repetition_spans, language_expression_evidence",
+        "evidence_types": [
+          "filler_spans",
+          "repetition_spans",
+          "language_expression_evidence"
+        ],
+        "polarity": "contrary",
+        "matched_keywords": [
+          "그래서"
+        ],
+        "segment_id": "seg_21",
+        "chunk_id": "seg_21_chunk_01",
+        "start_ts": "11:06:08",
+        "end_ts": "11:09:05",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 2.7,
+        "rerank_score": 0.8468
+      }
+    ]
+  },
+  "발화 완결성": {
+    "supporting_evidence": [
+      {
+        "span_text": "쓰고 나서 출력하겠어제가 한 문장이야 출력 안 하면 안 나오니까 3단계가 안 나와 그래서 이거는 3번 출력까지 하겠다.",
+        "context_before": [
+          "이런 얘기 그리고 나는 시작을 1로 하겠어 그리고 나서 재귀열과 합치기 유니온도 사용하지만 유니온 5을 보통 사용하고 나서 다음 값을 넥스트로 해서 구현하고 비교는 5보다 작을 때까지 돌리겠습다"
+        ],
+        "evidence_type": "completion_evidence",
+        "evidence_types": [
+          "completion_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "."
+        ],
+        "segment_id": "seg_18",
+        "chunk_id": "seg_18_chunk_01",
+        "start_ts": "10:27:27",
+        "end_ts": "10:40:45",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_example",
+        "local_score": 2.325,
+        "rerank_score": 0.8566
+      },
+      {
+        "span_text": "자 이게 지금 예제문 그대로야 나는 위드문을 이용을 해서 반복 구조를 구현할 거야.",
+        "context_before": [
+          "그 다음에 얘는 지금 오세요. 이게 재귀적 테이블 만드는 거예요. CT 옳 얘가 지금 케이스가 다양하게 있어요. 이렇게 케이스가 다양하게 있습니다. 여기 가겠습니다. 여기 위로 가면 전체 위드문이 나온 곳으로 가고 얘 좀 특이하게 되어 있어요. 책갈피가 우리가 클릭하면 페이지가 이동하는 게 아니라 샵 책갈피로 이동해 그래서 위로 올리면 아까 위드문 썼던 내용이 나오니까 여기에 오셔서 여기 책갈피를 잘 보시라고 했어요. 지금 가지고 있던 저희 그 파일에 있는 내용 있죠. 파일에 있는 코드가 이 코드"
+        ],
+        "evidence_type": "completion_evidence",
+        "evidence_types": [
+          "completion_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "."
+        ],
+        "segment_id": "seg_18",
+        "chunk_id": "seg_18_chunk_01",
+        "start_ts": "10:27:27",
+        "end_ts": "10:40:45",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_example",
+        "local_score": 2.0125,
+        "rerank_score": 0.8411
+      }
+    ],
+    "contrary_evidence": []
+  },
+  "언어 일관성": {
+    "supporting_evidence": [
+      {
+        "span_text": "불렀는지 확인해 봅시다 이렇게가 중요하지 뭐 어제 이거 풀려고 우리 했던 문제를 어제 생각해 보시라고 했어.",
+        "context_before": [
+          "지금 이거 실행하면 3단이라서 첫 번째 줄 출력을 일단 해 3 곱하기 1은 이거 살짝 실행하세요. 이거는 뭐 내용 그렇게 생각한 내용은 아니에요. 반복이라 이렇게 그래서 여기가 초기는 나머지가 반복이겠구나 여기 있는 3은 고정값이겠네 반복할 때 2에서까지가 반복을 하면서 범위 10보다 작을 때까지 아니면 9하고 같을 때까지 범위를 타겠구나 까지는 우리가 안단 말이야. 그래서 위에 보시면 초기화가 되어 있고 그다음에 대기를 사용을 하는데 여러분 유니언이나 올은 필드가 맞아야 돼요. 그래서 이제 공교"
+        ],
+        "evidence_type": "speech_style_evidence",
+        "evidence_types": [
+          "speech_style_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "하지",
+          "해"
+        ],
+        "segment_id": "seg_22",
+        "chunk_id": "seg_22_chunk_01",
+        "start_ts": "11:09:15",
+        "end_ts": "11:12:45",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_example",
+        "local_score": 4.6,
+        "rerank_score": 0.8179
+      },
+      {
+        "span_text": "얘랑 릴레이션십 테이블하고 제약 조건 테이블하고 안 봐도 걔네끼리 릴레이션 쉽 있나 보다 그렇지 그래서 거기는 테이블랩이랑 여기도 테이블랩이랑 똑같은 다음에 여기 컨스트레인트 타임 다음에 이거 이렇게 있는",
+        "context_before": [
+          "다음에 테이블 제약 조건을 가지고 있는 테이블 컨스트레인터스 누르자 제약 조건을 가지고 있으니까 얘가 달로그 스키마 그 다음에 제약 조건 이름 스키마 여기 테이블 네임이 또 있어 아"
+        ],
+        "evidence_type": "speech_style_evidence",
+        "evidence_types": [
+          "speech_style_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "봐"
+        ],
+        "segment_id": "seg_27",
+        "chunk_id": "seg_27_chunk_01",
+        "start_ts": "01:32:32",
+        "end_ts": "01:38:18",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_instruction",
+        "local_score": 3.0,
+        "rerank_score": 0.8165
+      }
+    ],
+    "contrary_evidence": [
+      {
+        "span_text": "다들 모른터 켜주세요.",
+        "context_before": [
+          "수 달 동안 5분을 수다했는데 아직까지 안 오시면 어디 가신 거예요."
+        ],
+        "evidence_type": "style_shift_spans",
+        "evidence_types": [
+          "style_shift_spans"
+        ],
+        "polarity": "contrary",
+        "matched_keywords": [
+          "주세요"
+        ],
+        "segment_id": "seg_20",
+        "chunk_id": "seg_20_chunk_01",
+        "start_ts": "11:05:09",
+        "end_ts": "11:05:57",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 1.9875,
+        "rerank_score": 0.8124
+      },
+      {
+        "span_text": "이렇게 케이스가 다양하게 있습니다.",
+        "context_before": [
+          "CT 옳 얘가 지금 케이스가 다양하게 있어요."
+        ],
+        "evidence_type": "style_shift_spans",
+        "evidence_types": [
+          "style_shift_spans"
+        ],
+        "polarity": "contrary",
+        "matched_keywords": [
+          "습니다"
+        ],
+        "segment_id": "seg_17",
+        "chunk_id": "seg_17_chunk_01",
+        "start_ts": "10:23:14",
+        "end_ts": "10:27:15",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_example",
+        "local_score": 2.05,
+        "rerank_score": 0.8118
+      }
+    ]
+  },
+  "학습 목표 안내": {
+    "supporting_evidence": [
+      {
+        "span_text": "그 다음에 지금 어제 했던 서브컬이 한번 열어서 하단에다가 혹시 튜토리얼에 있는 거 가져다가 쓸 수 있으니까 이거 하나 열어놓을게요 어제 했던 내용 그래서 한번 살짝 진행하고 도움말",
+        "context_before": [
+          "저희 지금 5 15.2.15 이거 서브컬이고요."
+        ],
+        "evidence_type": "objective_intro_spans, intro_evidence",
+        "evidence_types": [
+          "objective_intro_spans",
+          "intro_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "다음",
+          "진행"
+        ],
+        "segment_id": "seg_02",
+        "chunk_id": "seg_02_chunk_01",
+        "start_ts": "09:12:27",
+        "end_ts": "09:15:42",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_instruction",
+        "local_score": 5.7,
+        "rerank_score": 0.8189
+      },
+      {
+        "span_text": "어제는 저희가 이제 서브쿼리 조인 그다음에 조인셋 이런 것들 오늘은 저희가 이제 크리에이트 테이블 구문을 작성하는 날이요.",
+        "context_before": [
+          "하겠습니다."
+        ],
+        "evidence_type": "objective_intro_spans, intro_evidence",
+        "evidence_types": [
+          "objective_intro_spans",
+          "intro_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "오늘은",
+          "다음",
+          "오늘"
+        ],
+        "segment_id": "seg_01",
+        "chunk_id": "seg_01_chunk_01",
+        "start_ts": "09:11:19",
+        "end_ts": "09:12:21",
+        "parent_label": "도입",
+        "sub_label": "general",
+        "local_score": 8.2625,
+        "rerank_score": 0.8109
+      }
+    ],
+    "contrary_evidence": []
+  },
+  "전날 복습 연계": {
+    "supporting_evidence": [
+      {
+        "span_text": "그 다음에 지금 어제 했던 서브컬이 한번 열어서 하단에다가 혹시 튜토리얼에 있는 거 가져다가 쓸 수 있으니까 이거 하나 열어놓을게요 어제 했던 내용 그래서 한번 살짝 진행하고 도움말",
+        "context_before": [
+          "저희 지금 5 15.2.15 이거 서브컬이고요."
+        ],
+        "evidence_type": "review_bridge_spans, bridge_evidence",
+        "evidence_types": [
+          "review_bridge_spans",
+          "bridge_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "어제"
+        ],
+        "segment_id": "seg_02",
+        "chunk_id": "seg_02_chunk_01",
+        "start_ts": "09:12:27",
+        "end_ts": "09:15:42",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_instruction",
+        "local_score": 2.7,
+        "rerank_score": 0.8518
+      },
+      {
+        "span_text": "어제는 저희가 이제 서브쿼리 조인 그다음에 조인셋 이런 것들 오늘은 저희가 이제 크리에이트 테이블 구문을 작성하는 날이요.",
+        "context_before": [
+          "하겠습니다."
+        ],
+        "evidence_type": "review_bridge_spans, bridge_evidence",
+        "evidence_types": [
+          "review_bridge_spans",
+          "bridge_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "어제"
+        ],
+        "segment_id": "seg_01",
+        "chunk_id": "seg_01_chunk_01",
+        "start_ts": "09:11:19",
+        "end_ts": "09:12:21",
+        "parent_label": "도입",
+        "sub_label": "general",
+        "local_score": 2.2625,
+        "rerank_score": 0.8331
+      }
+    ],
+    "contrary_evidence": []
+  },
+  "설명 순서": {
+    "supporting_evidence": [],
+    "contrary_evidence": []
+  },
+  "핵심 내용 강조": {
+    "supporting_evidence": [
+      {
+        "span_text": "불렀는지 확인해 봅시다 이렇게가 중요하지 뭐 어제 이거 풀려고 우리 했던 문제를 어제 생각해 보시라고 했어.",
+        "context_before": [
+          "지금 이거 실행하면 3단이라서 첫 번째 줄 출력을 일단 해 3 곱하기 1은 이거 살짝 실행하세요. 이거는 뭐 내용 그렇게 생각한 내용은 아니에요. 반복이라 이렇게 그래서 여기가 초기는 나머지가 반복이겠구나 여기 있는 3은 고정값이겠네 반복할 때 2에서까지가 반복을 하면서 범위 10보다 작을 때까지 아니면 9하고 같을 때까지 범위를 타겠구나 까지는 우리가 안단 말이야. 그래서 위에 보시면 초기화가 되어 있고 그다음에 대기를 사용을 하는데 여러분 유니언이나 올은 필드가 맞아야 돼요. 그래서 이제 공교"
+        ],
+        "evidence_type": "emphasis_spans, highlight_evidence",
+        "evidence_types": [
+          "emphasis_spans",
+          "highlight_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "중요"
+        ],
+        "segment_id": "seg_22",
+        "chunk_id": "seg_22_chunk_01",
+        "start_ts": "11:09:15",
+        "end_ts": "11:12:45",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_example",
+        "local_score": 2.2,
+        "rerank_score": 0.8298
+      },
+      {
+        "span_text": "싶어 그럼 초기값 10 주고 그다음에 1부터 시작해서 마이나 해서 내려가자 하든지 토기값이 반드시 있고 반복이 있어야 되거든요.",
+        "context_before": [
+          "이렇게 실제 반복을 하려면 우리 포 생각해보면 돼 그냥 간단하게 그냥 포 생각 그냥 일반적으로 I는 0에서 I가지이즈 마이나 랭스가 될 때까지 뿔뿔해라 하던지 초기값 10에서 2까지 출력하고"
+        ],
+        "evidence_type": "emphasis_spans, highlight_evidence",
+        "evidence_types": [
+          "emphasis_spans",
+          "highlight_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "반드시"
+        ],
+        "segment_id": "seg_16",
+        "chunk_id": "seg_16_chunk_01",
+        "start_ts": "10:20:44",
+        "end_ts": "10:23:10",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_instruction",
+        "local_score": 2.325,
+        "rerank_score": 0.8173
+      }
+    ],
+    "contrary_evidence": []
+  },
+  "마무리 요약": {
+    "supporting_evidence": [
+      {
+        "span_text": "공부할 건데 얘 하려면 여기까지는 알아야 되는 상황이라서 저희가 섹션에서 도움말 섹션에서 지금",
+        "context_before": [
+          "그래서 저희 지금 이거 보러 왔는데 오늘 이거 공부할 거예요."
+        ],
+        "evidence_type": "closing_summary_spans, summary_evidence",
+        "evidence_types": [
+          "closing_summary_spans",
+          "summary_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "여기까지"
+        ],
+        "segment_id": "seg_26",
+        "chunk_id": "seg_26_chunk_01",
+        "start_ts": "01:13:20",
+        "end_ts": "01:32:17",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 2.0125,
+        "rerank_score": 0.8275
+      }
+    ],
+    "contrary_evidence": []
+  },
+  "개념 정의": {
+    "supporting_evidence": [
+      {
+        "span_text": "해서 어제 여기다 뭐라고 했냐면 셀렉트 위에 정의가 돼서 사용하는 방법들 그래서 해결책에다가 서브 코리 또는 CT 1로 책 구성할 수 있다.",
+        "context_before": [
+          "성공 좋아 이제 여기까지가 1차 그 다음에 두 번째 서브컬리 진행하도록 하겠다 이거는 코가 조금 엉뚱맞는 코드들이 조금 나와서 파일로 공유할게요 할 수도 없고 해야 되는 서브컬이 공이라는 파일을 제가 공유했습니다. 이거 어제 하려다가 너무 시간이 오래 걸릴 것 같아서 이거는 내일 할게요 했던 내용이에요. 저장하고 어제 여기 밑에 얘네들 있죠. 얘네들을 내일 할게요 했던 내용을 지금 02에다가 제가 이건 살짝 지울게요 이제 그 상단 부분에다 다시 붙여놨어요. 여기다가 붙일세 작지 않아 CTE가 서브"
+        ],
+        "evidence_type": "definition_spans, concept_definition_evidence",
+        "evidence_types": [
+          "definition_spans",
+          "concept_definition_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "정의"
+        ],
+        "segment_id": "seg_14",
+        "chunk_id": "seg_14_chunk_01",
+        "start_ts": "10:15:36",
+        "end_ts": "10:16:57",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 2.575,
+        "rerank_score": 0.7958
+      },
+      {
+        "span_text": "받아가지고, 2라고 하는 테이블에다가 이 정수 값을 입력을 할 거야.",
+        "context_before": [
+          "테이블 하나 여기 데이터베이스 만들고 테이블을 두 개를 만들었어 함수를 만들겠는데 구문을 몰라도 읽을 수 있으니까 함수를 F1이라는 내가 함수를 만들어 F1이라는 함수를 만들어 가지고 내가 정수를 하나"
+        ],
+        "evidence_type": "definition_spans, concept_definition_evidence",
+        "evidence_types": [
+          "definition_spans",
+          "concept_definition_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "라고 하는"
+        ],
+        "segment_id": "seg_11",
+        "chunk_id": "seg_11_chunk_01",
+        "start_ts": "10:11:01",
+        "end_ts": "10:12:14",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_instruction",
+        "local_score": 1.825,
+        "rerank_score": 0.7943
+      }
+    ],
+    "contrary_evidence": []
+  },
+  "비유 및 예시 활용": {
+    "supporting_evidence": [],
+    "contrary_evidence": []
+  },
+  "선행 개념 확인": {
+    "supporting_evidence": [
+      {
+        "span_text": "어제도 말씀드렸다시피 거진 어떤 데는 좀 너무 심하게 50대 50으로 지금 일단은 기존의 뭐 경력 이런 분들 지금 정리한다고 하니까 왜냐면, 신입 입장에서는 경력직을 정리해야 우리가 곧 틈새시장이",
+        "context_before": [
+          "19일에 잡땡땡 뭐 이런 데 가서 어떤 구인 올라왔는지 핫스팟으로 뭐가 있는지 살짝 한번 잘 찾아보시고 기업 동향이 어떻게 흘러가고 있는지 딱 한번 보세요."
+        ],
+        "evidence_type": "prerequisite_bridge_spans, prerequisite_evidence",
+        "evidence_types": [
+          "prerequisite_bridge_spans",
+          "prerequisite_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "기존"
+        ],
+        "segment_id": "seg_19",
+        "chunk_id": "seg_19_chunk_01",
+        "start_ts": "11:00:58",
+        "end_ts": "11:04:57",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 2.7,
+        "rerank_score": 0.8128
+      },
+      {
+        "span_text": "쓰는데 저희가 그 이전에는 피빙으로 서브 쿼리를 굉장히 많이 만들었어요.",
+        "context_before": [
+          "그 다음에 사부작 내려서 어제 그 15번 상단 부분에 보면 서브쿼리에 대한 내용을 한 번 더 정리를 회어와 뒤에 오면 조금 비교 용어로 쓰고 수 브룹 조금 비교로"
+        ],
+        "evidence_type": "prerequisite_bridge_spans, prerequisite_evidence",
+        "evidence_types": [
+          "prerequisite_bridge_spans",
+          "prerequisite_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "이전에"
+        ],
+        "segment_id": "seg_04",
+        "chunk_id": "seg_04_chunk_01",
+        "start_ts": "09:19:26",
+        "end_ts": "09:45:30",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 1.825,
+        "rerank_score": 0.8103
+      }
+    ],
+    "contrary_evidence": []
+  },
+  "발화 속도 적절성": {
+    "supporting_evidence": [
+      {
+        "span_text": "그러면 그 누적해서 썸을 하면 되지 뭐 이건 그렇게 뭐 커리가 안에 연산하는 이런 내용들을 갔다 안 갔다를 떠나서 원형을 한번 학습한 내용 그래서 헤어에다가 벌칭을 줄 수",
+        "context_before": [
+          "만약에 내가 썸을 구하고 싶다."
+        ],
+        "evidence_type": "pace_evidence",
+        "evidence_types": [
+          "pace_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [],
+        "segment_id": "seg_23",
+        "chunk_id": "seg_23_chunk_01",
+        "start_ts": "11:12:57",
+        "end_ts": "11:17:49",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_instruction",
+        "local_score": 1.5,
+        "rerank_score": 0.8405
+      },
+      {
+        "span_text": "실제 지금 이 부분은 펀드멘탈 여기까지는 이 펀드멘탈인데 CT로 딱 들어가면 약간 PLS스QL 프로그램도 좀 알아야 되고 약간 이런 부분들은 좀 있어 그래야 타고 가야 돼 왜냐면, 얘가",
+        "context_before": [
+          "이렇게 해놨습니다."
+        ],
+        "evidence_type": "pace_evidence",
+        "evidence_types": [
+          "pace_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [],
+        "segment_id": "seg_14",
+        "chunk_id": "seg_14_chunk_01",
+        "start_ts": "10:15:36",
+        "end_ts": "10:16:57",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 1.5,
+        "rerank_score": 0.8385
+      }
+    ],
+    "contrary_evidence": [
+      {
+        "span_text": "실제 지금 이 부분은 펀드멘탈 여기까지는 이 펀드멘탈인데 CT로 딱 들어가면 약간 PLS스QL 프로그램도 좀 알아야 되고 약간 이런 부분들은 좀 있어 그래야 타고 가야 돼 왜냐면, 얘가",
+        "context_before": [
+          "이렇게 해놨습니다."
+        ],
+        "evidence_type": "rapid_transition_spans",
+        "evidence_types": [
+          "rapid_transition_spans"
+        ],
+        "polarity": "contrary",
+        "matched_keywords": [
+          "high_span_density"
+        ],
+        "segment_id": "seg_14",
+        "chunk_id": "seg_14_chunk_01",
+        "start_ts": "10:15:36",
+        "end_ts": "10:16:57",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 4.5,
+        "rerank_score": 0.8385
+      },
+      {
+        "span_text": "그 다음에 이제 그 다음은 완전히 상온 쿼리 잔 이렇게 해당 문장 선언해주고 이런 내용들이 쭉 있습니다.",
+        "context_before": [
+          "나중에 한번 붓붙 해 보셔도 되고 저희 나중에 함수할 때는 또 이거 사용하니까 아 됐습니까?"
+        ],
+        "evidence_type": "rapid_transition_spans",
+        "evidence_types": [
+          "rapid_transition_spans"
+        ],
+        "polarity": "contrary",
+        "matched_keywords": [
+          "high_utterances_per_min",
+          "high_span_density"
+        ],
+        "segment_id": "seg_12",
+        "chunk_id": "seg_12_chunk_01",
+        "start_ts": "10:12:32",
+        "end_ts": "10:13:19",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_example",
+        "local_score": 4.2143,
+        "rerank_score": 0.8268
+      }
+    ]
+  },
+  "예시 적절성": {
+    "supporting_evidence": [
+      {
+        "span_text": "지금 매개인자가 하나 들어가서 구현이 되어 있는 케이스예요.",
+        "context_before": [
+          "되셨습니까?"
+        ],
+        "evidence_type": "practical_example_spans, practical_example_evidence",
+        "evidence_types": [
+          "practical_example_spans",
+          "practical_example_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "케이스"
+        ],
+        "segment_id": "seg_06",
+        "chunk_id": "seg_06_chunk_01",
+        "start_ts": "09:49:16",
+        "end_ts": "09:59:55",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 3.5,
+        "rerank_score": 0.8293
+      },
+      {
+        "span_text": "이렇게 케이스가 다양하게 있습니다.",
+        "context_before": [
+          "CT 옳 얘가 지금 케이스가 다양하게 있어요."
+        ],
+        "evidence_type": "practical_example_spans, practical_example_evidence",
+        "evidence_types": [
+          "practical_example_spans",
+          "practical_example_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "케이스"
+        ],
+        "segment_id": "seg_17",
+        "chunk_id": "seg_17_chunk_01",
+        "start_ts": "10:23:14",
+        "end_ts": "10:27:15",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_example",
+        "local_score": 3.25,
+        "rerank_score": 0.8236
+      }
+    ],
+    "contrary_evidence": []
+  },
+  "실습 연계": {
+    "supporting_evidence": [
+      {
+        "span_text": "성공 이런 식으로 작성을 한다는 거야.",
+        "context_before": [
+          "이렇게 되는 거죠."
+        ],
+        "evidence_type": "practice_transition_spans, practice_evidence",
+        "evidence_types": [
+          "practice_transition_spans",
+          "practice_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "작성"
+        ],
+        "segment_id": "seg_23",
+        "chunk_id": "seg_23_chunk_01",
+        "start_ts": "11:12:57",
+        "end_ts": "11:17:49",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_instruction",
+        "local_score": 1.575,
+        "rerank_score": 0.8347
+      },
+      {
+        "span_text": "실행하시면 간단하게 만들 어제 코드 병합랑 비슷",
+        "context_before": [
+          "그리고 나서 여기 합치고 그 다음에 출력문을 오토바이로 하나 만들어주면 밑에는 정률 때문에 하나 만들어 놓은 거야."
+        ],
+        "evidence_type": "practice_transition_spans, practice_evidence",
+        "evidence_types": [
+          "practice_transition_spans",
+          "practice_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "실행"
+        ],
+        "segment_id": "seg_22",
+        "chunk_id": "seg_22_chunk_01",
+        "start_ts": "11:09:15",
+        "end_ts": "11:12:45",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_example",
+        "local_score": 1.6375,
+        "rerank_score": 0.8212
+      }
+    ],
+    "contrary_evidence": []
+  },
+  "오류 대응": {
+    "supporting_evidence": [
+      {
+        "span_text": "S1 지금 다니엘 행 14개가 못 들어오는 거지 이거는 그렇게 에러를 어떻게 잠깐만",
+        "context_before": [
+          "지금 매개인자가 하나 들어가서 구현이 되어 있는 케이스예요."
+        ],
+        "evidence_type": "error_response_spans, error_evidence",
+        "evidence_types": [
+          "error_response_spans",
+          "error_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "에러"
+        ],
+        "segment_id": "seg_06",
+        "chunk_id": "seg_06_chunk_01",
+        "start_ts": "09:49:16",
+        "end_ts": "09:59:55",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 2.0125,
+        "rerank_score": 0.8063
+      },
+      {
+        "span_text": "왜냐면은 일단은 뼈 자체가 집계 연산 비교가 안 되니까.",
+        "context_before": [
+          "쓰는데 저희가 그 이전에는 피빙으로 서브 쿼리를 굉장히 많이 만들었어요."
+        ],
+        "evidence_type": "error_response_spans, error_evidence",
+        "evidence_types": [
+          "error_response_spans",
+          "error_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "안 되"
+        ],
+        "segment_id": "seg_04",
+        "chunk_id": "seg_04_chunk_01",
+        "start_ts": "09:19:26",
+        "end_ts": "09:45:30",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 1.7625,
+        "rerank_score": 0.7877
+      }
+    ],
+    "contrary_evidence": []
+  },
+  "이해 확인 질문": {
+    "supporting_evidence": [],
+    "contrary_evidence": []
+  },
+  "참여 유도": {
+    "supporting_evidence": [],
+    "contrary_evidence": []
+  },
+  "질문 응답 충분성": {
+    "supporting_evidence": [
+      {
+        "span_text": "도시에 매장은 있어 이렇게 물어보는 거야.",
+        "context_before": [
+          "이렇게 그래서 사작 내려오면 여러 가지 형태의 내용들이 나오는 거지 무슨 말이야."
+        ],
+        "evidence_type": "qa_response_spans, qa_evidence",
+        "evidence_types": [
+          "qa_response_spans",
+          "qa_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "물어보"
+        ],
+        "segment_id": "seg_09",
+        "chunk_id": "seg_09_chunk_01",
+        "start_ts": "10:06:36",
+        "end_ts": "10:07:22",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 1.575,
+        "rerank_score": 0.8167
+      }
+    ],
+    "contrary_evidence": []
+  }
+}

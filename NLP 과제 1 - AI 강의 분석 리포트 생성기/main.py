@@ -83,7 +83,7 @@ def main():
 
     # 3. 모델 초기화 및 프롬프트 준비
     try:
-        # GPT 모델로 테스트하고 싶다면 아래 줄을 model = setup_gpt() 로 변경해!
+        # GPT 모델로 테스트하고 싶다면 아래 줄을 model = setup_gpt() 로 변경해!!!!!!!!!!!!!--------------------------
         model = setup_gemini()
         prompt = get_instructor_feedback_prompt(data_str)
     except Exception as e:

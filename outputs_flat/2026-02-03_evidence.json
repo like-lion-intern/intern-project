@@ -1,0 +1,825 @@
+{
+  "불필요한 반복 표현": {
+    "supporting_evidence": [],
+    "contrary_evidence": [
+      {
+        "span_text": "이런 거 연결 문자 되는지 확인 거 어사님 뭐 200만 와 그럼 반대로 써봐 워닝 났어 오류 안 나고 일단 데이터는 리턴해주는데 문장과 더하기가 연산자다 무조건 연결 연산자가",
+        "context_before": [
+          "그리고 우리 자바에서 했던 거 이렇게 문장이 오잖아요."
+        ],
+        "evidence_type": "filler_spans, repetition_spans, language_expression_evidence",
+        "evidence_types": [
+          "filler_spans",
+          "repetition_spans",
+          "language_expression_evidence"
+        ],
+        "polarity": "contrary",
+        "matched_keywords": [
+          "어",
+          "자",
+          "일단"
+        ],
+        "segment_id": "seg_37",
+        "chunk_id": "seg_37_chunk_01",
+        "start_ts": "02:25:39",
+        "end_ts": "02:26:57",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 5.1,
+        "rerank_score": 0.851
+      },
+      {
+        "span_text": "사실은 그냥 얘 자체가 이벤트 처리야 이렇게 적으면 좀 모호해서 말을 조금 많이 썼는데 스타트 패스를 시작으로 디렉토리 탐색 중에 발생하는 이벤트를 파일비지터가 처리한 후에 스타트 패스로 다시",
+        "context_before": [
+          "여기 보면 여기에 이벤트 처리라는 것이 있죠."
+        ],
+        "evidence_type": "filler_spans, repetition_spans, language_expression_evidence",
+        "evidence_types": [
+          "filler_spans",
+          "repetition_spans",
+          "language_expression_evidence"
+        ],
+        "polarity": "contrary",
+        "matched_keywords": [
+          "그냥",
+          "자"
+        ],
+        "segment_id": "seg_03",
+        "chunk_id": "seg_03_chunk_01",
+        "start_ts": "09:22:45",
+        "end_ts": "09:48:08",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 3.9,
+        "rerank_score": 0.8444
+      }
+    ]
+  },
+  "발화 완결성": {
+    "supporting_evidence": [
+      {
+        "span_text": "이런 것도 막 생기고 여러 가지 생기거든요.",
+        "context_before": [
+          "보면 언더 로그도 생기고 그 다음에 퍼미션도 생기고 PID도 생기고 실행 중인 프로세스 아이ID예요."
+        ],
+        "evidence_type": "completion_evidence",
+        "evidence_types": [
+          "completion_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "."
+        ],
+        "segment_id": "seg_30",
+        "chunk_id": "seg_30_chunk_01",
+        "start_ts": "01:37:50",
+        "end_ts": "01:46:42",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 1.6375,
+        "rerank_score": 0.8417
+      },
+      {
+        "span_text": "리턴해주는 이렇게 리턴해주는 그런 내용입니다.",
+        "context_before": [
+          "사실은 그냥 얘 자체가 이벤트 처리야 이렇게 적으면 좀 모호해서 말을 조금 많이 썼는데 스타트 패스를 시작으로 디렉토리 탐색 중에 발생하는 이벤트를 파일비지터가 처리한 후에 스타트 패스로 다시"
+        ],
+        "evidence_type": "completion_evidence",
+        "evidence_types": [
+          "completion_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "입니다",
+          "."
+        ],
+        "segment_id": "seg_03",
+        "chunk_id": "seg_03_chunk_01",
+        "start_ts": "09:22:45",
+        "end_ts": "09:48:08",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 4.5125,
+        "rerank_score": 0.8401
+      }
+    ],
+    "contrary_evidence": []
+  },
+  "언어 일관성": {
+    "supporting_evidence": [
+      {
+        "span_text": "사실은 그냥 얘 자체가 이벤트 처리야 이렇게 적으면 좀 모호해서 말을 조금 많이 썼는데 스타트 패스를 시작으로 디렉토리 탐색 중에 발생하는 이벤트를 파일비지터가 처리한 후에 스타트 패스로 다시",
+        "context_before": [
+          "여기 보면 여기에 이벤트 처리라는 것이 있죠."
+        ],
+        "evidence_type": "speech_style_evidence",
+        "evidence_types": [
+          "speech_style_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "해"
+        ],
+        "segment_id": "seg_03",
+        "chunk_id": "seg_03_chunk_01",
+        "start_ts": "09:22:45",
+        "end_ts": "09:48:08",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 3.0,
+        "rerank_score": 0.8219
+      },
+      {
+        "span_text": "따닥 사려고 딴 거 없어 우울해하지 말고 여기 지금 우리 자동으로 해놨잖아.",
+        "context_before": [
+          "그렇지 여기까지 보고 그리고 이제 하다 보면 얘가 죽어 지금은 윈도우가 실행할 때마다 키게끔 되어 있지만 서버가 나중에 죽으면 서버가 죽었다 이러면서 클라이언트 창이 리턴을 해줘 여기 가서"
+        ],
+        "evidence_type": "speech_style_evidence",
+        "evidence_types": [
+          "speech_style_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "하지",
+          "해"
+        ],
+        "segment_id": "seg_11",
+        "chunk_id": "seg_11_chunk_01",
+        "start_ts": "10:28:47",
+        "end_ts": "10:30:11",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_instruction",
+        "local_score": 4.35,
+        "rerank_score": 0.8137
+      }
+    ],
+    "contrary_evidence": [
+      {
+        "span_text": "아니면 수업 그래 저 회신이 빨라 아니면 수업 관련 질의응 올려주고 계시는데 네 거기다 같이 해주셔도 상관없습니다.",
+        "context_before": [
+          "그 설치 등등 이런 DM 보내실 때토님한테 같이 보내세요."
+        ],
+        "evidence_type": "style_shift_spans",
+        "evidence_types": [
+          "style_shift_spans"
+        ],
+        "polarity": "contrary",
+        "matched_keywords": [
+          "습니다",
+          "해"
+        ],
+        "segment_id": "seg_18",
+        "chunk_id": "seg_18_chunk_01",
+        "start_ts": "11:13:33",
+        "end_ts": "11:22:51",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_instruction",
+        "local_score": 4.6625,
+        "rerank_score": 0.8232
+      },
+      {
+        "span_text": "리턴해주는 이렇게 리턴해주는 그런 내용입니다.",
+        "context_before": [
+          "사실은 그냥 얘 자체가 이벤트 처리야 이렇게 적으면 좀 모호해서 말을 조금 많이 썼는데 스타트 패스를 시작으로 디렉토리 탐색 중에 발생하는 이벤트를 파일비지터가 처리한 후에 스타트 패스로 다시"
+        ],
+        "evidence_type": "style_shift_spans",
+        "evidence_types": [
+          "style_shift_spans"
+        ],
+        "polarity": "contrary",
+        "matched_keywords": [
+          "입니다",
+          "해"
+        ],
+        "segment_id": "seg_03",
+        "chunk_id": "seg_03_chunk_01",
+        "start_ts": "09:22:45",
+        "end_ts": "09:48:08",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 3.9125,
+        "rerank_score": 0.8116
+      }
+    ]
+  },
+  "학습 목표 안내": {
+    "supporting_evidence": [
+      {
+        "span_text": "그다음에 끝에 있는 리턴은 얘를 얘기하는 거잖아요.",
+        "context_before": [
+          "여기 안에 패스 시작은 얘를 얘기하는 거고요."
+        ],
+        "evidence_type": "objective_intro_spans, intro_evidence",
+        "evidence_types": [
+          "objective_intro_spans",
+          "intro_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "다음"
+        ],
+        "segment_id": "seg_03",
+        "chunk_id": "seg_03_chunk_01",
+        "start_ts": "09:22:45",
+        "end_ts": "09:48:08",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 3.4375,
+        "rerank_score": 0.7999
+      },
+      {
+        "span_text": "그 다음에 이 워크파일 트리 자체는 기본적으로 디렉토리 탐색할 때 발생하는 이벤트를 다 가지고 있습니다.",
+        "context_before": [
+          "모든 팔 유형을 아우를 수가 있다고 생각하시면 되고 그래서 NIO2에서는 파일즈 가 가지고 있는 뉴 아풋스트림 그 다음에 뉴 인풋스트림 이렇게 되면 바이트 단위로 사용할 수 있는 요서드이죠. 자바가 가지고 있는 I이O 패키지는 클래스를 선택을 데이터 유형에 따라서 사용하는 거고, 그다음에 NIO2 같은 경우에는 메서드를 대상으로 저희가 데이터 프로세싱을 선택적으로 사용을 하는 그런 구문을 어제 확인을하셨죠. 문자열 단위 같은 경우에는 보통 저희가 라이트라는 것을 쓰죠 문자 스트림은 문자 인코딩을"
+        ],
+        "evidence_type": "objective_intro_spans, intro_evidence",
+        "evidence_types": [
+          "objective_intro_spans",
+          "intro_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "다음"
+        ],
+        "segment_id": "seg_03",
+        "chunk_id": "seg_03_chunk_01",
+        "start_ts": "09:22:45",
+        "end_ts": "09:48:08",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 3.9375,
+        "rerank_score": 0.7941
+      }
+    ],
+    "contrary_evidence": []
+  },
+  "전날 복습 연계": {
+    "supporting_evidence": [
+      {
+        "span_text": "자바가 가지고 있는 I이O 패키지는 클래스를 선택을 데이터 유형에 따라서 사용하는 거고, 그다음에 NIO2 같은 경우에는 메서드를 대상으로 저희가 데이터 프로세싱을 선택적으로 사용을 하는 그런 구문을 어제 확인을하셨죠.",
+        "context_before": [
+          "모든 팔 유형을 아우를 수가 있다고 생각하시면 되고 그래서 NIO2에서는 파일즈 가 가지고 있는 뉴 아풋스트림 그 다음에 뉴 인풋스트림 이렇게 되면 바이트 단위로 사용할 수 있는 요서드이죠."
+        ],
+        "evidence_type": "review_bridge_spans, bridge_evidence",
+        "evidence_types": [
+          "review_bridge_spans",
+          "bridge_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "어제"
+        ],
+        "segment_id": "seg_02",
+        "chunk_id": "seg_02_chunk_01",
+        "start_ts": "09:15:17",
+        "end_ts": "09:22:38",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_instruction",
+        "local_score": 2.7,
+        "rerank_score": 0.8006
+      }
+    ],
+    "contrary_evidence": []
+  },
+  "설명 순서": {
+    "supporting_evidence": [],
+    "contrary_evidence": []
+  },
+  "핵심 내용 강조": {
+    "supporting_evidence": [
+      {
+        "span_text": "세 가지의 화면에 키포인트만 살짝 짚어드리고 DB로 살짝 넘어가도록 하겠습니다.",
+        "context_before": [
+          "딥이 들어가기 전에 어제 여기 아이오 패키지 가었는데 튜터리얼 세 가지의 화면이 있어요."
+        ],
+        "evidence_type": "emphasis_spans, highlight_evidence",
+        "evidence_types": [
+          "emphasis_spans",
+          "highlight_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "포인트"
+        ],
+        "segment_id": "seg_06",
+        "chunk_id": "seg_06_chunk_01",
+        "start_ts": "10:09:06",
+        "end_ts": "10:10:54",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 1.825,
+        "rerank_score": 0.8293
+      },
+      {
+        "span_text": "한눈에 보시라고 꼭 어제 여기까지는 저희 수업 안 나왔습니다.",
+        "context_before": [
+          "여기는 여러분들 뭐만 보시면 되냐면 NIO 가서 서두에 우리는 뭐하는 애들이야 이렇게 그리고 여기에 버퍼 클래스 종류나 아이들 한 명 부분 다음에 캐릭터셋 그 다음에 채널 선 거"
+        ],
+        "evidence_type": "emphasis_spans, highlight_evidence",
+        "evidence_types": [
+          "emphasis_spans",
+          "highlight_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "꼭"
+        ],
+        "segment_id": "seg_09",
+        "chunk_id": "seg_09_chunk_01",
+        "start_ts": "10:16:03",
+        "end_ts": "10:17:01",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 1.7625,
+        "rerank_score": 0.8164
+      }
+    ],
+    "contrary_evidence": []
+  },
+  "마무리 요약": {
+    "supporting_evidence": [
+      {
+        "span_text": "했던 거 여기까지 됐을까나 여기까지 놔두고 지금 여기야 5.3이에요.",
+        "context_before": [
+          "아 웨요 조건부네 이런 식으로 비교를 앤드O어 하는데 하더라 그렇지 아까 우리도 했으니까 그 다음에 넥스트음에 이제 데이터베이스 생성하면서 들어가는 명령어가 여기 나와 이제 쇼 데이터베이시스 우리 앞에서"
+        ],
+        "evidence_type": "closing_summary_spans, summary_evidence",
+        "evidence_types": [
+          "closing_summary_spans",
+          "summary_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "여기까지"
+        ],
+        "segment_id": "seg_39",
+        "chunk_id": "seg_39_chunk_01",
+        "start_ts": "02:40:53",
+        "end_ts": "02:41:59",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 1.7625,
+        "rerank_score": 0.8164
+      },
+      {
+        "span_text": "이렇게 생겼나 보다 뭐 이런 날이라서 자 저희 이제 정리 좀 해보자 셀렉트 유저 프런트 언더바 유저 데이터베이스 이렇게 해서 내부 함수를 또 불렀지 그리고 이 내부 함수가",
+        "context_before": [
+          "오늘은 뭐 이렇게 특별하게 암기할 것도 없고 뭐 없어요."
+        ],
+        "evidence_type": "closing_summary_spans, summary_evidence",
+        "evidence_types": [
+          "closing_summary_spans",
+          "summary_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "정리"
+        ],
+        "segment_id": "seg_40",
+        "chunk_id": "seg_40_chunk_01",
+        "start_ts": "03:00:23",
+        "end_ts": "04:12:46",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 2.7,
+        "rerank_score": 0.8135
+      }
+    ],
+    "contrary_evidence": []
+  },
+  "개념 정의": {
+    "supporting_evidence": [
+      {
+        "span_text": "라고 하는 가이드를 한번 설명해 주고 있고 그 다음에 집 아카이브는 이런 식으로 다운로드 받아서 폴더 풀어서 설치해라 그 다음에 이제 도커 이미지에 도커가 있어요.",
+        "context_before": [
+          "얘네가 기본적으로 네임이 이 정도 되면서 플랫폼 먼저 확인하고 그 다음에 이제 MSI를 설치를 해서 자동으로 진행했으면 좋겠다."
+        ],
+        "evidence_type": "definition_spans, concept_definition_evidence",
+        "evidence_types": [
+          "definition_spans",
+          "concept_definition_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "라고 하는"
+        ],
+        "segment_id": "seg_27",
+        "chunk_id": "seg_27_chunk_01",
+        "start_ts": "01:30:44",
+        "end_ts": "01:32:08",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_instruction",
+        "local_score": 2.7,
+        "rerank_score": 0.7731
+      }
+    ],
+    "contrary_evidence": []
+  },
+  "비유 및 예시 활용": {
+    "supporting_evidence": [
+      {
+        "span_text": "뭔지는 알아야 설치를 하지 이렇게 그런데 화면에서 일단은 분할이 이렇게 어떤 식으로 분할이 되냐면 이렇게는 드라이버야 내가 예를 들어서 C하고 마이 S큐L을 붙이고 싶어 하면 얘를 다운로드 받는",
+        "context_before": [
+          "카테고리가 현재는 이렇게 4개의 섹션으로 나눠져 있고 그 다음에 GPL 자체가 오픈소스야 GPL 자체가 오픈소스입니다. 이렇게 해서 구현이 되어 있어요. 이렇게 되어 있는데, 우리 마이에스큐에서 클러스터용이 아까 네트워크 데이터베이스 NDB라고 했잖아. NDB 클러스터도 무조건 뭐 유료만 있는 건 아니야. 클라우드 이렇게 약간 쓸 수 있게끔 클러스터를 살 수 이게 약간 사용할 수 있게끔 만들어져 있어서 소스는 오픈소스인데 DB 자체는 유료예요. DB 나중에 회사에서 쓰실 때는 금액 측정을 조금 잘"
+        ],
+        "evidence_type": "example_spans, example_evidence",
+        "evidence_types": [
+          "example_spans",
+          "example_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "예를 들어"
+        ],
+        "segment_id": "seg_22",
+        "chunk_id": "seg_22_chunk_01",
+        "start_ts": "11:39:33",
+        "end_ts": "11:40:54",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_example",
+        "local_score": 4.5,
+        "rerank_score": 0.8027
+      }
+    ],
+    "contrary_evidence": []
+  },
+  "선행 개념 확인": {
+    "supporting_evidence": [
+      {
+        "span_text": "버전에 따라서 다를 수 있고 저는 버전 설치가 많이 되어 있어서 기존의 기록지로 이름이 올라오는 거고, 그래서 여러분들 거 실행하는 거 갖다 붙여라 여러분들 거 실행하는 거 저는",
+        "context_before": [
+          "혹시 8.0.45를 설치해야L 마큐L80이 서비스로 올라오는 게 아닌가 이런 질문을 하시는데 제가 아까 설명드렸습니다."
+        ],
+        "evidence_type": "prerequisite_bridge_spans, prerequisite_evidence",
+        "evidence_types": [
+          "prerequisite_bridge_spans",
+          "prerequisite_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "기존"
+        ],
+        "segment_id": "seg_18",
+        "chunk_id": "seg_18_chunk_01",
+        "start_ts": "11:13:33",
+        "end_ts": "11:22:51",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_instruction",
+        "local_score": 2.7,
+        "rerank_score": 0.8136
+      }
+    ],
+    "contrary_evidence": []
+  },
+  "발화 속도 적절성": {
+    "supporting_evidence": [
+      {
+        "span_text": "때 해당 패스 경로들을 여기서 설명해 줘 우리는 뭐 1.4 이렇게 해서 설치가 잘 되고 있다는 것까지 확인했고 그다음 밑에 가서 일단은 여기서 보시면 8.2하고 8.3 같은 경우에",
+        "context_before": [
+          "얘에 의해서 그 다음에 디렉토리에 있는 얘가 실행이 돼서 연동이 잘 되고 있다까지 설명해주고 있어요. 알고는 있었지만 넥스트 하면은 그 다음에 2.3점 2.2로 가겠죠이 넥스트 한번 눌러보도록 하겠습니다. 환경설정에 보시면 전체적인 시스템의 전역 변수가 만들어지고 그다음에 여기에서 뭐가 나오냐면 환경설정 파일인 마INI 환경 파일이 마큐L 서버 수행할 때 속성 정보를 가지고 있다라는 거예요. 지금 여기서 설명을 해주고 있어요. 기본으로 또 서비스 컴포넌트 이게 아까 우리 법 관리자의 서비스 열었던"
+        ],
+        "evidence_type": "pace_evidence",
+        "evidence_types": [
+          "pace_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [],
+        "segment_id": "seg_29",
+        "chunk_id": "seg_29_chunk_01",
+        "start_ts": "01:33:38",
+        "end_ts": "01:37:41",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 1.5,
+        "rerank_score": 0.847
+      },
+      {
+        "span_text": "사실은 그냥 얘 자체가 이벤트 처리야 이렇게 적으면 좀 모호해서 말을 조금 많이 썼는데 스타트 패스를 시작으로 디렉토리 탐색 중에 발생하는 이벤트를 파일비지터가 처리한 후에 스타트 패스로 다시",
+        "context_before": [
+          "여기 보면 여기에 이벤트 처리라는 것이 있죠."
+        ],
+        "evidence_type": "pace_evidence",
+        "evidence_types": [
+          "pace_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [],
+        "segment_id": "seg_03",
+        "chunk_id": "seg_03_chunk_01",
+        "start_ts": "09:22:45",
+        "end_ts": "09:48:08",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 1.5,
+        "rerank_score": 0.8442
+      }
+    ],
+    "contrary_evidence": [
+      {
+        "span_text": "얘에 의해서 그 다음에 디렉토리에 있는 얘가 실행이 돼서 연동이 잘 되고 있다까지 설명해주고 있어요.",
+        "context_before": [
+          "얘네가 기본적으로 네임이 이 정도 되면서 플랫폼 먼저 확인하고 그 다음에 이제 MSI를 설치를 해서 자동으로 진행했으면 좋겠다. 라고 하는 가이드를 한번 설명해 주고 있고 그 다음에 집 아카이브는 이런 식으로 다운로드 받아서 폴더 풀어서 설치해라 그 다음에 이제 도커 이미지에 도커가 있어요. OS 만들어가지고 가상 플랫폼 하나 올리면기에서 도커 이미지로 다운받을 수 있다. 알덴 이런 식으로 제공해주는 것들이 있습니다. 우리는 뭘로 했어요. 우리는 그냥 간단하게 MSI 가져다 설치했죠. 그 다음에"
+        ],
+        "evidence_type": "rapid_transition_spans",
+        "evidence_types": [
+          "rapid_transition_spans"
+        ],
+        "polarity": "contrary",
+        "matched_keywords": [
+          "high_utterances_per_min",
+          "high_span_density"
+        ],
+        "segment_id": "seg_28",
+        "chunk_id": "seg_28_chunk_01",
+        "start_ts": "01:32:14",
+        "end_ts": "01:33:26",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 4.0714,
+        "rerank_score": 0.8532
+      },
+      {
+        "span_text": "그래서 만약에 내가 서버가 제대로 안 돌아가 그러면 로그 파일 열어가지고 에러 파일 열어서 밑에 캡처를 해",
+        "context_before": [
+          "이러면 뭐 에러를 어떻게 봐주겠다는 거야."
+        ],
+        "evidence_type": "rapid_transition_spans",
+        "evidence_types": [
+          "rapid_transition_spans"
+        ],
+        "polarity": "contrary",
+        "matched_keywords": [
+          "high_utterances_per_min",
+          "high_span_density"
+        ],
+        "segment_id": "seg_16",
+        "chunk_id": "seg_16_chunk_01",
+        "start_ts": "10:45:45",
+        "end_ts": "10:46:32",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_instruction",
+        "local_score": 4.2143,
+        "rerank_score": 0.8463
+      }
+    ]
+  },
+  "예시 적절성": {
+    "supporting_evidence": [],
+    "contrary_evidence": []
+  },
+  "실습 연계": {
+    "supporting_evidence": [
+      {
+        "span_text": "얘에 의해서 그 다음에 디렉토리에 있는 얘가 실행이 돼서 연동이 잘 되고 있다까지 설명해주고 있어요.",
+        "context_before": [
+          "얘네가 기본적으로 네임이 이 정도 되면서 플랫폼 먼저 확인하고 그 다음에 이제 MSI를 설치를 해서 자동으로 진행했으면 좋겠다. 라고 하는 가이드를 한번 설명해 주고 있고 그 다음에 집 아카이브는 이런 식으로 다운로드 받아서 폴더 풀어서 설치해라 그 다음에 이제 도커 이미지에 도커가 있어요. OS 만들어가지고 가상 플랫폼 하나 올리면기에서 도커 이미지로 다운받을 수 있다. 알덴 이런 식으로 제공해주는 것들이 있습니다. 우리는 뭘로 했어요. 우리는 그냥 간단하게 MSI 가져다 설치했죠. 그 다음에"
+        ],
+        "evidence_type": "practice_transition_spans, practice_evidence",
+        "evidence_types": [
+          "practice_transition_spans",
+          "practice_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "실행"
+        ],
+        "segment_id": "seg_28",
+        "chunk_id": "seg_28_chunk_01",
+        "start_ts": "01:32:14",
+        "end_ts": "01:33:26",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 2.1375,
+        "rerank_score": 0.8452
+      },
+      {
+        "span_text": "이런 거 연결 문자 되는지 확인 거 어사님 뭐 200만 와 그럼 반대로 써봐 워닝 났어 오류 안 나고 일단 데이터는 리턴해주는데 문장과 더하기가 연산자다 무조건 연결 연산자가",
+        "context_before": [
+          "그리고 우리 자바에서 했던 거 이렇게 문장이 오잖아요."
+        ],
+        "evidence_type": "practice_transition_spans, practice_evidence",
+        "evidence_types": [
+          "practice_transition_spans",
+          "practice_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "써봐"
+        ],
+        "segment_id": "seg_37",
+        "chunk_id": "seg_37_chunk_01",
+        "start_ts": "02:25:39",
+        "end_ts": "02:26:57",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 2.7,
+        "rerank_score": 0.8205
+      }
+    ],
+    "contrary_evidence": []
+  },
+  "오류 대응": {
+    "supporting_evidence": [
+      {
+        "span_text": "그래서 만약에 내가 서버가 제대로 안 돌아가 그러면 로그 파일 열어가지고 에러 파일 열어서 밑에 캡처를 해",
+        "context_before": [
+          "이러면 뭐 에러를 어떻게 봐주겠다는 거야."
+        ],
+        "evidence_type": "error_response_spans, error_evidence",
+        "evidence_types": [
+          "error_response_spans",
+          "error_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "에러"
+        ],
+        "segment_id": "seg_16",
+        "chunk_id": "seg_16_chunk_01",
+        "start_ts": "10:45:45",
+        "end_ts": "10:46:32",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_instruction",
+        "local_score": 2.2625,
+        "rerank_score": 0.8456
+      },
+      {
+        "span_text": "그 다음에 여기 슬로우 쿼리 로그 파일 그고 만약에 에러가 있어 그러 여기 열어야지 파일 열어야지 이거 개정점 ERR이야 박사님 SQL 죽었어 그럼 로그 파일 열어봐.",
+        "context_before": [
+          "여기가 한글로 되어 있으신 분들은 오늘이라도 계정을 영어로 만들어 가지고 좀 어떻게 인생을 좀 바꿔봐 알겠죠."
+        ],
+        "evidence_type": "error_response_spans, error_evidence",
+        "evidence_types": [
+          "error_response_spans",
+          "error_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "에러"
+        ],
+        "segment_id": "seg_16",
+        "chunk_id": "seg_16_chunk_01",
+        "start_ts": "10:45:45",
+        "end_ts": "10:46:32",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_instruction",
+        "local_score": 2.7,
+        "rerank_score": 0.8348
+      }
+    ],
+    "contrary_evidence": []
+  },
+  "이해 확인 질문": {
+    "supporting_evidence": [
+      {
+        "span_text": "업 3시 맞죠.",
+        "context_before": [
+          "아 웨요 조건부네 이런 식으로 비교를 앤드O어 하는데 하더라 그렇지 아까 우리도 했으니까 그 다음에 넥스트음에 이제 데이터베이스 생성하면서 들어가는 명령어가 여기 나와 이제 쇼 데이터베이시스 우리 앞에서 했던 거 여기까지 됐을까나 여기까지 놔두고 지금 여기야 5.3이에요. 제가 5.3 할 거였어요. 그 전까지 연산자 다 체킹해놓고, 그다음에 나중에 연산자 볼 때는 그냥 후루 이상한 것만 보면 되고 그 다음에 조금 이따가 이제 데이터만큼 얘네가 리턴이 되는데 얘는 좀 이상한 애들 있어 제이슨 데이터"
+        ],
+        "evidence_type": "understanding_check_spans",
+        "evidence_types": [
+          "understanding_check_spans"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "맞죠"
+        ],
+        "segment_id": "seg_40",
+        "chunk_id": "seg_40_chunk_01",
+        "start_ts": "03:00:23",
+        "end_ts": "04:12:46",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 1.3875,
+        "rerank_score": 0.8104
+      },
+      {
+        "span_text": "오늘만 좀 천천히 하고 내일은 좀 빨리 나가니까 진금도 됐어요.",
+        "context_before": [
+          "싶습니다."
+        ],
+        "evidence_type": "understanding_check_spans",
+        "evidence_types": [
+          "understanding_check_spans"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "됐어요"
+        ],
+        "segment_id": "seg_32",
+        "chunk_id": "seg_32_chunk_01",
+        "start_ts": "01:52:15",
+        "end_ts": "01:53:02",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 1.825,
+        "rerank_score": 0.7976
+      }
+    ],
+    "contrary_evidence": []
+  },
+  "참여 유도": {
+    "supporting_evidence": [
+      {
+        "span_text": "버전에 따라서 다를 수 있고 저는 버전 설치가 많이 되어 있어서 기존의 기록지로 이름이 올라오는 거고, 그래서 여러분들 거 실행하는 거 갖다 붙여라 여러분들 거 실행하는 거 저는",
+        "context_before": [
+          "혹시 8.0.45를 설치해야L 마큐L80이 서비스로 올라오는 게 아닌가 이런 질문을 하시는데 제가 아까 설명드렸습니다."
+        ],
+        "evidence_type": "engagement_spans, interaction_prompt_spans, engagement_evidence",
+        "evidence_types": [
+          "engagement_spans",
+          "interaction_prompt_spans",
+          "engagement_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "따라"
+        ],
+        "segment_id": "seg_18",
+        "chunk_id": "seg_18_chunk_01",
+        "start_ts": "11:13:33",
+        "end_ts": "11:22:51",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_instruction",
+        "local_score": 2.7,
+        "rerank_score": 0.8212
+      },
+      {
+        "span_text": "자바가 가지고 있는 I이O 패키지는 클래스를 선택을 데이터 유형에 따라서 사용하는 거고, 그다음에 NIO2 같은 경우에는 메서드를 대상으로 저희가 데이터 프로세싱을 선택적으로 사용을 하는 그런 구문을 어제 확인을하셨죠.",
+        "context_before": [
+          "모든 팔 유형을 아우를 수가 있다고 생각하시면 되고 그래서 NIO2에서는 파일즈 가 가지고 있는 뉴 아풋스트림 그 다음에 뉴 인풋스트림 이렇게 되면 바이트 단위로 사용할 수 있는 요서드이죠."
+        ],
+        "evidence_type": "engagement_spans, interaction_prompt_spans, engagement_evidence",
+        "evidence_types": [
+          "engagement_spans",
+          "interaction_prompt_spans",
+          "engagement_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "따라"
+        ],
+        "segment_id": "seg_02",
+        "chunk_id": "seg_02_chunk_01",
+        "start_ts": "09:15:17",
+        "end_ts": "09:22:38",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_instruction",
+        "local_score": 2.7,
+        "rerank_score": 0.7879
+      }
+    ],
+    "contrary_evidence": []
+  },
+  "질문 응답 충분성": {
+    "supporting_evidence": [
+      {
+        "span_text": "DB는 지금 어느 정도로 지금 각광을 받고 있냐면 내가 OP 프로그램을 하는데 뭐 어디 가서 대화를 해 면접을 봐 그러면 D뷰는 뭐 썼어 물어보거든요.",
+        "context_before": [
+          "그다음 세 번째는 조건적 맞는 거 그 다음에 SQL 학습 흐름을 이해하고 구조를 이해할 수 있다인데 이거 우리가 할 거예요."
+        ],
+        "evidence_type": "qa_response_spans, qa_evidence",
+        "evidence_types": [
+          "qa_response_spans",
+          "qa_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "물어보"
+        ],
+        "segment_id": "seg_04",
+        "chunk_id": "seg_04_chunk_01",
+        "start_ts": "09:48:21",
+        "end_ts": "09:56:08",
+        "parent_label": "실습 유도",
+        "sub_label": "practice_explanation",
+        "local_score": 2.7,
+        "rerank_score": 0.8307
+      },
+      {
+        "span_text": "뭐 바이트 캐릭 프젝트 다른 내용들이 있고 그 다음에 추가로 스캐닝 포맷터 그 다음에 데이터 단위의 입출력하는 내용이 추가되어 카테고리는 이런 식으로 나눠놨어요.",
+        "context_before": [
+          "딥이 들어가기 전에 어제 여기 아이오 패키지 가었는데 튜터리얼 세 가지의 화면이 있어요. 세 가지의 화면에 키포인트만 살짝 짚어드리고 DB로 살짝 넘어가도록 하겠습니다. 첫 번째 한번 가보도록 할게요 이게 아이O가 좀 많아요. 거의 그렇죠. 첫 번째 화면은 여기예요. 튜터리얼이 가지고 있는 베이지가 이 부분입니다. 이 부분을 보시게 되면 기본은 8버전을 기점으로 하는 기본 라이브러리인데 21 버전도 추가되어 있는 이런 상황이에요. 이렇게 화면이 이렇게 되어 있고 여기 중간 살짝 보면 여기제 파일"
+        ],
+        "evidence_type": "qa_response_spans, qa_evidence",
+        "evidence_types": [
+          "qa_response_spans",
+          "qa_evidence"
+        ],
+        "polarity": "supporting",
+        "matched_keywords": [
+          "추가로"
+        ],
+        "segment_id": "seg_07",
+        "chunk_id": "seg_07_chunk_01",
+        "start_ts": "10:11:07",
+        "end_ts": "10:14:15",
+        "parent_label": "도입",
+        "sub_label": "general",
+        "local_score": 2.6375,
+        "rerank_score": 0.8201
+      }
+    ],
+    "contrary_evidence": []
+  }
+}
