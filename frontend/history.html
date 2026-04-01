@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>강의 분석 이력</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #f5f7fa;
+      --white: #ffffff;
+      --border: #e4e8ef;
+      --accent: #5b5ef6;
+      --accent-light: #eeecff;
+      --text: #111827;
+      --text-sub: #4b5563;
+      --text-muted: #9ca3af;
+      --green: #16a34a;
+      --green-bg: #f0fdf4;
+      --red: #dc2626;
+      --red-bg: #fef2f2;
+      --yellow: #d97706;
+      --yellow-bg: #fffbeb;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+      --radius: 14px;
+    }
+    body {
+      font-family: 'Pretendard', -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+    nav {
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+    .nav-logo {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+    }
+    .nav-badge {
+      font-size: 0.7rem;
+      background: var(--accent-light);
+      color: var(--accent);
+      padding: 2px 8px;
+      border-radius: 99px;
+      font-weight: 600;
+    }
+    .nav-actions { display: flex; gap: 8px; }
+    .btn {
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      background: var(--white);
+      border-radius: 8px;
+      font-size: 0.84rem;
+      font-weight: 600;
+      color: var(--text-sub);
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .page {
+      max-width: 1040px;
+      margin: 24px auto;
+      padding: 0 20px 56px;
+    }
+    .head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+    .head h1 { font-size: 1.35rem; font-weight: 800; }
+    .muted { color: var(--text-muted); font-size: 0.86rem; }
+
+    .list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
+      padding: 14px 16px;
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr auto;
+      gap: 10px;
+      align-items: center;
+    }
+    @media(max-width:960px){
+      .card { grid-template-columns: 1fr; }
+    }
+    .filename {
+      font-size: 0.93rem;
+      font-weight: 700;
+      color: var(--text);
+      word-break: break-all;
+    }
+    .sub {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    }
+    .cell-title {
+      font-size: 0.73rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 3px;
+    }
+    .cell-value {
+      font-size: 0.86rem;
+      color: var(--text-sub);
+      line-height: 1.4;
+    }
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 0.76rem;
+      font-weight: 700;
+    }
+    .chip-done { background: var(--green-bg); color: var(--green); }
+    .chip-running { background: #eef2ff; color: #3730a3; }
+    .chip-pending { background: var(--yellow-bg); color: var(--yellow); }
+    .chip-failed { background: var(--red-bg); color: var(--red); }
+
+    .actions {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+    }
+    .btn-primary {
+      border-color: #c7c9fb;
+      background: var(--accent);
+      color: #fff;
+    }
+    .btn:disabled { opacity: 0.55; cursor: not-allowed; }
+
+    .empty {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      text-align: center;
+      color: var(--text-sub);
+    }
+
+    .toast {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 14px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+      display: none;
+      z-index: 100;
+      font-size: 0.86rem;
+      max-width: 360px;
+    }
+    .toast.error { border-color: var(--red); color: var(--red); }
+  </style>
+</head>
+<body>
+  <nav>
+    <a class="nav-logo" href="/site/index.html">🎓 강의 분석 시스템 <span class="nav-badge">AI Report</span></a>
+    <div class="nav-actions">
+      <a class="btn" href="/site/trajectory.html">강의 흐름 분석</a>
+      <a class="btn" href="/site/index.html">업로드</a>
+    </div>
+  </nav>
+
+  <div class="page">
+    <div class="head">
+      <div>
+        <h1>🗂 강의 분석 이력</h1>
+        <div class="muted" id="countText">총 0건</div>
+      </div>
+      <button class="btn" id="refreshBtn">새로고침</button>
+    </div>
+
+    <div class="list" id="historyList"></div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const API = '/api/v1';
+
+    function showToast(msg, isError) {
+      const el = document.getElementById('toast');
+      el.textContent = msg;
+      el.className = 'toast' + (isError ? ' error' : '');
+      el.style.display = 'block';
+      setTimeout(() => { el.style.display = 'none'; }, 3500);
+    }
+
+    async function parseApiBody(res) {
+      const t = await res.text();
+      if (!t) return {};
+      try { return JSON.parse(t); } catch { return { detail: t }; }
+    }
+
+    function errMsg(payload, res) {
+      if (payload && typeof payload === 'object') {
+        if (typeof payload.detail === 'string') return payload.detail;
+        if (typeof payload.error === 'string') return payload.error;
+      }
+      return `HTTP ${res.status} ${res.statusText}`;
+    }
+
+    function statusChip(status) {
+      if (status === 'done') return '<span class="chip chip-done">완료</span>';
+      if (status === 'running') return '<span class="chip chip-running">진행중</span>';
+      if (status === 'pending') return '<span class="chip chip-pending">대기</span>';
+      if (status === 'failed') return '<span class="chip chip-failed">실패</span>';
+      return `<span class="chip">${status || '-'}</span>`;
+    }
+
+    function fmtTime(iso) {
+      if (!iso) return '-';
+      try {
+        return new Date(iso).toLocaleString('ko-KR');
+      } catch {
+        return iso;
+      }
+    }
+
+    async function openReport(jobId, filename) {
+      const res = await fetch(`${API}/result/${jobId}`);
+      const data = await parseApiBody(res);
+      if (!res.ok) throw new Error(errMsg(data, res));
+      sessionStorage.setItem('analysis.finalReport', JSON.stringify(data.final_report || {}));
+      sessionStorage.setItem('analysis.lectureId', (data.final_report && data.final_report.lecture_id) || filename || 'lecture_report');
+      sessionStorage.setItem('analysis.filename', filename || 'lecture_report');
+      window.location.href = '/site/report.html';
+    }
+
+    function render(items) {
+      const list = document.getElementById('historyList');
+      document.getElementById('countText').textContent = `총 ${items.length}건`;
+      if (!items.length) {
+        list.innerHTML = '<div class="empty">이력이 없습니다. 업로드 페이지에서 강의 분석을 시작해 주세요.</div>';
+        return;
+      }
+
+      list.innerHTML = items.map((it) => {
+        const canOpen = it.status === 'done' && it.result_exists;
+        const err = it.error_msg ? `<div class="sub" style="color:#dc2626;">오류: ${it.error_msg}</div>` : '';
+        return `
+          <div class="card">
+            <div>
+              <div class="filename">${it.original_filename || '(파일명 없음)'}</div>
+              <div class="sub">job_id: ${it.job_id}</div>
+              ${err}
+            </div>
+            <div>
+              <div class="cell-title">날짜</div>
+              <div class="cell-value">${it.date || '-'}</div>
+            </div>
+            <div>
+              <div class="cell-title">상태</div>
+              <div class="cell-value">${statusChip(it.status)}</div>
+            </div>
+            <div>
+              <div class="cell-title">완료시각</div>
+              <div class="cell-value">${fmtTime(it.finished_at)}</div>
+            </div>
+            <div class="actions">
+              <button class="btn btn-primary" ${canOpen ? '' : 'disabled'} data-job="${it.job_id}" data-file="${(it.original_filename || '').replace(/"/g, '&quot;')}">리포트 보기</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      list.querySelectorAll('button[data-job]').forEach((btn) => {
+        btn.addEventListener('click', async () => {
+          const jobId = btn.getAttribute('data-job');
+          const filename = btn.getAttribute('data-file') || 'lecture_report';
+          btn.disabled = true;
+          const prev = btn.textContent;
+          btn.textContent = '로딩 중...';
+          try {
+            await openReport(jobId, filename);
+          } catch (e) {
+            showToast('리포트 로드 실패: ' + e.message, true);
+            btn.disabled = false;
+            btn.textContent = prev;
+          }
+        });
+      });
+    }
+
+    async function loadHistory() {
+      const res = await fetch(`${API}/history?limit=100`);
+      const data = await parseApiBody(res);
+      if (!res.ok) throw new Error(errMsg(data, res));
+      render(Array.isArray(data.items) ? data.items : []);
+    }
+
+    document.getElementById('refreshBtn').addEventListener('click', async () => {
+      try { await loadHistory(); } catch (e) { showToast('이력 조회 실패: ' + e.message, true); }
+    });
+
+    (async () => {
+      try { await loadHistory(); } catch (e) { showToast('이력 조회 실패: ' + e.message, true); }
+    })();
+  </script>
+</body>
+</html>

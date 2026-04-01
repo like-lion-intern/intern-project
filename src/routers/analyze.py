@@ -10,13 +10,14 @@ from __future__ import annotations
 
 import json
 import re
+import sys
 import threading
 import uuid
 from datetime import datetime, timezone
 from pathlib import Path
 
 from fastapi import APIRouter, BackgroundTasks, Depends, File, HTTPException, UploadFile, status
-from sqlalchemy import select
+from sqlalchemy import select, desc
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.config import settings
@@ -29,6 +30,30 @@ router = APIRouter()
 
 # ─── 헬퍼 ─────────────────────────────────────────────────────────────────────
 DATE_PATTERN = re.compile(r"(\d{4}-\d{2}-\d{2})")
+RESULT_FILE_PATTERN = re.compile(r"^(\d{4}-\d{2}-\d{2})_result\.json$")
+
+
+def _load_build_trajectory_report():
+    """
+    analysis_llm/src/trajectory.py의 build_trajectory_report를 동적으로 로드한다.
+    """
+    trajectory_src = Path(settings.project_root) / "analysis_llm" / "src"
+    if str(trajectory_src) not in sys.path:
+        sys.path.insert(0, str(trajectory_src))
+    from trajectory import build_trajectory_report  # type: ignore
+    return build_trajectory_report
+
+
+def _collect_result_dates(output_root: Path) -> list[str]:
+    """trajectory 생성에 사용 가능한 결과(result) 날짜를 수집한다."""
+    dates: set[str] = set()
+    if not output_root.exists():
+        return []
+    for p in output_root.rglob("*_result.json"):
+        m = RESULT_FILE_PATTERN.match(p.name)
+        if m:
+            dates.add(m.group(1))
+    return sorted(dates)
 
 
 def _extract_date(filename: str) -> str:
@@ -155,6 +180,46 @@ async def get_result(job_id: str, db: AsyncSession = Depends(get_db)) -> ResultR
     )
 
 
+@router.get("/history")
+async def get_history(limit: int = 50, db: AsyncSession = Depends(get_db)) -> dict:
+    """
+    업로드/분석 이력을 최신순으로 반환한다.
+    - status, 파일명, 날짜, 생성/완료 시각
+    - 결과 존재 여부(result_exists)
+    """
+    safe_limit = max(1, min(int(limit or 50), 200))
+    try:
+        stmt = (
+            select(Job, Result)
+            .outerjoin(Result, Result.job_id == Job.job_id)
+            .order_by(desc(Job.created_at))
+            .limit(safe_limit)
+        )
+        rows = (await db.execute(stmt)).all()
+    except Exception as exc:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail=f"이력 조회 실패: {exc}",
+        )
+
+    items = []
+    for job, result in rows:
+        items.append(
+            {
+                "job_id": str(job.job_id),
+                "date": job.date,
+                "original_filename": job.original_filename,
+                "status": job.status,
+                "result_exists": result is not None,
+                "created_at": job.created_at.isoformat() if job.created_at else None,
+                "finished_at": job.finished_at.isoformat() if job.finished_at else None,
+                "error_msg": job.error_msg,
+            }
+        )
+
+    return {"items": items, "count": len(items)}
+
+
 @router.get("/health", response_model=HealthResponse)
 async def health(db: AsyncSession = Depends(get_db)) -> HealthResponse:
     try:
@@ -172,7 +237,7 @@ async def rebuild_trajectory() -> dict:
     outputs 전체 날짜 결과를 집계해 trajectory 리포트를 다시 생성한다.
     """
     try:
-        from trajectory import build_trajectory_report  # analysis_llm/src/trajectory.py
+        build_trajectory_report = _load_build_trajectory_report()
 
         output_root = str(Path(settings.project_root) / settings.output_dir)
         project_root = str(Path(settings.project_root))
@@ -206,3 +271,37 @@ async def get_latest_trajectory() -> dict:
         return {"path": str(latest), "trajectory": payload}
     except Exception as exc:
         raise HTTPException(status_code=500, detail=f"trajectory 파일 파싱 실패: {exc}")
+
+
+@router.get("/trajectory/summary")
+async def get_trajectory_summary() -> dict:
+    """
+    궤적 분석 UX용 요약 정보:
+    - 현재 궤적 분석 가능한 강의(result) 개수
+    - 날짜 범위
+    - 최신 trajectory 파일 존재 여부
+    """
+    output_root = Path(settings.project_root) / settings.output_dir
+    dates = _collect_result_dates(output_root)
+
+    trajectory_dir = output_root / "trajectory"
+    latest_path = ""
+    latest_exists = False
+    trajectory_file_count = 0
+    if trajectory_dir.exists():
+        files = sorted(trajectory_dir.glob("*_trajectory.json"))
+        trajectory_file_count = len(files)
+        if files:
+            latest_path = str(files[-1])
+            latest_exists = True
+
+    return {
+        "available_lecture_count": len(dates),
+        "date_range": {
+            "start_date": dates[0] if dates else None,
+            "end_date": dates[-1] if dates else None,
+        },
+        "latest_trajectory_exists": latest_exists,
+        "latest_trajectory_path": latest_path,
+        "trajectory_file_count": trajectory_file_count,
+    }

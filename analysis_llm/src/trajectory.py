@@ -4,6 +4,7 @@ import json
 import csv
 import sys
 import argparse
+from pathlib import Path
 
 from google import genai
 from google.genai import types
@@ -109,26 +110,48 @@ ANALYSIS_GUIDELINES = """위 데이터를 바탕으로 아래 4가지를 분석�
 
 def collect_dates(output_path: str) -> list[str]:
     """
-    output/ 디렉토리에서 *_result.json 파일을 찾아 날짜 목록을 오름차순으로 반환.
+    output/ 디렉토리(하위 포함)에서 *_result.json 파일을 찾아 날짜 목록을 오름차순으로 반환.
     날짜 형식: YYYY-MM-DD
     """
-    dates = []
+    dates = set()
     pattern = re.compile(r"^(\d{4}-\d{2}-\d{2})_result\.json$")
-    for fname in os.listdir(output_path):
-        m = pattern.match(fname)
-        if m:
-            dates.append(m.group(1))
+    for root, _, files in os.walk(output_path):
+        for fname in files:
+            m = pattern.match(fname)
+            if m:
+                dates.add(m.group(1))
     return sorted(dates)
+
+
+def _resolve_data_file(output_path: str, date: str, kind: str) -> str | None:
+    """
+    kind: "analysis" | "result"
+    탐색 우선순위:
+      1) {output_path}/{date}_{kind}.json
+      2) {output_path}/{date}/{date}_{kind}.json
+      3) output_path 하위 재귀 탐색
+    """
+    direct = os.path.join(output_path, f"{date}_{kind}.json")
+    nested = os.path.join(output_path, date, f"{date}_{kind}.json")
+    if os.path.exists(direct):
+        return direct
+    if os.path.exists(nested):
+        return nested
+
+    target = f"{date}_{kind}.json"
+    for root, _, files in os.walk(output_path):
+        if target in files:
+            return os.path.join(root, target)
+    return None
 
 def compress_lecture(date: str, output_path: str) -> dict | None:
     """
     {date}_analysis.json + {date}_result.json을 로드하여 compressed_lecture 구조로 반환.
     파일이 없으면 None 반환.
     """
-    analysis_path = os.path.join(output_path, f"{date}_analysis.json")
-    result_path = os.path.join(output_path, f"{date}_result.json")
-
-    if not os.path.exists(analysis_path) or not os.path.exists(result_path):
+    analysis_path = _resolve_data_file(output_path, date, "analysis")
+    result_path = _resolve_data_file(output_path, date, "result")
+    if not analysis_path or not result_path:
         return None
 
     with open(analysis_path, encoding="utf-8") as f:
@@ -267,62 +290,65 @@ def run_trajectory_analysis(compressed_lectures: list[dict]) -> dict:
         print(f"[trajectory raw response] {response.text}", file=sys.stderr)
         raise e
 
+
+def build_trajectory_report(output_root: str, project_root: str | None = None) -> str:
+    """
+    API 호출에서 사용하는 trajectory 생성 엔트리포인트.
+    성공 시 생성된 trajectory json 절대경로를 반환하고,
+    생성 대상이 없으면 빈 문자열을 반환한다.
+    """
+    output_path = str(Path(output_root).resolve())
+    base_path = str(Path(project_root).resolve()) if project_root else str(Path(output_path).resolve().parent)
+
+    dates = collect_dates(output_path)
+    if not dates:
+        return ""
+
+    metadata = load_metadata_by_date(base_path)
+    compressed_lectures = []
+    for date in dates:
+        compressed = compress_lecture(date, output_path)
+        if compressed is None:
+            continue
+
+        meta = metadata.get(date, {})
+        compressed["subject"] = meta.get("subject")
+        contents_list = meta.get("contents", [])
+        compressed["contents"] = [contents_list[0]] if contents_list else []
+        compressed_lectures.append(compressed)
+
+    if not compressed_lectures:
+        return ""
+
+    trajectory_result = run_trajectory_analysis(compressed_lectures)
+
+    out_dir = Path(output_path) / "trajectory"
+    out_dir.mkdir(parents=True, exist_ok=True)
+    start_date = compressed_lectures[0]["date"]
+    end_date = compressed_lectures[-1]["date"]
+    output_file = out_dir / f"{start_date}_{end_date}_trajectory.json"
+    with open(output_file, "w", encoding="utf-8") as f:
+        json.dump(trajectory_result, f, ensure_ascii=False, indent=2)
+    return str(output_file)
+
 def main():
     parser = argparse.ArgumentParser(description="강의 궤적 분석")
     parser.add_argument("--output-path", default="../output/")
     parser.add_argument("--base-path", default="..")
     args = parser.parse_args()
 
-    # STEP 1: 날짜 수집
-    print("[STEP 1] 날짜 수집")
-    dates = collect_dates(args.output_path)
-    if not dates:
-        print("[오류] output/ 디렉토리에 *_result.json 파일이 없습니다.")
-        sys.exit(1)
-    print(f"  → {len(dates)}개 날짜 발견: {dates[0]} ~ {dates[-1]}")
-
-    # STEP 2+3: 압축 + 메타데이터 병합
-    print("[STEP 2] 데이터 압축")
-    metadata = load_metadata_by_date(args.base_path)
-    compressed_lectures = []
-    
-    for date in dates:
-        compressed = compress_lecture(date, args.output_path)
-        if compressed is None:
-            print(f"  → {date}: analysis 또는 result 파일 없음, 건너뜀")
-            continue
-        meta = metadata.get(date, {})
-        compressed["subject"] = meta.get("subject")
-        
-        # contents를 여러 개 다 넣지 않고 첫 번째 것만 넣어서 텍스트 압축
-        contents_list = meta.get("contents", [])
-        compressed["contents"] = [contents_list[0]] if contents_list else []
-        
-        compressed_lectures.append(compressed)
-    print(f"  → {len(compressed_lectures)}개 날짜 압축 완료")
-
-    if not compressed_lectures:
-        print("[오류] 분석 가능한 날짜가 없습니다.")
-        sys.exit(1)
-
-    # STEP 4: LLM 분석
-    print("[STEP 4] 궤적 분석 LLM 호출")
     try:
-        trajectory_result = run_trajectory_analysis(compressed_lectures)
+        out_path = build_trajectory_report(
+            output_root=args.output_path,
+            project_root=args.base_path,
+        )
     except Exception as e:
         print(f"[오류] 궤적 분석 실패: {type(e).__name__}: {e}")
         sys.exit(1)
-
-    # STEP 5: 저장
-    start_date = compressed_lectures[0]["date"]
-    end_date = compressed_lectures[-1]["date"]
-    output_filename = f"{start_date}_{end_date}_trajectory.json"
-    output_file = os.path.join(args.output_path, output_filename)
-
-    with open(output_file, "w", encoding="utf-8") as f:
-        json.dump(trajectory_result, f, ensure_ascii=False, indent=2)
-
-    print(f"[완료] 저장: {output_file}")
+    if not out_path:
+        print("[오류] trajectory 생성 대상 결과 파일이 없습니다.")
+        sys.exit(1)
+    print(f"[완료] 저장: {out_path}")
 
 
 if __name__ == "__main__":

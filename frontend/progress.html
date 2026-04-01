@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>강의 분석 진행 상태</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #f5f7fa;
+      --white: #ffffff;
+      --border: #e4e8ef;
+      --accent: #5b5ef6;
+      --accent-light: #eeecff;
+      --text: #111827;
+      --text-sub: #4b5563;
+      --text-muted: #9ca3af;
+      --green: #16a34a;
+      --green-bg: #f0fdf4;
+      --red: #dc2626;
+      --red-bg: #fef2f2;
+      --yellow: #d97706;
+      --yellow-bg: #fffbeb;
+      --shadow: 0 4px 16px rgba(0,0,0,0.07);
+      --radius: 14px;
+    }
+    body {
+      font-family: 'Pretendard', -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+    nav {
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      padding: 0 32px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .nav-logo {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+    }
+    .nav-badge {
+      font-size: 0.7rem;
+      background: var(--accent-light);
+      color: var(--accent);
+      padding: 2px 8px;
+      border-radius: 99px;
+      font-weight: 600;
+    }
+    .btn-nav {
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      background: var(--white);
+      border-radius: 8px;
+      font-size: 0.85rem;
+      text-decoration: none;
+      color: var(--text-sub);
+      font-weight: 600;
+    }
+    .page {
+      max-width: 640px;
+      margin: 60px auto;
+      padding: 0 24px;
+    }
+    .analysis-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 36px;
+      box-shadow: var(--shadow);
+      text-align: center;
+    }
+    .analysis-card h2 { font-size: 1.4rem; font-weight: 700; margin-bottom: 8px; }
+    .analysis-card p { color: var(--text-sub); font-size: 0.9rem; margin-bottom: 28px; }
+    .job-id-box {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-family: monospace;
+      font-size: 0.78rem;
+      color: var(--text-sub);
+      word-break: break-all;
+      margin-bottom: 28px;
+      text-align: left;
+    }
+    .progress-track {
+      background: #e5e7eb;
+      border-radius: 99px;
+      height: 10px;
+      overflow: hidden;
+      margin-bottom: 10px;
+    }
+    .progress-fill {
+      height: 100%;
+      border-radius: 99px;
+      background: linear-gradient(90deg, var(--accent), #818cf8);
+      width: 0%;
+      transition: width 0.6s ease;
+    }
+    .progress-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+    }
+    .status-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: 99px;
+      font-size: 0.82rem;
+      font-weight: 600;
+    }
+    .chip-pending  { background: var(--yellow-bg); color: var(--yellow); }
+    .chip-running  { background: var(--accent-light); color: var(--accent); }
+    .chip-done     { background: var(--green-bg); color: var(--green); }
+    .chip-failed   { background: var(--red-bg); color: var(--red); }
+    .dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+    .dot.pulse { animation: pulse 1s infinite; }
+    .spinner {
+      width: 13px;
+      height: 13px;
+      border: 2px solid currentColor;
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+      opacity: 0.7;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+    .stage-steps {
+      display: flex;
+      justify-content: center;
+      gap: 0;
+      margin-top: 28px;
+    }
+    .stage-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 1;
+      max-width: 120px;
+    }
+    .stage-dot {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: #e5e7eb;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: #9ca3af;
+      position: relative;
+      z-index: 1;
+    }
+    .stage-step.done .stage-dot { background: var(--green); color: #fff; }
+    .stage-step.active .stage-dot { background: var(--accent); color: #fff; }
+    .stage-line {
+      flex: 1;
+      height: 2px;
+      background: #e5e7eb;
+      margin-top: 13px;
+      align-self: flex-start;
+    }
+    .stage-line.done { background: var(--green); }
+    .stage-label { font-size: 0.7rem; color: var(--text-muted); margin-top: 6px; text-align: center; }
+    .stage-step.done .stage-label { color: var(--green); }
+    .stage-step.active .stage-label { color: var(--accent); font-weight: 600; }
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 18px;
+      font-size: 0.87rem;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.10);
+      display: none;
+      z-index: 999;
+      max-width: 320px;
+    }
+    .toast.error { border-color: var(--red); color: var(--red); }
+  </style>
+</head>
+<body>
+  <nav>
+    <a class="nav-logo" href="/site/index.html">🎓 강의 분석 시스템 <span class="nav-badge">AI Report</span></a>
+    <a class="btn-nav" href="/site/index.html">파일 업로드</a>
+  </nav>
+
+  <div class="page">
+    <div class="analysis-card">
+      <h2>🔍 분석 진행 중</h2>
+      <p>STT 파일을 처리하고 있습니다. 잠시 기다려주세요.</p>
+      <div class="job-id-box">Job ID: <strong id="jobIdDisplay">—</strong></div>
+
+      <div class="progress-track">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+      <div class="progress-meta">
+        <span id="stageLabel">대기 중...</span>
+        <span id="pctLabel">0%</span>
+      </div>
+
+      <div id="statusChip"></div>
+
+      <div class="stage-steps">
+        <div class="stage-step" id="ss0">
+          <div class="stage-dot">①</div>
+          <div class="stage-label">업로드</div>
+        </div>
+        <div class="stage-line" id="sl0"></div>
+        <div class="stage-step" id="ss1">
+          <div class="stage-dot">②</div>
+          <div class="stage-label">전처리</div>
+        </div>
+        <div class="stage-line" id="sl1"></div>
+        <div class="stage-step" id="ss2">
+          <div class="stage-dot">③</div>
+          <div class="stage-label">LLM 분석</div>
+        </div>
+        <div class="stage-line" id="sl2"></div>
+        <div class="stage-step" id="ss3">
+          <div class="stage-dot">✓</div>
+          <div class="stage-label">완료</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const API = '/api/v1';
+    let pollTimer = null;
+
+    function showToast(msg, isError) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.className = 'toast' + (isError ? ' error' : '');
+      t.style.display = 'block';
+      setTimeout(() => { t.style.display = 'none'; }, 4000);
+    }
+
+    async function parseApiBody(res) {
+      const text = await res.text();
+      if (!text) return {};
+      try {
+        return JSON.parse(text);
+      } catch {
+        return { detail: text };
+      }
+    }
+
+    function extractErrorMessage(payload, res) {
+      if (payload && typeof payload === 'object') {
+        if (typeof payload.detail === 'string') return payload.detail;
+        if (typeof payload.message === 'string') return payload.message;
+        if (typeof payload.error === 'string') return payload.error;
+      }
+      return `HTTP ${res.status} ${res.statusText}`;
+    }
+
+    function updateStages(stage) {
+      const stateMap = {
+        pending: [1, 0, 0, 0],
+        running: [1, 1, 0, 0],
+        stage1_done: [1, 1, 1, 0],
+        stage2_done: [1, 1, 1, 0],
+        done: [1, 1, 1, 1],
+      };
+      const states = stateMap[stage] || [1, 0, 0, 0];
+      states.forEach((v, i) => {
+        const step = document.getElementById(`ss${i}`);
+        const line = document.getElementById(`sl${i}`);
+        if (!step) return;
+        step.className = 'stage-step' + (v ? (i < states.filter(Boolean).length - 1 || stage === 'done' ? ' done' : ' active') : '');
+        if (stage === 'done') step.className = 'stage-step done';
+        if (line) line.className = 'stage-line' + (v ? ' done' : '');
+      });
+    }
+
+    function updateStatus(data) {
+      const progress = data.progress || {};
+      const pct = progress.percent ?? (data.status === 'done' ? 100 : 0);
+      const stage = progress.stage ?? data.status;
+      document.getElementById('progressFill').style.width = pct + '%';
+      document.getElementById('pctLabel').textContent = pct + '%';
+
+      const stageMap = {
+        pending: '대기 중',
+        running: '파이프라인 실행 중',
+        stage1_done: 'STAGE 1 완료 → LLM 분석 중',
+        stage2_done: 'LLM 분석 완료',
+        done: '분석 완료',
+        failed: '실패'
+      };
+      document.getElementById('stageLabel').textContent = stageMap[stage] || stage;
+
+      const chipMap = {
+        pending: `<span class="status-chip chip-pending"><span class="dot pulse"></span>대기 중</span>`,
+        running: `<span class="status-chip chip-running"><span class="spinner" style="display:inline-block;width:12px;height:12px;border:2px solid var(--accent);border-top-color:transparent;border-radius:50%;animation:spin .7s linear infinite"></span>분석 중</span>`,
+        done: `<span class="status-chip chip-done"><span class="dot"></span>완료</span>`,
+        failed: `<span class="status-chip chip-failed"><span class="dot"></span>실패</span>`,
+      };
+      document.getElementById('statusChip').innerHTML = chipMap[data.status] || data.status;
+      updateStages(stage);
+    }
+
+    async function fetchResult(jobId) {
+      const filename = sessionStorage.getItem('analysis.filename') || 'lecture_report';
+      const res = await fetch(`${API}/result/${jobId}`);
+      const data = await parseApiBody(res);
+      if (!res.ok) throw new Error(extractErrorMessage(data, res));
+
+      sessionStorage.setItem('analysis.finalReport', JSON.stringify(data.final_report || {}));
+      const lectureId = (data.final_report && data.final_report.lecture_id) || filename;
+      sessionStorage.setItem('analysis.lectureId', lectureId);
+      window.location.href = '/site/report.html';
+    }
+
+    async function pollStatus(jobId) {
+      try {
+        const res = await fetch(`${API}/status/${jobId}`);
+        const data = await parseApiBody(res);
+        if (!res.ok) throw new Error(extractErrorMessage(data, res));
+
+        updateStatus(data);
+        if (data.status === 'done') {
+          clearInterval(pollTimer);
+          await fetchResult(jobId);
+          return;
+        }
+        if (data.status === 'failed') {
+          clearInterval(pollTimer);
+          showToast('분석 실패: ' + (data.error_msg || '알 수 없는 오류'), true);
+        }
+      } catch (e) {
+        clearInterval(pollTimer);
+        showToast('상태 조회 실패: ' + e.message, true);
+      }
+    }
+
+    function init() {
+      const params = new URLSearchParams(window.location.search);
+      const jobId = params.get('job_id') || sessionStorage.getItem('analysis.jobId');
+      if (!jobId) {
+        showToast('Job ID가 없습니다. 업로드 페이지로 이동합니다.', true);
+        setTimeout(() => { window.location.href = '/site/index.html'; }, 1200);
+        return;
+      }
+
+      sessionStorage.setItem('analysis.jobId', jobId);
+      document.getElementById('jobIdDisplay').textContent = jobId;
+      updateStages('pending');
+
+      pollStatus(jobId);
+      pollTimer = setInterval(() => { pollStatus(jobId); }, 3000);
+    }
+
+    init();
+  </script>
+</body>
+</html>
