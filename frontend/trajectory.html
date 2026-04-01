@@ -6,6 +6,8 @@
   <title>강의 궤적 분석</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
@@ -73,6 +75,16 @@
       border-color: #c7c9fb;
       background: var(--accent);
       color: #fff;
+    }
+    .btn.download {
+      border-color: #bfdbfe;
+      color: #2563eb;
+      background: #eff6ff;
+    }
+    .btn.download:hover {
+      border-color: #93c5fd;
+      color: #1d4ed8;
+      background: #dbeafe;
     }
     .btn:disabled { opacity: 0.6; cursor: not-allowed; }
     .spinner {
@@ -199,6 +211,7 @@
         <div class="muted" id="metaPath">trajectory 파일 경로: -</div>
       </div>
       <div style="display:flex; gap:8px;">
+        <button class="btn download" id="pdfBtn">PDF 다운로드</button>
         <button class="btn" id="loadBtn">최신 불러오기</button>
         <button class="btn primary" id="rebuildBtn">다시 생성</button>
       </div>
@@ -276,6 +289,13 @@
         return;
       }
       el.innerHTML = items.join('');
+    }
+
+    function normalizeFileName(name) {
+      return String(name || 'trajectory')
+        .replace(/[\\/:*?"<>|]+/g, '_')
+        .replace(/\s+/g, '_')
+        .slice(0, 80);
     }
 
     function setGenerating(isGenerating, statusText) {
@@ -386,6 +406,55 @@
       }
     }
 
+    async function downloadTrajectoryPdf() {
+      const btn = document.getElementById('pdfBtn');
+      const captureEl = document.querySelector('.page');
+      if (!captureEl || !window.html2canvas || !window.jspdf) {
+        showToast('PDF 라이브러리를 불러오지 못했습니다.', true);
+        return;
+      }
+
+      const prev = btn.textContent;
+      btn.disabled = true;
+      btn.textContent = 'PDF 생성 중...';
+      try {
+        const canvas = await window.html2canvas(captureEl, {
+          scale: 2,
+          useCORS: true,
+          backgroundColor: '#f5f7fa',
+          windowWidth: Math.max(document.documentElement.clientWidth, captureEl.scrollWidth),
+        });
+
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        const pageWidth = pdf.internal.pageSize.getWidth();
+        const pageHeight = pdf.internal.pageSize.getHeight();
+        const imgWidth = pageWidth;
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        const imgData = canvas.toDataURL('image/png');
+
+        let y = 0;
+        pdf.addImage(imgData, 'PNG', 0, y, imgWidth, imgHeight, undefined, 'FAST');
+        while (y + imgHeight > pageHeight) {
+          y -= pageHeight;
+          pdf.addPage();
+          pdf.addImage(imgData, 'PNG', 0, y, imgWidth, imgHeight, undefined, 'FAST');
+        }
+
+        const p = document.getElementById('periodGrid');
+        const periodText = p ? p.textContent.replace(/\s+/g, ' ').trim() : '';
+        const today = new Date().toISOString().slice(0, 10);
+        const fileName = `${normalizeFileName(periodText || 'trajectory')}_${today}.pdf`;
+        pdf.save(fileName);
+        showToast('PDF 다운로드를 시작했습니다.');
+      } catch (e) {
+        showToast('PDF 생성 실패: ' + (e?.message || e), true);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = prev;
+      }
+    }
+
     document.getElementById('loadBtn').addEventListener('click', async () => {
       try {
         await loadSummary();
@@ -396,6 +465,9 @@
     });
     document.getElementById('rebuildBtn').addEventListener('click', async () => {
       try { await rebuild(); } catch (e) { showToast('생성 실패: ' + e.message, true); }
+    });
+    document.getElementById('pdfBtn').addEventListener('click', async () => {
+      await downloadTrajectoryPdf();
     });
 
     (async () => {
