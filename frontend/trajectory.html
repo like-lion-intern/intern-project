@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>강의 궤적 분석</title>
+  <title>강의 흐름 분석</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
@@ -199,6 +199,7 @@
   <nav>
     <a class="nav-logo" href="/site/index.html">🎓 강의 분석 시스템 <span class="nav-badge">AI Report</span></a>
     <div class="nav-actions">
+      <a class="btn" href="/site/history.html">이력</a>
       <a class="btn" href="/site/report.html">리포트</a>
       <a class="btn" href="/site/index.html">업로드</a>
     </div>
@@ -207,7 +208,7 @@
   <div class="page">
     <div class="header">
       <div>
-        <h1>📈 강의 궤적 분석</h1>
+        <h1>📈 강의 흐름 분석</h1>
         <div class="muted" id="metaPath">trajectory 파일 경로: -</div>
       </div>
       <div style="display:flex; gap:8px;">
@@ -325,9 +326,9 @@
       document.getElementById('trajectoryFileCount').textContent = `${files}개`;
 
       if (availableLectureCount <= 0) {
-        setGenerating(false, '궤적 분석에 사용할 강의 결과가 없습니다. 먼저 강의 분석을 실행해 주세요.');
+        setGenerating(false, '강의 흐름 분석에 사용할 강의 결과가 없습니다. 먼저 강의 분석을 실행해 주세요.');
       } else if (!generating) {
-        setGenerating(false, `현재 <strong>${availableLectureCount}개 강의</strong>를 기준으로 궤적 분석을 생성할 수 있습니다. ${latest}`);
+        setGenerating(false, `현재 <strong>${availableLectureCount}개 강의</strong>를 기준으로 강의 흐름 분석을 생성할 수 있습니다. ${latest}`);
       }
     }
 
@@ -387,7 +388,7 @@
 
     async function rebuild() {
       if (availableLectureCount <= 0) {
-        showToast('분석 가능한 강의 데이터가 없어 궤적을 생성할 수 없습니다.', true);
+        showToast('분석 가능한 강의 데이터가 없어 강의 흐름 분석을 생성할 수 없습니다.', true);
         return;
       }
 

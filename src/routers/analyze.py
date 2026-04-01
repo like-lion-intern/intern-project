@@ -17,7 +17,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from fastapi import APIRouter, BackgroundTasks, Depends, File, HTTPException, UploadFile, status
-from sqlalchemy import select
+from sqlalchemy import select, desc
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.config import settings
@@ -178,6 +178,46 @@ async def get_result(job_id: str, db: AsyncSession = Depends(get_db)) -> ResultR
         heuristic_report=res.heuristic_report,
         llm_debug=res.llm_debug,
     )
+
+
+@router.get("/history")
+async def get_history(limit: int = 50, db: AsyncSession = Depends(get_db)) -> dict:
+    """
+    업로드/분석 이력을 최신순으로 반환한다.
+    - status, 파일명, 날짜, 생성/완료 시각
+    - 결과 존재 여부(result_exists)
+    """
+    safe_limit = max(1, min(int(limit or 50), 200))
+    try:
+        stmt = (
+            select(Job, Result)
+            .outerjoin(Result, Result.job_id == Job.job_id)
+            .order_by(desc(Job.created_at))
+            .limit(safe_limit)
+        )
+        rows = (await db.execute(stmt)).all()
+    except Exception as exc:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail=f"이력 조회 실패: {exc}",
+        )
+
+    items = []
+    for job, result in rows:
+        items.append(
+            {
+                "job_id": str(job.job_id),
+                "date": job.date,
+                "original_filename": job.original_filename,
+                "status": job.status,
+                "result_exists": result is not None,
+                "created_at": job.created_at.isoformat() if job.created_at else None,
+                "finished_at": job.finished_at.isoformat() if job.finished_at else None,
+                "error_msg": job.error_msg,
+            }
+        )
+
+    return {"items": items, "count": len(items)}
 
 
 @router.get("/health", response_model=HealthResponse)
